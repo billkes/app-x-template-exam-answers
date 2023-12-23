@@ -1,302 +1,79 @@
 <template>
-	<!-- #ifdef APP -->
-	<scroll-view style="flex:1">
-	<!-- #endif -->
-
-		<view class="index">
-			<view class="head">
-				<view class="left">
-					<text class="type">[{{data.length>0 ? data[current].type : '单选'}}]</text>
-					<text class="current">{{current + 1}}</text>
-					<text class="text">/</text>
-					<text class="total">{{data.length}}</text>
-				</view>
-				<text class="right">
-					答题卡
-				</text>
-			</view>
-			<view class="nav" v-if="data.length>0">
-				<view class="page-number" v-show="!isOpen">
-					<scroll-view :scroll-x="true" class="box">
-						<view @click="setStep(index)"
-							:class="['page-item', current == index ? 'con' : '', item.select != '' ? 'done' : '',]"
-							v-for="(item, index) in data" :key="index">
-							<text class="text">{{index + 1}}</text>
-						</view>
-					</scroll-view>
-				</view>
-				<view class="page-number con" v-show="isOpen">
-					<scroll-view :scroll-y="true" class="box">
-						<view @click="setStep(index)"
-							:class="['page-item', current == index ? 'con' : '', item.select != '' ? 'done' : '',]"
-							v-for="(item, index) in data" :key="index">
-							<text class="text">{{index + 1}}</text>
-						</view>
-					</scroll-view>
-				</view>
-				<view class="open-close" @click="onOpenClose">
-					<view :class="['btn', isOpen?'con':'']"></view>
-				</view>
-			</view>
-
-			<view class="main">
-				<view class="item" v-for="(item, index) in data" :key="index" v-show="current == index">
-
-					<text class="title line-height-24">
-						{{index+1}} . {{item.name}}
-					</text>
-					<view class="options">
-						<radio-group v-if="item.type == '单选'" @change="onSelectRadio">
-							<radio :value="jIndex+''" class="option-item radio" v-for="(option, jIndex) in item.options"
-								:key="jIndex">
-								<text class="line-height-24 label">{{option}}</text>
-							</radio>
-						</radio-group>
-						<checkbox-group v-if="item.type == '多选'" @change="onSelectCheckbox">
-							<checkbox :value="jIndex+''" class="option-item radio"
-								v-for="(option, jIndex) in item.options" :key="jIndex">
-								<text class="line-height-24 label">{{option}}</text>
-							</checkbox>
-						</checkbox-group>
-					</view>
-				</view>
-				<view class="pager">
-					<button @click="prevStep()" type="primary" :disabled="current == 0">上一题</button>
-					<button v-show="current != data.length - 1" @click="nextStep()" type="primary"
-						calss="btn-right">下一题</button>
-					<button v-show="current == data.length - 1" @click="handleSubmit" type="primary">提交</button>
-				</view>
-			</view>
-
+	<view class="main">
+		<view class="title">
+			<text class="label">考试答题模板</text>
+			<text class="edition">V4.0</text>
 		</view>
-
-	<!-- #ifdef APP -->
-	</scroll-view>
-	<!-- #endif -->
+		<video class="video" ref="video" id="video" src="@/static/demo.mp4" :controls='true'></video>
+		<view class="btn-list">
+			<button class='btn' type="primary" @click="goNew">跳转新版页面</button>
+			<button class='btn' type="warn" @click="goOld">跳转旧版页面(不推荐)</button>
+		</view>
+	</view>
 </template>
 
-<script>
-	import {
-		DataType,
-		dataList,
-	} from '@/pages/index/index.uts'
+<script lang="uts">
 	export default {
 		data() {
 			return {
-				// 题目列表
-				data: [] as DataType[],
-
-				// 当前页数 
-				current: 0,
-
-				// 分页器是否展开
-				isOpen: false,
+				videoContext: null as VideoContext | null,
 			}
 		},
-
-		mounted() {
-			this.data = dataList
+		onReady() {
+			this.videoContext = uni.createVideoContext('video', this);
 		},
-
 		methods: {
-			onSelectCheckbox(e : CheckboxGroupChangeEvent) {
-				// console.log(e.detail.value);
-				this.data[this.current].select = e.detail.value.join(',')
-			},
-			onSelectRadio(e : RadioGroupChangeEvent) {
-				this.data[this.current].select = e.detail.value
-			},
-			prevStep() {
-				this.current -= 1;
-			},
-
-			nextStep() {
-				this.current += 1;
-			},
-
-			setStep(index : number) {
-				this.current = index;
-			},
-
-			onOpenClose() {
-				if (this.data.length > 7) {
-					this.isOpen = !this.isOpen;
-				}
-			},
-
-			handleSubmit() {
-				console.log(this.data);
-				uni.showToast({
-					title: '请查看log信息',
-					icon: 'success'
+			goNew() {
+				this.videoContext?.pause();
+				uni.navigateTo({
+					url: '/pages/newTest/index'
 				})
 			},
-		}
+			goOld() {
+				this.videoContext?.pause();
+				uni.navigateTo({
+					url: '/pages/oldTest/index'
+				})
+			}
+		},
 	}
 </script>
 
-<style scoped lang="scss">
-	.index {
-		.head {
-			padding: 0 15px;
+<style lang="scss">
+	.main {
+		align-items: center;
+		flex: 1;
+		padding-top: 50px;
+
+		.title {
 			flex-direction: row;
-			justify-content: space-between;
-			align-items: center;
-			background-color: #fff;
-			height: 40px;
 
-			.left {
-				flex-direction: row;
-				align-items: center;
-				position: relative;
-				top: 1px;
+			.label,
+			.edition {
+				font-size: 24px;
+				font-weight: bold;
+				color: #333;
+				letter-spacing: 1px;
 
-				.current {
-					font-size: 16px;
-					font-weight: bold;
-					color: #303133;
+				&.edition {
+					color: #ff5500;
 				}
-
-				.text,
-				.type {
-					margin: 0 5px;
-					color: #303133;
-				}
-
-				.total {
-					margin-right: 5px;
-					color: #303133;
-				}
-			}
-
-			.right {
-				color: #4ccfff;
 			}
 		}
 
-		.nav {
-			padding: 15px;
-			position: relative;
-			overflow: hidden;
-			background-color: #fff;
-
-			.open-close {
-				margin-top: 10px;
-				padding: 5px;
-				justify-content: center;
-				flex-direction: row;
-
-				.btn {
-					height: 6px;
-					border-radius: 3px;
-					width: 85px;
-					background-color: #eee;
-
-					&.con {
-						background-color: #2979ff;
-					}
-				}
-			}
-
-			.page-number {
-
-				.box {
-					flex-direction: row;
-
-					.page-item {
-						margin-right: 10px;
-						width: 45px;
-						height: 45px;
-						box-sizing: border-box;
-						border-radius: 6px;
-						background-color: #fff;
-						justify-content: center;
-						align-items: center;
-						background-color: #FFB27D;
-
-						.text {
-							color: #666;
-						}
-
-						&.con {
-							background-color: #60C5F1;
-						}
-
-						&.done {
-							background-color: #6BD089;
-						}
-					}
-				}
-
-				&.con .box {
-					flex-wrap: wrap;
-
-					.page-item {
-						margin-top: 5px;
-					}
-				}
-			}
-
+		.video {
+			margin-top: 30px;
+			width: 320px;
+			height: 320px;
 		}
 
-		.main {
-			background-image: linear-gradient(#fff, #fafafa);
-			box-sizing: border-box;
-			flex: 1;
-			padding: 10px 15px;
+		.btn-list {
+			margin-top: 30px;
+			flex-direction: row;
 
-			.item {
-				.line-height-24 {
-					line-height: 24px;
-				}
-
-				.color-666 {
-					color: #666;
-				}
-
-				.title {
-					font-size: 16px;
-				}
-
-				.options {
-					margin-top: 20px;
-
-					.option-item {
-						display: flex;
-						margin-top: 15px;
-						background-color: #dfdfdf;
-						padding: 10px 20px;
-						border-radius: 8px;
-
-						&:first-child {
-							margin-top: 0;
-						}
-
-						.label {
-							margin-left: 10px;
-							flex: 1;
-							color: #333;
-						}
-
-					}
-
-					.con {
-						.left {
-							background-color: #0bb886;
-							color: #fff;
-							border-color: #0bb886;
-						}
-					}
-				}
-			}
-
-			.pager {
-				flex-direction: row;
-				align-items: center;
-				margin-top: 35px;
-				justify-content: space-between;
+			.btn {
+				margin: 0 10px;
 			}
 		}
-
 	}
 </style>

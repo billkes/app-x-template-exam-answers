@@ -1,64 +1,103 @@
 # appx-test (考试答题模板)
 
-## 项目简介 
+## 项目简介
 
 该模板适用于大部分**答题**模板
+
+> 三个步骤完成代码量
 
 - 在线考试
 - 作业
 - 刷题
 
-## 模板预览
+## 教程
 
-1. 1
-![1](./markdown/1.png)
+> 跳转行快捷键 `Ctrl + G`
 
-2. 2
-![2](./markdown/2.png)
+1. 初始化数据 `66-69行` 和 `95-111行`
 
-## 本模板亮点 
+    ``` uts
+    ...
 
-1. 开箱即用
+    // 66行
+    import {
+        DataType,
+        dataList,
+    } from '@/pages/oldTest/index.uts'
 
-	> 有效代码只有两个文件
- 
-	- /pages/index/index.uvue
-	- /pages/index/index.uts
- 
-2. 可塑性强
+    ...
 
-	> 可根据自己的要求修改样式，修改功能
+    // 95行
+    mounted() {
+        dataList.forEach((item : DataType) : void => {
+            this.data.push(item)
+        })
+        // this.countdownTime = 后端计算得到的倒计时
+        this.countdownTime = 600 * 1000
+        this.interval = setInterval(() => {
+            if (this.countdownTime < 0) {
+                // 倒计时结束 直接提交
+                this.submit()
+                clearInterval(this.interval!)
+            }
+            // 时间格式转换
+            this.countdown = this.getRemainingTime(this.countdownTime)
+            this.countdownTime -= 200
+        }, 200)
+    },
 
-	- 可注册`侦听器`
+    ...
+    ```
 
-	> 在考试中为避免已答题内容丢失，每答完一道题请求更新接口，以下为示例代码
+2. 切换题目时更新数据 `126-132行`
 
-	```vue
-	watch: {
-		current(val, oldVal) {
-			this.update(oldVal)
-		}
-	},
-	methods:{
-		...,
-		update(oldVal){
-			... do some thing 
-			... request api
-		}
-	}
-	```
-	
-	- 可做倒计时
-		+ 开始倒计时触发回调
-		+ 倒计时结束时触发回调
+    ``` uts
+    ...
 
-	- 还有挺多不一一诉说了...
-3. 没有使用任何ui组件和插件
+    第126行
+    /**
+    * @description 每切换题目时请求接口更新题的数据
+    * @param current
+    */
+    update(current : number) {
+        console.log('题目下标', current);
+        console.log('题目答案', this.data[current].select);
+        // 请求接口
 
-	> 使用本模板时可以在对应位置使用自己喜欢或者熟悉的ui组件和插件，直接上手修改，嘎嘎效率
 
-## 本模板缺陷
+    },
+    ...
 
-1. 仅实现文字，无图片预览，有需着可自行添加
-2. 仅单选与多选，无填空题或者作答题，甚至时手写
-3. 由于无法使用$set，因某些无过渡动画而较生硬，真的会谢
+    ```
+
+3. 提交答题 `138-147行`
+
+    ``` uts
+    ...
+
+    第138行
+   /**
+    * @description 提交答题
+    */
+    submit() {
+        console.log('全部数据', this.data);
+        console.log('答案数据', this.data.map((o) : string => o.select));
+        // 请求接口
+
+
+
+        // 提交后退出页面或者do something
+        // 后端看需求 定时器自动提交
+    },
+    ...
+
+    ```
+
+4. 编程结束，直接上手测试，调试
+
+## 模板预览 新版本v4.0
+
+![3]([./markdown/3.png](https://mp-207735a8-b8db-45c0-baac-0e7004e3d577.cdn.bspapp.com/pic/3.png))
+![4]([./markdown/4.png](https://mp-207735a8-b8db-45c0-baac-0e7004e3d577.cdn.bspapp.com/pic/4.png))
+![5]([./markdown/5.png](https://mp-207735a8-b8db-45c0-baac-0e7004e3d577.cdn.bspapp.com/pic/5.png))
+![1]([./markdown/1.gif](https://mp-207735a8-b8db-45c0-baac-0e7004e3d577.cdn.bspapp.com/pic/1.gif))

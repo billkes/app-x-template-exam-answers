@@ -1,0 +1,237 @@
+type DataType = {
+	name : string
+	options : string[]
+	type : string
+	select : string
+}
+
+const dataList : DataType[] = [{
+	"name": "uni-app x 是什么？",
+	"options": ["uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。"],
+	"type": "单选",
+	"select": ""
+},
+{
+	"name": "与web开发相比，uni-app x最大的变化有",
+	"options": ["弱类型的js改为了强类型的uts", "不再使用webview渲染，导致css有变化", "App-iOS平台暂不支持async、await", "不支持undefined。任何变量被定义后，都需要赋值", "函数声明方式不支持作为值传递", "函数表达式方式不支持默认参数"],
+	"type": "多选",
+	"select": ""
+},
+{
+	"name": "uvue css使用,App端与web常见的区别是：",
+	"options": ["当uni-app x编译到web、小程序等平台时，可以支持web的全部css。同时，编译器会进行css重置，保证ucss这个子集在各端效果的一致性。", "这个子集有时也被称为ucss，但工程文件仍然是css、less、scss等后缀，style节点的lang属性也没有特殊之处。选择器只能用class，不能用tag、#id、[attr]等选择器", "清晰易用、全平台支持的布局,样式不继承，即父元素样式不影响子元素", "但以上仅是常见的区别，并非所有，需开发者继续阅读全文"],
+	"type": "单选",
+	"select": ""
+}, {
+	"name": "uni-app x 是什么？",
+	"options": ["uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。"],
+	"type": "单选",
+	"select": ""
+},
+{
+	"name": "与web开发相比，uni-app x最大的变化有",
+	"options": ["弱类型的js改为了强类型的uts", "不再使用webview渲染，导致css有变化", "App-iOS平台暂不支持async、await", "不支持undefined。任何变量被定义后，都需要赋值", "函数声明方式不支持作为值传递", "函数表达式方式不支持默认参数"],
+	"type": "多选",
+	"select": ""
+},
+{
+	"name": "uvue css使用,App端与web常见的区别是：",
+	"options": ["当uni-app x编译到web、小程序等平台时，可以支持web的全部css。同时，编译器会进行css重置，保证ucss这个子集在各端效果的一致性。", "这个子集有时也被称为ucss，但工程文件仍然是css、less、scss等后缀，style节点的lang属性也没有特殊之处。选择器只能用class，不能用tag、#id、[attr]等选择器", "清晰易用、全平台支持的布局,样式不继承，即父元素样式不影响子元素", "但以上仅是常见的区别，并非所有，需开发者继续阅读全文"],
+	"type": "单选",
+	"select": ""
+}, {
+	"name": "uni-app x 是什么？",
+	"options": ["uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。"],
+	"type": "单选",
+	"select": ""
+},
+{
+	"name": "与web开发相比，uni-app x最大的变化有",
+	"options": ["弱类型的js改为了强类型的uts", "不再使用webview渲染，导致css有变化", "App-iOS平台暂不支持async、await", "不支持undefined。任何变量被定义后，都需要赋值", "函数声明方式不支持作为值传递", "函数表达式方式不支持默认参数"],
+	"type": "多选",
+	"select": ""
+},
+{
+	"name": "uvue css使用,App端与web常见的区别是：",
+	"options": ["当uni-app x编译到web、小程序等平台时，可以支持web的全部css。同时，编译器会进行css重置，保证ucss这个子集在各端效果的一致性。", "这个子集有时也被称为ucss，但工程文件仍然是css、less、scss等后缀，style节点的lang属性也没有特殊之处。选择器只能用class，不能用tag、#id、[attr]等选择器", "清晰易用、全平台支持的布局,样式不继承，即父元素样式不影响子元素", "但以上仅是常见的区别，并非所有，需开发者继续阅读全文"],
+	"type": "单选",
+	"select": ""
+}, {
+	"name": "uni-app x 是什么？",
+	"options": ["uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。"],
+	"type": "单选",
+	"select": ""
+},
+{
+	"name": "与web开发相比，uni-app x最大的变化有",
+	"options": ["弱类型的js改为了强类型的uts", "不再使用webview渲染，导致css有变化", "App-iOS平台暂不支持async、await", "不支持undefined。任何变量被定义后，都需要赋值", "函数声明方式不支持作为值传递", "函数表达式方式不支持默认参数"],
+	"type": "多选",
+	"select": ""
+},
+{
+	"name": "uvue css使用,App端与web常见的区别是：",
+	"options": ["当uni-app x编译到web、小程序等平台时，可以支持web的全部css。同时，编译器会进行css重置，保证ucss这个子集在各端效果的一致性。", "这个子集有时也被称为ucss，但工程文件仍然是css、less、scss等后缀，style节点的lang属性也没有特殊之处。选择器只能用class，不能用tag、#id、[attr]等选择器", "清晰易用、全平台支持的布局,样式不继承，即父元素样式不影响子元素", "但以上仅是常见的区别，并非所有，需开发者继续阅读全文"],
+	"type": "单选",
+	"select": ""
+}, {
+	"name": "uni-app x 是什么？",
+	"options": ["uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。"],
+	"type": "单选",
+	"select": ""
+},
+{
+	"name": "与web开发相比，uni-app x最大的变化有",
+	"options": ["弱类型的js改为了强类型的uts", "不再使用webview渲染，导致css有变化", "App-iOS平台暂不支持async、await", "不支持undefined。任何变量被定义后，都需要赋值", "函数声明方式不支持作为值传递", "函数表达式方式不支持默认参数"],
+	"type": "多选",
+	"select": ""
+},
+{
+	"name": "uvue css使用,App端与web常见的区别是：",
+	"options": ["当uni-app x编译到web、小程序等平台时，可以支持web的全部css。同时，编译器会进行css重置，保证ucss这个子集在各端效果的一致性。", "这个子集有时也被称为ucss，但工程文件仍然是css、less、scss等后缀，style节点的lang属性也没有特殊之处。选择器只能用class，不能用tag、#id、[attr]等选择器", "清晰易用、全平台支持的布局,样式不继承，即父元素样式不影响子元素", "但以上仅是常见的区别，并非所有，需开发者继续阅读全文"],
+	"type": "单选",
+	"select": ""
+}, {
+	"name": "uni-app x 是什么？",
+	"options": ["uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。"],
+	"type": "单选",
+	"select": ""
+},
+{
+	"name": "与web开发相比，uni-app x最大的变化有",
+	"options": ["弱类型的js改为了强类型的uts", "不再使用webview渲染，导致css有变化", "App-iOS平台暂不支持async、await", "不支持undefined。任何变量被定义后，都需要赋值", "函数声明方式不支持作为值传递", "函数表达式方式不支持默认参数"],
+	"type": "多选",
+	"select": ""
+},
+{
+	"name": "uvue css使用,App端与web常见的区别是：",
+	"options": ["当uni-app x编译到web、小程序等平台时，可以支持web的全部css。同时，编译器会进行css重置，保证ucss这个子集在各端效果的一致性。", "这个子集有时也被称为ucss，但工程文件仍然是css、less、scss等后缀，style节点的lang属性也没有特殊之处。选择器只能用class，不能用tag、#id、[attr]等选择器", "清晰易用、全平台支持的布局,样式不继承，即父元素样式不影响子元素", "但以上仅是常见的区别，并非所有，需开发者继续阅读全文"],
+	"type": "单选",
+	"select": ""
+}, {
+	"name": "uni-app x 是什么？",
+	"options": ["uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。"],
+	"type": "单选",
+	"select": ""
+},
+{
+	"name": "与web开发相比，uni-app x最大的变化有",
+	"options": ["弱类型的js改为了强类型的uts", "不再使用webview渲染，导致css有变化", "App-iOS平台暂不支持async、await", "不支持undefined。任何变量被定义后，都需要赋值", "函数声明方式不支持作为值传递", "函数表达式方式不支持默认参数"],
+	"type": "多选",
+	"select": ""
+},
+{
+	"name": "uvue css使用,App端与web常见的区别是：",
+	"options": ["当uni-app x编译到web、小程序等平台时，可以支持web的全部css。同时，编译器会进行css重置，保证ucss这个子集在各端效果的一致性。", "这个子集有时也被称为ucss，但工程文件仍然是css、less、scss等后缀，style节点的lang属性也没有特殊之处。选择器只能用class，不能用tag、#id、[attr]等选择器", "清晰易用、全平台支持的布局,样式不继承，即父元素样式不影响子元素", "但以上仅是常见的区别，并非所有，需开发者继续阅读全文"],
+	"type": "单选",
+	"select": ""
+}, {
+	"name": "uni-app x 是什么？",
+	"options": ["uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。"],
+	"type": "单选",
+	"select": ""
+},
+{
+	"name": "与web开发相比，uni-app x最大的变化有",
+	"options": ["弱类型的js改为了强类型的uts", "不再使用webview渲染，导致css有变化", "App-iOS平台暂不支持async、await", "不支持undefined。任何变量被定义后，都需要赋值", "函数声明方式不支持作为值传递", "函数表达式方式不支持默认参数"],
+	"type": "多选",
+	"select": ""
+},
+{
+	"name": "uvue css使用,App端与web常见的区别是：",
+	"options": ["当uni-app x编译到web、小程序等平台时，可以支持web的全部css。同时，编译器会进行css重置，保证ucss这个子集在各端效果的一致性。", "这个子集有时也被称为ucss，但工程文件仍然是css、less、scss等后缀，style节点的lang属性也没有特殊之处。选择器只能用class，不能用tag、#id、[attr]等选择器", "清晰易用、全平台支持的布局,样式不继承，即父元素样式不影响子元素", "但以上仅是常见的区别，并非所有，需开发者继续阅读全文"],
+	"type": "单选",
+	"select": ""
+}, {
+	"name": "uni-app x 是什么？",
+	"options": ["uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。"],
+	"type": "单选",
+	"select": ""
+},
+{
+	"name": "与web开发相比，uni-app x最大的变化有",
+	"options": ["弱类型的js改为了强类型的uts", "不再使用webview渲染，导致css有变化", "App-iOS平台暂不支持async、await", "不支持undefined。任何变量被定义后，都需要赋值", "函数声明方式不支持作为值传递", "函数表达式方式不支持默认参数"],
+	"type": "多选",
+	"select": ""
+},
+{
+	"name": "uvue css使用,App端与web常见的区别是：",
+	"options": ["当uni-app x编译到web、小程序等平台时，可以支持web的全部css。同时，编译器会进行css重置，保证ucss这个子集在各端效果的一致性。", "这个子集有时也被称为ucss，但工程文件仍然是css、less、scss等后缀，style节点的lang属性也没有特殊之处。选择器只能用class，不能用tag、#id、[attr]等选择器", "清晰易用、全平台支持的布局,样式不继承，即父元素样式不影响子元素", "但以上仅是常见的区别，并非所有，需开发者继续阅读全文"],
+	"type": "单选",
+	"select": ""
+}, {
+	"name": "uni-app x 是什么？",
+	"options": ["uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。"],
+	"type": "单选",
+	"select": ""
+},
+{
+	"name": "与web开发相比，uni-app x最大的变化有",
+	"options": ["弱类型的js改为了强类型的uts", "不再使用webview渲染，导致css有变化", "App-iOS平台暂不支持async、await", "不支持undefined。任何变量被定义后，都需要赋值", "函数声明方式不支持作为值传递", "函数表达式方式不支持默认参数"],
+	"type": "多选",
+	"select": ""
+},
+{
+	"name": "uvue css使用,App端与web常见的区别是：",
+	"options": ["当uni-app x编译到web、小程序等平台时，可以支持web的全部css。同时，编译器会进行css重置，保证ucss这个子集在各端效果的一致性。", "这个子集有时也被称为ucss，但工程文件仍然是css、less、scss等后缀，style节点的lang属性也没有特殊之处。选择器只能用class，不能用tag、#id、[attr]等选择器", "清晰易用、全平台支持的布局,样式不继承，即父元素样式不影响子元素", "但以上仅是常见的区别，并非所有，需开发者继续阅读全文"],
+	"type": "单选",
+	"select": ""
+}, {
+	"name": "uni-app x 是什么？",
+	"options": ["uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。"],
+	"type": "单选",
+	"select": ""
+},
+{
+	"name": "与web开发相比，uni-app x最大的变化有",
+	"options": ["弱类型的js改为了强类型的uts", "不再使用webview渲染，导致css有变化", "App-iOS平台暂不支持async、await", "不支持undefined。任何变量被定义后，都需要赋值", "函数声明方式不支持作为值传递", "函数表达式方式不支持默认参数"],
+	"type": "多选",
+	"select": ""
+},
+{
+	"name": "uvue css使用,App端与web常见的区别是：",
+	"options": ["当uni-app x编译到web、小程序等平台时，可以支持web的全部css。同时，编译器会进行css重置，保证ucss这个子集在各端效果的一致性。", "这个子集有时也被称为ucss，但工程文件仍然是css、less、scss等后缀，style节点的lang属性也没有特殊之处。选择器只能用class，不能用tag、#id、[attr]等选择器", "清晰易用、全平台支持的布局,样式不继承，即父元素样式不影响子元素", "但以上仅是常见的区别，并非所有，需开发者继续阅读全文"],
+	"type": "单选",
+	"select": ""
+}, {
+	"name": "uni-app x 是什么？",
+	"options": ["uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。"],
+	"type": "单选",
+	"select": ""
+},
+{
+	"name": "与web开发相比，uni-app x最大的变化有",
+	"options": ["弱类型的js改为了强类型的uts", "不再使用webview渲染，导致css有变化", "App-iOS平台暂不支持async、await", "不支持undefined。任何变量被定义后，都需要赋值", "函数声明方式不支持作为值传递", "函数表达式方式不支持默认参数"],
+	"type": "多选",
+	"select": ""
+},
+{
+	"name": "uvue css使用,App端与web常见的区别是：",
+	"options": ["当uni-app x编译到web、小程序等平台时，可以支持web的全部css。同时，编译器会进行css重置，保证ucss这个子集在各端效果的一致性。", "这个子集有时也被称为ucss，但工程文件仍然是css、less、scss等后缀，style节点的lang属性也没有特殊之处。选择器只能用class，不能用tag、#id、[attr]等选择器", "清晰易用、全平台支持的布局,样式不继承，即父元素样式不影响子元素", "但以上仅是常见的区别，并非所有，需开发者继续阅读全文"],
+	"type": "单选",
+	"select": ""
+},
+{
+	"name": "uni-app x 是什么？",
+	"options": ["uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。", "uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。"],
+	"type": "单选",
+	"select": ""
+},
+{
+	"name": "与web开发相比，uni-app x最大的变化有",
+	"options": ["弱类型的js改为了强类型的uts", "不再使用webview渲染，导致css有变化", "App-iOS平台暂不支持async、await", "不支持undefined。任何变量被定义后，都需要赋值", "函数声明方式不支持作为值传递", "函数表达式方式不支持默认参数"],
+	"type": "多选",
+	"select": ""
+},
+{
+	"name": "uvue css使用,App端与web常见的区别是：",
+	"options": ["当uni-app x编译到web、小程序等平台时，可以支持web的全部css。同时，编译器会进行css重置，保证ucss这个子集在各端效果的一致性。", "这个子集有时也被称为ucss，但工程文件仍然是css、less、scss等后缀，style节点的lang属性也没有特殊之处。选择器只能用class，不能用tag、#id、[attr]等选择器", "清晰易用、全平台支持的布局,样式不继承，即父元素样式不影响子元素", "但以上仅是常见的区别，并非所有，需开发者继续阅读全文"],
+	"type": "单选",
+	"select": ""
+}
+]
+
+
+export {
+	DataType,
+	dataList,
+}

@@ -5,7 +5,12 @@
 		}, {
 			"path": "pages/oldTest/index"
 		}, {
-			"path": "pages/newTest/index"
+			"path": "pages/newTest/index",
+			"style": {
+				"navigationBarTextStyle": "#fff",
+				"navigationBarTitleText": "考试答题新版 v4.0",
+				"navigationBarBackgroundColor": "#3a397a"
+			}
 		}
 	],
 	"globalStyle": {

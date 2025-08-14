@@ -2,7 +2,7 @@
     "version" : "1.0",
     "configurations" : [
         {
-            "app-harmony" : {
+            "app" : {
                 "launchtype" : "local"
             },
             "default" : {

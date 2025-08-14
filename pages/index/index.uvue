@@ -1,12 +1,99 @@
 <template>
-  <view>
-  </view>
+	<view class="app-home">
+		<!-- 欢迎卡片 -->
+		<view class="welcome-card">
+			<text class="welcome-title">考试答题模版V5.0</text>
+			<text class="welcome-subtitle">让学习更高效，让考试更轻松</text>
+		</view>
+
+		<!-- 功能按钮 -->
+		<view class="button-group">
+			<view class="btn btn-primary" hover-class="btn-hover" @click="navigateTo('dynamic')">
+				<text class="btn-text">接入后台管理</text>
+			</view>
+			<view class="btn btn-secondary" hover-class="btn-hover" @click="navigateTo('static')">
+				<text class="btn-text">静态数据加载</text>
+			</view>
+		</view>
+	</view>
 </template>
 
 <script setup lang="uts">
-
+	// 页面跳转方法
+	const navigateTo = (type : string) => {
+		switch (type) {
+			case "dynamic":
+				uni.navigateTo({ url: "/pages/dynamic/index" })
+				break
+			case "static":
+				uni.navigateTo({ url: "/pages/static/index" })
+				break
+		}
+	}
 </script>
 
-<style lang="scss" scoped>
+<style>
+	.app-home {
+		padding: 40rpx;
+		flex: 1;
+	}
 
+	.welcome-card {
+		background-image: linear-gradient(to right, #3a397a, #6b6aa3);
+		border-radius: 24rpx;
+		padding: 60rpx 40rpx;
+		margin-bottom: 60rpx;
+		text-align: center;
+	}
+
+	.welcome-title {
+		font-size: 48rpx;
+		font-weight: bold;
+		color: #fff;
+		margin-bottom: 12rpx;
+	}
+
+	.welcome-subtitle {
+		font-size: 28rpx;
+		color: rgba(255, 255, 255, 0.9);
+	}
+
+	.button-group {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.btn {
+		border: none;
+		border-radius: 16rpx;
+		padding: 32rpx 48rpx;
+		font-size: 32rpx;
+		font-weight: bold;
+		text-align: center;
+		margin-bottom: 20rpx;
+	}
+
+	.btn-text {
+		font-size: 32rpx;
+		font-weight: bold;
+	}
+
+	.btn-primary {
+		background-image: linear-gradient(to right, #3a397a, #6b6aa3);
+		color: #fff;
+	}
+
+	.btn-primary .btn-text {
+		color: #fff;
+	}
+
+	.btn-secondary {
+		background: #fff;
+		color: #3a397a;
+		border: 2rpx solid #3a397a;
+	}
+
+	.btn-hover {
+		opacity: 0.8;
+	}
 </style>

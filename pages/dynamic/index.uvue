@@ -1,5 +1,6 @@
 <template>
   <view>
+	  index
   </view>
 </template>
 
@@ -7,6 +8,6 @@
 
 </script>
 
-<style lang="scss" scoped>
+<style>
 
 </style>

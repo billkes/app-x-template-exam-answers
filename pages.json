@@ -13,7 +13,7 @@
 			}
 		},
 		{
-			"path": "pages/static/index",
+			"path": "pages/simulate/index",
 			"style": {
 				"navigationBarTitleText": "静态数据加载"
 			}

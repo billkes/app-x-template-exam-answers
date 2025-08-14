@@ -11,8 +11,8 @@
 			<view class="btn btn-primary" hover-class="btn-hover" @click="navigateTo('dynamic')">
 				<text class="btn-text">接入后台管理</text>
 			</view>
-			<view class="btn btn-secondary" hover-class="btn-hover" @click="navigateTo('static')">
-				<text class="btn-text">静态数据加载</text>
+			<view class="btn btn-secondary" hover-class="btn-hover" @click="navigateTo('simulate')">
+				<text class="btn-text">模拟数据加载</text>
 			</view>
 		</view>
 	</view>
@@ -25,8 +25,8 @@
 			case "dynamic":
 				uni.navigateTo({ url: "/pages/dynamic/index" })
 				break
-			case "static":
-				uni.navigateTo({ url: "/pages/static/index" })
+			case "simulate":
+				uni.navigateTo({ url: "/pages/simulate/index" })
 				break
 		}
 	}
@@ -43,7 +43,6 @@
 		border-radius: 24rpx;
 		padding: 60rpx 40rpx;
 		margin-bottom: 60rpx;
-		text-align: center;
 	}
 
 	.welcome-title {
@@ -67,9 +66,6 @@
 		border: none;
 		border-radius: 16rpx;
 		padding: 32rpx 48rpx;
-		font-size: 32rpx;
-		font-weight: bold;
-		text-align: center;
 		margin-bottom: 20rpx;
 	}
 
@@ -80,7 +76,6 @@
 
 	.btn-primary {
 		background-image: linear-gradient(to right, #3a397a, #6b6aa3);
-		color: #fff;
 	}
 
 	.btn-primary .btn-text {
@@ -89,8 +84,11 @@
 
 	.btn-secondary {
 		background: #fff;
-		color: #3a397a;
 		border: 2rpx solid #3a397a;
+	}
+
+	.btn-secondary .btn-text {
+		color: #3a397a;
 	}
 
 	.btn-hover {

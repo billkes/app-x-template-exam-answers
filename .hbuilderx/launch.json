@@ -1,0 +1,15 @@
+{
+    "version" : "1.0",
+    "configurations" : [
+        {
+            "app-harmony" : {
+                "launchtype" : "local"
+            },
+            "default" : {
+                "launchtype" : "local"
+            },
+            "provider" : "aliyun",
+            "type" : "uniCloud"
+        }
+    ]
+}

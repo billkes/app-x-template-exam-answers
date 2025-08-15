@@ -1,0 +1,366 @@
+<!-- answer-card.uvue -->
+<template>
+	<view class="page">
+		<!-- 头部信息 -->
+		<view class="header">
+			<view class="title-row">
+				<text class="title">📝 前端开发工程师认证考试</text>
+			</view>
+			<view class="info-row">
+				<text>考试时间: 120分钟</text>
+				<text>剩余时间: 01:38:24</text>
+			</view>
+			<view class="progress-wrap">
+				<view class="progress-bar">
+					<view class="progress-fill" :style="{ width: progress + '%' }" />
+				</view>
+				<view class="progress-info">
+					<text>已完成 {{ progress }}%</text>
+					<text>{{ answered }}/{{ total }} 题</text>
+				</view>
+			</view>
+		</view>
+
+		<!-- 答题卡：可展开收起 -->
+		<view class="card">
+			<view class="card-header" @tap="toggleExpand">
+				<text class="card-title">🔢 答题卡</text>
+				<text class="arrow" :class="{ up: expanded }">▼</text>
+			</view>
+
+			<view v-if="expanded" class="card-body">
+				<view class="grid">
+					<view v-for="(item, idx) in total" :key="idx" class="btn"
+						:class="{ current: idx + 1 === current, answered: isAnswered(idx + 1) }" @tap="jump(idx + 1)">
+						{{ item }}
+					</view>
+				</view>
+			</view>
+		</view>
+
+		<!-- 题目区域 -->
+		<view class="question-card">
+			<view class="question-header">
+				<text class="type">单选题</text>
+				<text class="score">本题分值: 5分</text>
+			</view>
+			<text class="question-text">
+				{{ current }}. {{ stem }}
+			</text>
+
+			<!-- 选项 -->
+			<view class="options">
+				<view v-for="(opt, idx) in options" :key="idx" class="option"
+					:class="{ selected: userAnswer === optKey[idx] }" @tap="select(optKey[idx])">
+					<view class="marker">{{ optKey[idx] }}</view>
+					<text class="text">{{ opt }}</text>
+				</view>
+			</view>
+
+			<!-- 底部按钮 -->
+			<view class="footer">
+				<button class="btn-prev" @tap="prev">上一题</button>
+				<button v-if="current < total" class="btn-next" @tap="next">下一题</button>
+				<button v-else class="btn-submit" @tap="submit">提交试卷</button>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	import { ref, computed } from 'vue'
+
+	// 基础数据
+	const total = 50 // 题目总数
+	const current = ref(1)
+	const answered = ref(12) // 已答
+	const progress = computed(() => Math.round((answered.value / total) * 100))
+	const userAnswer = ref('') // 当前题答案
+
+	// 展开收起
+	const expanded = ref(false)
+	function toggleExpand() {
+		expanded.value = !expanded.value
+	}
+
+	// 当前题干 & 选项
+	const stem = ref('在uni-app-x中，以下关于样式的说法哪一项是正确的？')
+	const options = ['支持使用Sass和Less预处理器', '使用标准的CSS语法，但不支持Sass/Less', '只能使用内联样式，不支持外部样式表', '必须使用特定于uni-app-x的样式语言']
+	const optKey = ['A', 'B', 'C', 'D']
+
+	// 模拟历史答题记录
+	const record = ref<Set<number>>(new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]))
+	function isAnswered(no : number) {
+		return record.value.has(no)
+	}
+
+	// 跳转
+	function jump(no : number) {
+		current.value = no
+		userAnswer.value = ''
+	}
+
+	// 选择
+	function select(key : string) {
+		userAnswer.value = key
+		record.value.add(current.value)
+		answered.value = record.value.size
+	}
+
+	// 上一题 / 下一题 / 提交
+	function prev() {
+		if (current.value > 1) {
+			current.value--
+			userAnswer.value = ''
+		}
+	}
+	function next() {
+		if (current.value < total) {
+			current.value++
+			userAnswer.value = ''
+		}
+	}
+	function submit() {
+		uni.showModal({
+			title: '提示',
+			content: '确认提交试卷？',
+			success: (res) => {
+				if (res.confirm) {
+					uni.showToast({ title: '提交成功', icon: 'success' })
+				}
+			}
+		})
+	}
+</script>
+
+<style>
+	/* 仅支持 flex，主题色 #5250b3 */
+	.page {
+		flex-direction: column;
+		padding: 16px;
+		background-color: #f5f7fa;
+	}
+
+	.header {
+		padding: 16px;
+		background: linear-gradient(135deg, #5250b3 0%, #3a3899 100%);
+		border-radius: 12px;
+		margin-bottom: 16px;
+	}
+
+	.title-row {
+		margin-bottom: 8px;
+	}
+
+	.title {
+		color: #fff;
+		font-size: 18px;
+		font-weight: 600;
+	}
+
+	.info-row {
+		flex-direction: row;
+		justify-content: space-between;
+		color: #fff;
+		font-size: 13px;
+		margin-bottom: 12px;
+	}
+
+	.progress-wrap {
+		margin-top: 8px;
+	}
+
+	.progress-bar {
+		height: 6px;
+		background-color: rgba(255, 255, 255, 0.3);
+		border-radius: 3px;
+	}
+
+	.progress-fill {
+		height: 100%;
+		background-color: #fff;
+		border-radius: 3px;
+	}
+
+	.progress-info {
+		flex-direction: row;
+		justify-content: space-between;
+		margin-top: 6px;
+		font-size: 12px;
+		color: #fff;
+	}
+
+	/* 答题卡 */
+	.card {
+		background-color: #fff;
+		border-radius: 12px;
+		margin-bottom: 16px;
+		padding: 0 12px;
+	}
+
+	.card-header {
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		padding: 12px 0;
+	}
+
+	.card-title {
+		font-size: 15px;
+		font-weight: 600;
+		color: #5250b3;
+	}
+
+	.arrow {
+		font-size: 12px;
+		transition: transform 0.2s;
+	}
+
+	.arrow.up {
+		transform: rotate(180deg);
+	}
+
+	.card-body {
+		padding-bottom: 12px;
+	}
+
+	.grid {
+		flex-direction: row;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.btn {
+		width: 36px;
+		height: 36px;
+		border-radius: 6px;
+		background-color: #f0f2f5;
+		border-width: 1px;
+		border-color: #e4e6eb;
+		font-size: 14px;
+		color: #333;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.btn.answered {
+		background-color: #d0d7ff;
+		border-color: #b8c2ff;
+	}
+
+	.btn.current {
+		background-color: #5250b3;
+		color: #fff;
+		border-color: #5250b3;
+	}
+
+	/* 题目卡片 */
+	.question-card {
+		background-color: #fff;
+		border-radius: 12px;
+		padding: 16px;
+	}
+
+	.question-header {
+		flex-direction: row;
+		justify-content: space-between;
+		margin-bottom: 16px;
+		padding-bottom: 12px;
+		border-bottom-width: 1px;
+		border-bottom-color: #eee;
+	}
+
+	.type {
+		background-color: #5250b3;
+		color: #fff;
+		padding: 2px 8px;
+		border-radius: 12px;
+		font-size: 12px;
+	}
+
+	.score {
+		color: #ff6b6b;
+		font-size: 13px;
+		font-weight: 600;
+	}
+
+	.question-text {
+		font-size: 16px;
+		line-height: 24px;
+		margin-bottom: 20px;
+	}
+
+	/* 选项 */
+	.options {
+		margin-bottom: 20px;
+	}
+
+	.option {
+		flex-direction: row;
+		align-items: center;
+		padding: 14px;
+		margin-bottom: 10px;
+		border-radius: 8px;
+		background-color: #f9fafc;
+		border-width: 1px;
+		border-color: #e4e6eb;
+	}
+
+	.option.selected {
+		background-color: #f0f3ff;
+		border-color: #b8c2ff;
+	}
+
+	.marker {
+		width: 24px;
+		height: 24px;
+		border-radius: 12px;
+		background-color: #e4e6eb;
+		align-items: center;
+		justify-content: center;
+		margin-right: 12px;
+		font-size: 13px;
+		font-weight: 500;
+	}
+
+	.option.selected .marker {
+		background-color: #5250b3;
+		color: #fff;
+	}
+
+	.text {
+		font-size: 15px;
+		color: #333;
+	}
+
+	/* 底部按钮 */
+	.footer {
+		flex-direction: row;
+		gap: 12px;
+	}
+
+	button {
+		flex: 1;
+		padding: 14px 0;
+		border-radius: 8px;
+		font-size: 15px;
+		font-weight: 500;
+		text-align: center;
+		border-width: 0;
+	}
+
+	.btn-prev {
+		background-color: #f0f2f5;
+		color: #606266;
+	}
+
+	.btn-next {
+		background-color: #5250b3;
+		color: #fff;
+	}
+
+	.btn-submit {
+		background: linear-gradient(135deg, #5250b3 0%, #3a3899 100%);
+		color: #fff;
+	}
+</style>

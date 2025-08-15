@@ -1,13 +1,459 @@
 <template>
-  <view>
-	  index
-  </view>
+	<!-- 页面级滚动：根节点 scroll-view -->
+	<scroll-view class="page-scroll">
+		<!-- 个人信息 -->
+		<view class="header">
+			<text class="user-name">张三</text>
+		</view>
+
+		<view class="exam-main">
+			<!-- 我的考试 -->
+			<view class="exam-list">
+				<view v-if="filteredExams.length === (0 as number)" class="empty">
+					<text>没有找到符合条件的考试</text>
+				</view>
+
+				<view v-for="item in filteredExams" :key="item.id" class="exam-card">
+					<view class="card-header">
+						<text class="card-title">{{ item.title }}</text>
+						<text :class="['card-status', 'status-' + item.status]">
+							{{ statusMap[item.status] }}
+						</text>
+					</view>
+
+					<view class="card-info">
+						<view class="info-item">
+							<text class="info-icon">📚</text>
+							<text>{{ item.subject }} · {{ item.type }}</text>
+						</view>
+						<view class="info-item">
+							<text class="info-icon">📅</text>
+							<text>{{ item.startTime }} - {{ item.endTime }}</text>
+						</view>
+						<view class="info-item">
+							<text class="info-icon">📝</text>
+							<text class="info-text">{{ item.questions }}题 · 满分{{ item.totalScore }}分</text>
+						</view>
+					</view>
+
+					<text class="card-desc">{{ item.description }}</text>
+
+					<view class="card-footer">
+						<text class="card-duration">⏱ {{ item.duration }}</text>
+						<button :class="['start-btn', item.status === 'ended' ? 'disabled' : '']"
+							:disabled="item.status === 'ended'" @tap="startExam(item.id)">
+							{{ item.status === 'ended' ? '已结束' :
+		         item.status === 'upcoming' ? '等待开始' : '开始考试' }}
+						</button>
+					</view>
+				</view>
+			</view>
+
+			<!-- 随机3条考试 -->
+			<view class="exam-list">
+				<view v-if="filteredExams.length === (0 as number)" class="empty">
+					<text>没有找到符合条件的考试</text>
+				</view>
+
+				<view v-for="item in filteredExams" :key="item.id" class="exam-card">
+					<view class="card-header">
+						<text class="card-title">{{ item.title }}</text>
+						<text :class="['card-status', 'status-' + item.status]">
+							{{ statusMap[item.status] }}
+						</text>
+					</view>
+
+					<view class="card-info">
+						<view class="info-item">
+							<text class="info-icon">📚</text>
+							<text>{{ item.subject }} · {{ item.type }}</text>
+						</view>
+						<view class="info-item">
+							<text class="info-icon">📅</text>
+							<text>{{ item.startTime }} - {{ item.endTime }}</text>
+						</view>
+						<view class="info-item">
+							<text class="info-icon">📝</text>
+							<text class="info-text">{{ item.questions }}题 · 满分{{ item.totalScore }}分</text>
+						</view>
+					</view>
+
+					<text class="card-desc">{{ item.description }}</text>
+
+					<view class="card-footer">
+						<text class="card-duration">⏱ {{ item.duration }}</text>
+						<button :class="['start-btn', item.status === 'ended' ? 'disabled' : '']"
+							:disabled="item.status === 'ended'" @tap="startExam(item.id)">
+							{{ item.status === 'ended' ? '已结束' :
+		         item.status === 'upcoming' ? '等待开始' : '开始考试' }}
+						</button>
+					</view>
+				</view>
+			</view>
+		</view>
+	</scroll-view>
 </template>
 
 <script setup lang="uts">
+	import { ref, computed } from 'vue'
 
+	type examListType = {
+		id : number
+		title : string
+		type : string
+		subject : string
+		status : string
+		startTime : string
+		endTime : string
+		duration : string
+		description : string
+		questions : number
+		totalScore : number
+	}
+
+	// === 模拟数据 ===
+	const examList = ref<examListType[]>([
+		{
+			id: 1,
+			title: '高等数学期中考试',
+			type: '期中考试',
+			subject: '数学',
+			status: 'active',
+			startTime: '2025-08-15 09:00',
+			endTime: '2025-08-15 11:00',
+			duration: '120分钟',
+			description: '本考试涵盖微积分、线性代数及概率论基础知识，请确保充分准备。',
+			questions: 50,
+			totalScore: 100
+		},
+		{
+			id: 2,
+			title: '大学英语四级模拟',
+			type: '认证考试',
+			subject: '英语',
+			status: 'active',
+			startTime: '2025-08-15 14:00',
+			endTime: '2025-08-15 16:00',
+			duration: '120分钟',
+			description: '模拟大学英语四级考试，包括听力、阅读、写作和翻译部分。',
+			questions: 65,
+			totalScore: 710
+		},
+		{
+			id: 3,
+			title: '物理力学单元测试',
+			type: '小测验',
+			subject: '物理',
+			status: 'upcoming',
+			startTime: '2025-08-16 10:00',
+			endTime: '2025-08-16 11:30',
+			duration: '90分钟',
+			description: '力学单元知识测验，包括牛顿定律、动量守恒和能量守恒等内容。',
+			questions: 30,
+			totalScore: 100
+		},
+		{
+			id: 4,
+			title: '有机化学期末考试',
+			type: '期末考试',
+			subject: '化学',
+			status: 'ended',
+			startTime: '2025-08-10 09:00',
+			endTime: '2025-08-10 11:30',
+			duration: '150分钟',
+			description: '有机化学期末考试，涵盖所有有机化学反应类型和机理。',
+			questions: 45,
+			totalScore: 100
+		}
+	])
+
+	// === 筛选逻辑 ===
+	const typeOptions = ['期中考试', '期末考试', '小测验', '认证考试']
+	const subjectOptions = ['数学', '英语', '物理', '化学', '生物', '历史']
+	const statusOptions = ['active', 'upcoming', 'ended']
+	const statusMap = { active: '进行中', upcoming: '即将开始', ended: '已结束' }
+
+	const selectedType = ref('')
+	const selectedSubject = ref('')
+	const selectedStatus = ref('')
+
+	const typeText = computed(() => selectedType.value)
+	const subjectText = computed(() => selectedSubject.value)
+	const statusText = computed(() => statusMap[selectedStatus.value as 'ended']!)
+
+	const filteredExams = computed(() : Array<examListType> => {
+		return examList.value.filter((item : examListType) : boolean => {
+			return (selectedType.value === '' || item.type === selectedType.value) &&
+				(selectedSubject.value === '' || item.subject === selectedSubject.value) &&
+				(selectedStatus.value === '' || item.status === selectedStatus.value)
+		})
+	})
+
+	function filterExams() {
+		// 触发 computed 重新计算即可
+	}
+
+	// === 开始考试 ===
+	function startExam(id : number) {
+		uni.showToast({ title: `即将进入考试 #${id}`, icon: 'none' })
+	}
 </script>
 
 <style>
+	/* ===== appx 兼容样式 ===== */
+	.page-scroll {
+		display: flex;
+		flex-direction: column;
+		background-color: #f9f9ff;
+		flex: 1;
+	}
 
+	/* === 顶部 === */
+	.header {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		padding-top: 24rpx;
+		padding-right: 32rpx;
+		padding-bottom: 24rpx;
+		padding-left: 32rpx;
+		background-color: #3a397a;
+	}
+
+	.user-name {
+		font-size: 28rpx;
+		color: #ffffff;
+	}
+
+	/* === 主体 === */
+	.main {
+		padding-top: 32rpx;
+		padding-right: 32rpx;
+		padding-bottom: 32rpx;
+		padding-left: 32rpx;
+	}
+
+	.page-title {
+		margin-top: 0;
+		margin-right: 0;
+		margin-bottom: 32rpx;
+		margin-left: 0;
+		font-size: 44rpx;
+		font-weight: 700;
+		color: #3a397a;
+	}
+
+	/* === 筛选栏 === */
+	.filters {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		padding-top: 24rpx;
+		padding-right: 24rpx;
+		padding-bottom: 24rpx;
+		padding-left: 24rpx;
+		margin-top: 0;
+		margin-right: 0;
+		margin-bottom: 32rpx;
+		margin-left: 0;
+		background-color: #ffffff;
+		border-top-left-radius: 16rpx;
+		border-top-right-radius: 16rpx;
+		border-bottom-right-radius: 16rpx;
+		border-bottom-left-radius: 16rpx;
+	}
+
+	.filter-item {
+		display: flex;
+		flex-direction: column;
+		min-width: 200rpx;
+	}
+
+	.filter-label {
+		font-size: 24rpx;
+		color: #777777;
+	}
+
+	.filter-value {
+		font-size: 28rpx;
+		color: #333333;
+	}
+
+	.search-btn {
+		align-self: flex-end;
+		padding-top: 16rpx;
+		padding-right: 32rpx;
+		padding-bottom: 16rpx;
+		padding-left: 32rpx;
+		background-color: #3a397a;
+		color: #ffffff;
+		border-top-left-radius: 8rpx;
+		border-top-right-radius: 8rpx;
+		border-bottom-right-radius: 8rpx;
+		border-bottom-left-radius: 8rpx;
+		font-size: 28rpx;
+	}
+
+	.exam-main {
+		padding: 30rpx;
+	}
+
+	/* === 考试卡片 === */
+	.exam-list {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.exam-card {
+		padding-top: 32rpx;
+		padding-right: 32rpx;
+		padding-bottom: 32rpx;
+		padding-left: 32rpx;
+		margin-top: 0;
+		margin-right: 0;
+		margin-bottom: 24rpx;
+		margin-left: 0;
+		background-color: #ffffff;
+		border-left-width: 8rpx;
+		border-left-style: solid;
+		border-left-color: #3a397a;
+		border-top-left-radius: 16rpx;
+		border-top-right-radius: 16rpx;
+		border-bottom-right-radius: 16rpx;
+		border-bottom-left-radius: 16rpx;
+	}
+
+	.card-header {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		margin-top: 0;
+		margin-right: 0;
+		margin-bottom: 16rpx;
+		margin-left: 0;
+	}
+
+	.card-title {
+		font-size: 32rpx;
+		font-weight: 700;
+		color: #3a397a;
+	}
+
+	.card-status {
+		padding-top: 4rpx;
+		padding-right: 12rpx;
+		padding-bottom: 4rpx;
+		padding-left: 12rpx;
+		border-top-left-radius: 20rpx;
+		border-top-right-radius: 20rpx;
+		border-bottom-right-radius: 20rpx;
+		border-bottom-left-radius: 20rpx;
+		font-size: 24rpx;
+	}
+
+	.status-active {
+		background-color: #e6f7e6;
+		color: #2e7d32;
+	}
+
+	.status-upcoming {
+		background-color: #fff8e1;
+		color: #ff8f00;
+	}
+
+	.status-ended {
+		background-color: #fbe9e7;
+		color: #d84315;
+	}
+
+	.card-info {
+		margin-top: 0;
+		margin-right: 0;
+		margin-bottom: 16rpx;
+		margin-left: 0;
+	}
+
+	.info-item {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-top: 0;
+		margin-right: 0;
+		margin-bottom: 8rpx;
+		margin-left: 0;
+	}
+
+	.info-text {
+		font-size: 28rpx;
+		color: #777777;
+	}
+
+	.info-icon {
+		margin-top: 0;
+		margin-right: 8rpx;
+		margin-bottom: 0;
+		margin-left: 0;
+	}
+
+	.card-desc {
+		font-size: 28rpx;
+		color: #777777;
+		margin-top: 0;
+		margin-right: 0;
+		margin-bottom: 24rpx;
+		margin-left: 0;
+	}
+
+	.card-footer {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.card-duration {
+		font-size: 28rpx;
+		color: #777777;
+	}
+
+	.start-btn {
+		padding-top: 16rpx;
+		padding-right: 32rpx;
+		padding-bottom: 16rpx;
+		padding-left: 32rpx;
+		background-color: #3a397a;
+		color: #ffffff;
+		border-top-left-radius: 8rpx;
+		border-top-right-radius: 8rpx;
+		border-bottom-right-radius: 8rpx;
+		border-bottom-left-radius: 8rpx;
+		font-size: 28rpx;
+	}
+
+	.start-btn.disabled {
+		background-color: #cccccc;
+	}
+
+	/* === 空列表提示 === */
+	.empty {
+		padding-top: 64rpx;
+		padding-right: 64rpx;
+		padding-bottom: 64rpx;
+		padding-left: 64rpx;
+		text-align: center;
+		color: #777777;
+	}
+
+	/* === 分页占位 === */
+	.pagination {
+		margin-top: 32rpx;
+		margin-right: 0;
+		margin-bottom: 0;
+		margin-left: 0;
+		text-align: center;
+		font-size: 28rpx;
+		color: #777777;
+	}
 </style>

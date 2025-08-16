@@ -1,428 +1,389 @@
+<!-- answer-card.uvue -->
 <template>
-	<view class="main">
-		<!-- #ifdef APP -->
-		<scroll-view class="scroll-view" scroll-y="true">
-		<!-- #endif -->
-
-			<view class="logo">
-				<view class="img">
-					<image src="@/static/logo.png" mode="widthFix" class="image"></image>
+	<scroll-view class="page">
+		<!-- 头部信息 -->
+		<view class="header">
+			<view class="title-row">
+				<text class="title">📝 前端开发工程师认证考试</text>
+			</view>
+			<view class="info-row">
+				<text class="info-row-text">考试时间: 120分钟</text>
+				<text class="info-row-text">剩余时间: 01:38:24</text>
+			</view>
+			<view class="progress-wrap">
+				<view class="progress-bar">
+					<view class="progress-fill" :style="{ width: progress + '%' }" />
+				</view>
+				<view class="progress-info">
+					<text class="progress-info-text">已完成 {{ progress }}%</text>
+					<text class="progress-info-text">{{ answered }}/{{ total }} 题</text>
 				</view>
 			</view>
+		</view>
 
-			<view class="indicator">
-				<view class="head">
-					<text class="tag">第 {{current+1}}/{{data.length}} 题</text>
-					<text class="countdown">{{countdown}}</text>
-				</view>
-				<scroll-view :scroll-y="true" :class="['indicator-box', {'open':open}]" :scroll-top="scrollTop"
-					:show-scrollbar="true">
-					<button @click="indicator_handleClick(index)"
-						:class="['page-item',current == index?'con':'', index < 5?'first-row':'',index % 5 == 0?'first-col':'', item.select !== ''?'done':'']"
-						v-for="(item, index) in data" :key="index" :plain="true"
-						hover-class="page-item-hover">{{index + 1}}</button>
-				</scroll-view>
-				<view class="open-box">
-					<button class="open" :type="open ? 'primary' : 'default'" @click="open = !open"></button>
-				</view>
+		<!-- 答题卡：可展开收起 -->
+		<view class="card">
+			<view class="card-header" @tap="toggleExpand">
+				<text class="card-title">🔢 答题卡</text>
+				<text class="arrow" :class="{ up: expanded }">▼</text>
 			</view>
 
-			<view class="paper" v-if="data.length">
-
-				<text class="title">
-					{{data[current].name}}
-				</text>
-				<view class="select-box">
-					<view :class="['item', {'selected':data[current].select.includes(item)}]"
-						v-for="(item, index) in data[current].options" :key="index"
-						@click="selectItem_handleClick(item)">
-						<text :class="['serial',{'selected':data[current].select.includes(item)}]"
-							v-if="isSerial">{{serialStr.split('')[index]}}.</text>
-						<text :class="['content',{'selected':data[current].select.includes(item)}]">
-							{{item}}
-						</text>
+			<view v-if="expanded" class="card-body">
+				<view class="grid">
+					<view v-for="(item, idx) in total" :key="idx" class="btn"
+						:class="{ current: idx + 1 === current, answered: isAnswered(idx + 1) }" @tap="jump(idx + 1)">
+						<text class="btn-text">{{ item }}</text>
 					</view>
 				</view>
 			</view>
+		</view>
 
-			<view class="foot">
-				<button :class="['btn', {'disabled':current==0}]" hover-class="btn-hover" @click="handlePrev"
-					:plain='true' :disabled="current==0">上一题</button>
-				<button class="btn" v-if="current < data.length - 1" hover-class="btn-hover" @click="handleNext"
-					:plain='true'>下一题</button>
-				<button :class="[' btn', 'submit' , {'disabled':(!data.every((o):boolean=>o.select!==''))}]" v-else
-					hover-class="submit-hover" @click="handleSubmit" :plain='true'>提交</button>
+		<!-- 题目区域 -->
+		<view class="question-card">
+			<view class="question-header">
+				<text class="type">单选题</text>
+				<text class="score">本题分值: 5分</text>
+			</view>
+			<text class="question-text">
+				{{ current }}. {{ stem }}
+			</text>
+
+			<!-- 选项 -->
+			<view class="options">
+				<view v-for="(opt, idx) in options" :key="idx" class="option"
+					:class="{ selected: userAnswer === optKey[idx] }" @tap="select(optKey[idx])">
+					<view class="marker">
+						<text class="marker-text">
+							{{ optKey[idx] }}
+						</text>
+					</view>
+					<text class="text">{{ opt }}</text>
+				</view>
 			</view>
 
-			<view class="bottom-height"></view>
-		<!-- #ifdef APP -->
-		</scroll-view>
-		<!-- #endif -->
-	</view>
-
+			<!-- 底部按钮 -->
+			<view class="footer">
+				<button class="custom-btn btn-prev" @tap="prev">上一题</button>
+				<button v-if="current < total" class="custom-btn btn-next" @tap="next">下一题</button>
+				<button v-else class="custom-btn btn-submit" @tap="submit">提交试卷</button>
+			</view>
+		</view>
+	</scroll-view>
 </template>
 
 <script setup lang="uts">
-	import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
-	import { DataType, dataList } from '@/pages/simulate/data.uts'
+	import { ref, computed } from 'vue'
 
-	// 题目列表
-	const data = ref<DataType[]>([])
+	// 基础数据
+	const total = 50 // 题目总数
+	const current = ref(1)
+	const answered = ref(12) // 已答
+	const progress = computed(() => Math.round((answered.value / total) * 100))
+	const userAnswer = ref('') // 当前题答案
 
-	// 当前页数
-	const current = ref<number>(0)
-
-	// 分页器是否展开
-	const open = ref<boolean>(false)
-
-	// 指示器滚动高度
-	const scrollTop = ref<number>(0)
-
-	// 倒计时剩余时间 单位ms
-	const countdownTime = ref<number>(0)
-	const countdown = ref<string>("05:59")
-	let interval : number = 0
-
-	// 是否自动排序
-	const isSerial = ref<boolean>(true)
-	const serialStr : string = 'ABCDEFGHIJKLNMOPQRSTUVWXYZ'
-
-	/**
-	 * @description 每切换题目时请求接口更新题的数据
-	 * @param current
-	 */
-	function update(current : number) {
-		console.log('题目下标', current)
-		console.log('题目答案', data.value[current].select)
-		// 请求接口
+	// 展开收起
+	const expanded = ref(false)
+	function toggleExpand() {
+		expanded.value = !expanded.value
 	}
 
-	/**
-	 * @description 提交答题
-	 */
+	// 当前题干 & 选项
+	const stem = ref('在uni-app-x中，以下关于样式的说法哪一项是正确的？')
+	const options = ['支持使用Sass和Less预处理器', '使用标准的CSS语法，但不支持Sass/Less', '只能使用内联样式，不支持外部样式表', '必须使用特定于uni-app-x的样式语言']
+	const optKey = ['A', 'B', 'C', 'D']
+
+	// 模拟历史答题记录
+	const record = ref<Set<number>>(new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]))
+	function isAnswered(no : number) {
+		return record.value.has(no)
+	}
+
+	// 跳转
+	function jump(no : number) {
+		current.value = no
+		userAnswer.value = ''
+	}
+
+	// 选择
+	function select(key : string) {
+		userAnswer.value = key
+		record.value.add(current.value)
+		answered.value = record.value.size
+	}
+
+	// 上一题 / 下一题 / 提交
+	function prev() {
+		if (current.value > 1) {
+			current.value--
+			userAnswer.value = ''
+		}
+	}
+	function next() {
+		if (current.value < total) {
+			current.value++
+			userAnswer.value = ''
+		}
+	}
 	function submit() {
-		console.log('全部数据', data.value)
-		console.log('答案数据', data.value.map((o) => o.select))
-		// 请求接口
-		// 提交后退出页面或者do something
-		// 后端看需求 定时器自动提交
-	}
-
-	// 以上可以自行编辑
-	// -----分 割 线-----
-	// 以下为固定写法 有能力者修改
-
-	function getRemainingTime(milliseconds : number) : string {
-		// 计算剩余时间
-		let seconds = Math.floor(milliseconds / 1000)
-		let minutes = Math.floor(seconds / 60)
-
-		// 格式化为两位数
-		let formattedMinutes = minutes.toString().padStart(2, '0')
-		let formattedSeconds = (seconds % 60).toString().padStart(2, '0')
-
-		// 返回剩余时间格式
-		return `${formattedMinutes}:${formattedSeconds}`
-	}
-
-	function setScrollTop(index : number) {
-		const num = Math.floor(index / 5)
-		scrollTop.value = (54 + 15) * num
-	}
-
-	function handlePrev() {
-		const firstCurrent : number = 0
-		if (current.value === firstCurrent) {
-			current.value = 0
-		} else {
-			current.value = current.value - 1
-		}
-		setScrollTop(current.value)
-	}
-
-	function handleNext() {
-		if (current.value !== data.value.length - 1) {
-			current.value = current.value + 1
-		}
-		setScrollTop(current.value)
-	}
-
-	function handleSubmit() {
 		uni.showModal({
-			title: '温馨提示',
-			content: '您还未答完所有题目,是否确认提交',
-			success: (e) => {
-				if (e.confirm) {
-					console.log('handleSubmit')
-					submit()
+			title: '提示',
+			content: '确认提交试卷？',
+			success: (res) => {
+				if (res.confirm) {
+					uni.showToast({ title: '提交成功', icon: 'success' })
 				}
 			}
 		})
 	}
-
-	function handleClick() {
-		if (current.value < data.value.length - 1) {
-			handleNext()
-		} else {
-			handleSubmit()
-		}
-	}
-
-	function selectItem_handleClick(value : string) {
-		let select : string[] = data.value[current.value].select === '' ? [] : data.value[current.value].select.split(',,')
-		const index : number = select.findIndex((v : string) => v === value)
-		const noFoundIndex : number = -1
-		if (index !== noFoundIndex) {
-			select.splice(index, 1)
-		} else {
-			select.push(value)
-		}
-		data.value[current.value].select = select.join(',,')
-	}
-
-	function indicator_handleClick(index : number) {
-		current.value = index
-	}
-
-	// 初始化数据
-	onMounted(() => {
-		dataList.forEach((item : DataType) => {
-			data.value.push(item)
-		})
-		// countdownTime.value = 后端计算得到的倒计时
-		countdownTime.value = 600 * 1000
-
-		interval = setInterval(() => {
-			if (countdownTime.value < 0) {
-				// 倒计时结束 直接提交
-				submit()
-				clearInterval(interval)
-				return
-			}
-			// 时间格式转换
-			countdown.value = getRemainingTime(countdownTime.value)
-			countdownTime.value -= 200
-		}, 200)
-	})
-
-	// 清理定时器
-	onBeforeUnmount(() => {
-		clearInterval(interval)
-	})
-
-	// 监听current变化
-	watch(current, (_newValue : number, oldValue : number) => {
-		update(oldValue)
-	})
 </script>
 
 <style>
-	.main {
+	/* 仅支持 flex，主题色 #5250b3 */
+	.page {
+		flex-direction: column;
+		padding: 16px;
 		flex: 1;
-		background-image: linear-gradient(#27264b, #3a397a, #201f4c);
+		background-color: #f5f7fa;
 	}
 
-	.main .scroll-view {
-		align-items: center;
-		flex: 1;
+	.header {
+		padding: 16px;
+		background: linear-gradient(135deg, #5250b3 0%, #3a3899 100%);
+		border-radius: 12px;
+		margin-bottom: 16px;
 	}
 
-	.main .logo {
-		margin-top: 50px;
+	.title-row {
+		margin-bottom: 8px;
 	}
 
-	.main .logo .img {
-		width: 200px;
+	.title {
+		color: #444;
+		font-size: 18px;
+		font-weight: 700;
 	}
 
-	.main .logo .img .image {
-		display: flex;
-		width: 100%;
-	}
-
-	.main .indicator {
-		margin: 30px 0 0;
-		width: 360px;
-		border-radius: 10px;
-		padding: 15px;
-		background-color: #fff;
-		box-shadow: 0 0 10px 1px rgba(200, 200, 200, .1);
-	}
-
-	.main .indicator .head {
+	.info-row {
 		flex-direction: row;
 		justify-content: space-between;
-		padding: 8px 10px;
-		background-image: linear-gradient(to right, #b9b8f5, #e3e3fe);
-		border-radius: 6px;
+		margin-bottom: 12px;
 	}
 
-	.main .indicator .head .tag {
-		color: #8180c8;
-		font-weight: bold;
-		font-size: 18px;
+	.info-row-text {
+		color: #444;
+		font-size: 13px;
 	}
 
-	.main .indicator .head .countdown {
-		color: #00d800;
-		font-weight: bold;
-		font-size: 18px;
+	.progress-wrap {
+		margin-top: 5px;
 	}
 
-	.main .indicator .open-box {
-		margin-top: 10px;
-		align-items: center;
+	.progress-bar {
+		height: 6px;
+		width: 100%;
+		background-color: #f5f7fa;
+		border-radius: 3px;
 	}
 
-	.main .indicator .open-box .open {
-		height: 10px;
-		border-radius: 5px;
-		width: 185px;
-		border: 0;
+	.progress-fill {
+		height: 100%;
+		background-color: #5250b3;
+		border-radius: 3px;
 	}
 
-	.main .indicator .indicator-box {
+	.progress-info {
 		flex-direction: row;
-		margin-top: 10px;
-		transition: height .3s;
-		height: 54px;
-		width: 330px;
+		justify-content: space-between;
+		margin-top: 6px;
+	}
+
+	.progress-info-text {
+		font-size: 12px;
+		color: #444;
+	}
+
+	/* 答题卡 */
+	.card {
+		background-color: #fff;
+		border-radius: 12px;
+		margin-bottom: 16px;
+		padding: 0 12px;
+	}
+
+	.card-header {
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		padding: 12px 0;
+	}
+
+	.card-title {
+		font-size: 15px;
+		font-weight: 700;
+		color: #5250b3;
+	}
+
+	.arrow {
+		font-size: 12px;
+		transition: all 0.2s;
+	}
+
+	.arrow.up {
+		transform: rotate(180deg);
+	}
+
+	.card-body {
+		padding-bottom: 12px;
+	}
+
+	.grid {
+		flex-direction: row;
 		flex-wrap: wrap;
 	}
 
-	.main .indicator .indicator-box.open {
-		height: 300px;
-	}
-
-	.main .indicator .indicator-box .page-item-hover {
-		background-color: #ebf5ff;
-	}
-
-	.main .indicator .indicator-box .page-item {
-		width: 54px;
-		height: 54px;
-		border-radius: 8px;
-		line-height: 46px;
-		color: #555;
-		margin-left: 15px;
-		margin-top: 15px;
-		font-size: 18px;
-		box-sizing: border-box;
-		background-color: #ebebff;
-		border: 4px solid #ebebff;
-	}
-
-	.main .indicator .indicator-box .page-item.con {
-		background-color: #bbbaf6;
-		border: 4px solid #87cdff;
-	}
-
-	.main .indicator .indicator-box .page-item.first-col {
-		margin-left: 0;
-	}
-
-	.main .indicator .indicator-box .page-item.first-row {
-		margin-top: 0;
-	}
-
-	.main .paper {
-		margin: 20px 0 0;
-		width: 360px;
-		border-radius: 10px;
-		padding: 15px 25px;
-		background-color: #fff;
-		box-shadow: 0 0 10px 1px rgba(200, 200, 200, .1);
+	.btn {
+		width: 36px;
+		height: 36px;
+		border-radius: 6px;
+		background-color: #f0f2f5;
+		border-width: 1px;
+		border-color: #e4e6eb;
 		align-items: center;
 		justify-content: center;
 	}
 
-	.main .paper .title {
-		margin-top: 10px;
-		font-size: 20px;
-		color: #121113;
-		font-weight: bold;
-		line-height: 32px;
+	.btn-text {
+		font-size: 14px;
+		color: #333;
 	}
 
-	.main .paper .select-box {
-		width: 300px;
-		padding: 1px;
-		margin-top: 10px;
-		transition: height .3s;
+	.btn.answered {
+		background-color: #d0d7ff;
+		border-color: #b8c2ff;
 	}
 
-	.main .paper .select-box .item {
-		margin: 5px 0;
-		align-items: center;
+	.btn.current {
+		background-color: #5250b3;
+		border-color: #5250b3;
+	}
+
+	.btn.current .btn-text {
+		color: #fff;
+	}
+
+	/* 题目卡片 */
+	.question-card {
+		background-color: #fff;
+		border-radius: 12px;
+		padding: 16px;
+	}
+
+	.question-header {
 		flex-direction: row;
-		min-height: 24px;
-		border-radius: 24px;
-		padding: 12px 20px;
-		background-color: #ebebff;
-		transition: background-color .3s;
+		justify-content: space-between;
+		margin-bottom: 16px;
+		padding-bottom: 12px;
+		border-bottom-width: 1px;
+		border-bottom-color: #eee;
 	}
 
-	.main .paper .select-box .item.selected {
+	.type {
+		background-color: #5250b3;
+		color: #fff;
+		padding: 2px 8px;
+		border-radius: 12px;
+		font-size: 12px;
+	}
+
+	.score {
+		color: #ff6b6b;
+		font-size: 13px;
+		font-weight: 700;
+	}
+
+	.question-text {
+		font-size: 16px;
+		line-height: 24px;
+		margin-bottom: 20px;
+	}
+
+	/* 选项 */
+	.options {
+		margin-bottom: 20px;
+	}
+
+	.option {
+		flex-direction: row;
+		align-items: center;
+		padding: 14px;
+		margin-bottom: 10px;
+		border-radius: 8px;
+		background-color: #f9fafc;
+		border-width: 1px;
+		border-color: #e4e6eb;
+	}
+
+	.option.selected {
+		background-color: #f0f3ff;
+		border-color: #b8c2ff;
+	}
+
+	.marker {
+		width: 24px;
+		height: 24px;
+		border-radius: 12px;
+		background-color: #e4e6eb;
+		align-items: center;
+		justify-content: center;
+		margin-right: 12px;
+	}
+
+	.marker-text {
+		font-weight: 700;
+		font-size: 13px;
+	}
+
+	.option.selected .marker {
 		background-color: #5250b3;
 	}
 
-	.main .paper .select-box .item .serial {
-		width: 20px;
-		flex-shrink: 0;
-		text-align: left;
-		color: #6363b7;
-		margin-right: 15px;
-		transition: color .3s;
-	}
-
-	.main .paper .select-box .item .serial.selected {
-		color: #eeeefa;
-	}
-
-	.main .paper .select-box .item .content {
-		flex: 1;
-		line-height: 20px;
-		color: #6363b7;
-		transition: color .3s;
-	}
-
-	.main .paper .select-box .item .content.selected {
-		color: #eeeefa;
-	}
-
-	.main .foot {
-		flex-direction: row;
-		margin: 30px 0;
-	}
-
-	.main .foot .btn {
-		margin: 0 10px;
-		height: 44px;
-		border-radius: 22px;
-		padding: 0 36px;
-		border: 0px;
-		line-height: 44px;
+	.option.selected .marker-text {
 		color: #fff;
-		background-image: linear-gradient(to right, #b8b7f6, #5b5ab6);
 	}
 
-	.main .foot .btn.submit {
-		background-image: linear-gradient(to right, #e96202, #dc0804);
+	.text {
+		font-size: 15px;
+		color: #333;
 	}
 
-	.main .foot .btn.disabled {
-		opacity: .6;
+	/* 底部按钮 */
+	.footer {
+		flex-direction: row;
 	}
 
-	.main .foot .submit-hover {
-		background-image: linear-gradient(to right, #f86401, #ec0602);
+	.custom-btn {
+		flex: 1;
+		padding: 8px 0;
+		border-radius: 8px;
+		font-size: 15px;
+		font-weight: 700;
+		text-align: center;
+		border-width: 0;
 	}
 
-	.main .foot .btn-hover {
-		background-image: linear-gradient(to right, #bebeff, #6b6bd8);
+	.btn-prev {
+		background-color: #f0f2f5;
+		color: #606266;
+		margin-right: 5px;
 	}
 
-	.main .bottom-height {
-		height: 30px;
+	.btn-next {
+		background-color: #5250b3;
+		color: #fff;
+	}
+
+	.btn-submit {
+		background: linear-gradient(135deg, #5250b3 0%, #3a3899 100%);
+		color: #fff;
 	}
 </style>

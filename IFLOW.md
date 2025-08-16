@@ -156,3 +156,88 @@ assets/
 - Global styles: `uni.scss` contains UniApp design tokens
 - Component styles: Use scoped styles in `.uvue` files
 - Theme colors: Primary color is `#3a397a` throughout the app
+
+## Project Structure Overview
+
+### Frontend Pages
+1. **Home Page** (`pages/index/index.uvue`)
+   - Entry point with navigation to dynamic or simulate modes
+   - Simple UI with two main action buttons
+
+2. **Dynamic Mode** (`pages/dynamic/index.uvue`)
+   - Full backend integration with UniCloud
+   - User authentication (login/registration)
+   - Exam listing with status indicators
+   - Statistics dashboard for user's exams
+
+3. **Simulate Mode** (`pages/simulate/index.uvue`)
+   - Static data loading for testing
+   - Complete exam interface with timer
+   - Question navigation and answer selection
+   - Submission handling
+
+4. **Answer Page** (`pages/dynamic/answer.uvue`)
+   - Exam answering interface for dynamic mode
+   - Question display with options
+   - Answer tracking and navigation
+   - Progress indicators and submission
+
+### Backend Architecture
+The backend is implemented using UniCloud cloud functions with a MongoDB-like database:
+
+1. **User Management** (`appx-template-exam-users`)
+   - Registration and authentication
+   - User profile management
+   - Password encryption with SHA256
+
+2. **Exam Management** (`appx-template-exam-exams`)
+   - Exam creation, update, and deletion
+   - Exam listing with filtering and pagination
+   - Status management (未开始, 进行中, 已结束)
+
+3. **Question Management** (`appx-template-exam-questions`)
+   - Question CRUD operations
+   - Support for different question types (单选, 多选)
+   - Answer validation
+
+4. **Answer Records** (`appx-template-exam-records`)
+   - Tracking user answers
+   - Score calculation
+   - Historical data queries
+
+5. **User-Exam Relationships** (`appx-template-exam-user-exams`)
+   - Tracks which users are enrolled in which exams
+   - Manages exam access permissions
+
+### Data Flow Patterns
+1. **Static Mode Flow**:
+   - Load questions from `pages/simulate/data.uts`
+   - Display questions in exam interface
+   - Track answers locally
+   - Submit answers (to console in template)
+
+2. **Dynamic Mode Flow**:
+   - User authentication via cloud functions
+   - Fetch exams and user statistics from backend
+   - Load questions for selected exam
+   - Track answers and submit to backend
+   - Store results in database
+
+### Component Architecture
+1. **UI Components**:
+   - Exam cards with status indicators
+   - Question display with options
+   - Answer tracking interface
+   - Progress indicators
+   - Authentication forms
+
+2. **State Management**:
+   - Reactive state with Vue 3 Composition API
+   - Local state for UI interactions
+   - Global state for user authentication
+   - Exam progress tracking
+
+3. **API Integration**:
+   - Wrapper functions in `assets/api/`
+   - Type definitions in `assets/type/`
+   - Cloud function calls via `uniCloud.callFunction`

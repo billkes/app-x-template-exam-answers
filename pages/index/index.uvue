@@ -11,11 +11,11 @@
 			<view class="btn btn-primary" hover-class="btn-hover" @click="navigateTo('dynamic')">
 				<text class="btn-text">接入后台管理</text>
 			</view>
-			<view class="btn btn-secondary" hover-class="btn-hover" @click="navigateTo('simulate')">
-				<text class="btn-text">模拟数据加载1</text>
+			<view class="btn btn-secondary" hover-class="btn-hover" @click="navigateTo('simulate-v4')">
+				<text class="btn-text">模拟数据加载-v4版本</text>
 			</view>
-			<view class="btn btn-secondary" hover-class="btn-hover" @click="navigateTo('simulate')">
-				<text class="btn-text">模拟数据加载2</text>
+			<view class="btn btn-secondary" hover-class="btn-hover" @click="navigateTo('simulate-v5')">
+				<text class="btn-text">模拟数据加载-v5版本</text>
 			</view>
 		</view>
 	</view>
@@ -28,8 +28,11 @@
 			case "dynamic":
 				uni.navigateTo({ url: "/pages/dynamic/index" })
 				break
-			case "simulate":
-				uni.navigateTo({ url: "/pages/simulate/index" })
+			case "simulate-v4":
+				uni.navigateTo({ url: "/pages/simulate/index-v4" })
+				break
+			case "simulate-v5":
+				uni.navigateTo({ url: "/pages/simulate/index-v5" })
 				break
 		}
 	}

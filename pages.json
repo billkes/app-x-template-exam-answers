@@ -21,13 +21,13 @@
 		{
 			"path": "pages/simulate/index-v4",
 			"style": {
-				"navigationBarTitleText": "静态数据加载v4"
+				"navigationBarTitleText": "静态数据加载-v4版本"
 			}
 		},
 		{
 			"path": "pages/simulate/index-v5",
 			"style": {
-				"navigationBarTitleText": "静态数据加载v5"
+				"navigationBarTitleText": "静态数据加载v5版本"
 			}
 		}
 	],

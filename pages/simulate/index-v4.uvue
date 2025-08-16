@@ -1,22 +1,428 @@
 <template>
-	<view>
-		
+	<view class="main">
+		<!-- #ifdef APP -->
+		<scroll-view class="scroll-view" scroll-y="true">
+		<!-- #endif -->
+
+			<view class="logo">
+				<view class="img">
+					<image src="@/static/logo.png" mode="widthFix" class="image"></image>
+				</view>
+			</view>
+
+			<view class="indicator">
+				<view class="head">
+					<text class="tag">第 {{current+1}}/{{data.length}} 题</text>
+					<text class="countdown">{{countdown}}</text>
+				</view>
+				<scroll-view :scroll-y="true" :class="['indicator-box', {'open':open}]" :scroll-top="scrollTop"
+					:show-scrollbar="true">
+					<button @click="indicator_handleClick(index)"
+						:class="['page-item',current == index?'con':'', index < 5?'first-row':'',index % 5 == 0?'first-col':'', item.select !== ''?'done':'']"
+						v-for="(item, index) in data" :key="index" :plain="true"
+						hover-class="page-item-hover">{{index + 1}}</button>
+				</scroll-view>
+				<view class="open-box">
+					<button class="open" :type="open ? 'primary' : 'default'" @click="open = !open"></button>
+				</view>
+			</view>
+
+			<view class="paper" v-if="data.length">
+
+				<text class="title">
+					{{data[current].name}}
+				</text>
+				<view class="select-box">
+					<view :class="['item', {'selected':data[current].select.includes(item)}]"
+						v-for="(item, index) in data[current].options" :key="index"
+						@click="selectItem_handleClick(item)">
+						<text :class="['serial',{'selected':data[current].select.includes(item)}]"
+							v-if="isSerial">{{serialStr.split('')[index]}}.</text>
+						<text :class="['content',{'selected':data[current].select.includes(item)}]">
+							{{item}}
+						</text>
+					</view>
+				</view>
+			</view>
+
+			<view class="foot">
+				<button :class="['btn', {'disabled':current==0}]" hover-class="btn-hover" @click="handlePrev"
+					:plain='true' :disabled="current==0">上一题</button>
+				<button class="btn" v-if="current < data.length - 1" hover-class="btn-hover" @click="handleNext"
+					:plain='true'>下一题</button>
+				<button :class="[' btn', 'submit' , {'disabled':(!data.every((o):boolean=>o.select!==''))}]" v-else
+					hover-class="submit-hover" @click="handleSubmit" :plain='true'>提交</button>
+			</view>
+
+			<view class="bottom-height"></view>
+		<!-- #ifdef APP -->
+		</scroll-view>
+		<!-- #endif -->
 	</view>
+
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-				
+<script setup lang="uts">
+	import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
+	import { DataType, dataList } from '@/pages/simulate/data.uts'
+
+	// 题目列表
+	const data = ref<DataType[]>([])
+
+	// 当前页数
+	const current = ref<number>(0)
+
+	// 分页器是否展开
+	const open = ref<boolean>(false)
+
+	// 指示器滚动高度
+	const scrollTop = ref<number>(0)
+
+	// 倒计时剩余时间 单位ms
+	const countdownTime = ref<number>(0)
+	const countdown = ref<string>("05:59")
+	let interval : number = 0
+
+	// 是否自动排序
+	const isSerial = ref<boolean>(true)
+	const serialStr : string = 'ABCDEFGHIJKLNMOPQRSTUVWXYZ'
+
+	/**
+	 * @description 每切换题目时请求接口更新题的数据
+	 * @param current
+	 */
+	function update(current : number) {
+		console.log('题目下标', current)
+		console.log('题目答案', data.value[current].select)
+		// 请求接口
+	}
+
+	/**
+	 * @description 提交答题
+	 */
+	function submit() {
+		console.log('全部数据', data.value)
+		console.log('答案数据', data.value.map((o) => o.select))
+		// 请求接口
+		// 提交后退出页面或者do something
+		// 后端看需求 定时器自动提交
+	}
+
+	// 以上可以自行编辑
+	// -----分 割 线-----
+	// 以下为固定写法 有能力者修改
+
+	function getRemainingTime(milliseconds : number) : string {
+		// 计算剩余时间
+		let seconds = Math.floor(milliseconds / 1000)
+		let minutes = Math.floor(seconds / 60)
+
+		// 格式化为两位数
+		let formattedMinutes = minutes.toString().padStart(2, '0')
+		let formattedSeconds = (seconds % 60).toString().padStart(2, '0')
+
+		// 返回剩余时间格式
+		return `${formattedMinutes}:${formattedSeconds}`
+	}
+
+	function setScrollTop(index : number) {
+		const num = Math.floor(index / 5)
+		scrollTop.value = (54 + 15) * num
+	}
+
+	function handlePrev() {
+		const firstCurrent : number = 0
+		if (current.value === firstCurrent) {
+			current.value = 0
+		} else {
+			current.value = current.value - 1
+		}
+		setScrollTop(current.value)
+	}
+
+	function handleNext() {
+		if (current.value !== data.value.length - 1) {
+			current.value = current.value + 1
+		}
+		setScrollTop(current.value)
+	}
+
+	function handleSubmit() {
+		uni.showModal({
+			title: '温馨提示',
+			content: '您还未答完所有题目,是否确认提交',
+			success: (e) => {
+				if (e.confirm) {
+					console.log('handleSubmit')
+					submit()
+				}
 			}
-		},
-		methods: {
-			
+		})
+	}
+
+	function handleClick() {
+		if (current.value < data.value.length - 1) {
+			handleNext()
+		} else {
+			handleSubmit()
 		}
 	}
+
+	function selectItem_handleClick(value : string) {
+		let select : string[] = data.value[current.value].select === '' ? [] : data.value[current.value].select.split(',,')
+		const index : number = select.findIndex((v : string) => v === value)
+		const noFoundIndex : number = -1
+		if (index !== noFoundIndex) {
+			select.splice(index, 1)
+		} else {
+			select.push(value)
+		}
+		data.value[current.value].select = select.join(',,')
+	}
+
+	function indicator_handleClick(index : number) {
+		current.value = index
+	}
+
+	// 初始化数据
+	onMounted(() => {
+		dataList.forEach((item : DataType) => {
+			data.value.push(item)
+		})
+		// countdownTime.value = 后端计算得到的倒计时
+		countdownTime.value = 600 * 1000
+
+		interval = setInterval(() => {
+			if (countdownTime.value < 0) {
+				// 倒计时结束 直接提交
+				submit()
+				clearInterval(interval)
+				return
+			}
+			// 时间格式转换
+			countdown.value = getRemainingTime(countdownTime.value)
+			countdownTime.value -= 200
+		}, 200)
+	})
+
+	// 清理定时器
+	onBeforeUnmount(() => {
+		clearInterval(interval)
+	})
+
+	// 监听current变化
+	watch(current, (_newValue : number, oldValue : number) => {
+		update(oldValue)
+	})
 </script>
 
 <style>
+	.main {
+		flex: 1;
+		background-image: linear-gradient(#27264b, #3a397a, #201f4c);
+	}
 
+	.main .scroll-view {
+		align-items: center;
+		flex: 1;
+	}
+
+	.main .logo {
+		margin-top: 50px;
+	}
+
+	.main .logo .img {
+		width: 200px;
+	}
+
+	.main .logo .img .image {
+		display: flex;
+		width: 100%;
+	}
+
+	.main .indicator {
+		margin: 30px 0 0;
+		width: 360px;
+		border-radius: 10px;
+		padding: 15px;
+		background-color: #fff;
+		box-shadow: 0 0 10px 1px rgba(200, 200, 200, .1);
+	}
+
+	.main .indicator .head {
+		flex-direction: row;
+		justify-content: space-between;
+		padding: 8px 10px;
+		background-image: linear-gradient(to right, #b9b8f5, #e3e3fe);
+		border-radius: 6px;
+	}
+
+	.main .indicator .head .tag {
+		color: #8180c8;
+		font-weight: bold;
+		font-size: 18px;
+	}
+
+	.main .indicator .head .countdown {
+		color: #00d800;
+		font-weight: bold;
+		font-size: 18px;
+	}
+
+	.main .indicator .open-box {
+		margin-top: 10px;
+		align-items: center;
+	}
+
+	.main .indicator .open-box .open {
+		height: 10px;
+		border-radius: 5px;
+		width: 185px;
+		border: 0;
+	}
+
+	.main .indicator .indicator-box {
+		flex-direction: row;
+		margin-top: 10px;
+		transition: height .3s;
+		height: 54px;
+		width: 330px;
+		flex-wrap: wrap;
+	}
+
+	.main .indicator .indicator-box.open {
+		height: 300px;
+	}
+
+	.main .indicator .indicator-box .page-item-hover {
+		background-color: #ebf5ff;
+	}
+
+	.main .indicator .indicator-box .page-item {
+		width: 54px;
+		height: 54px;
+		border-radius: 8px;
+		line-height: 46px;
+		color: #555;
+		margin-left: 15px;
+		margin-top: 15px;
+		font-size: 18px;
+		box-sizing: border-box;
+		background-color: #ebebff;
+		border: 4px solid #ebebff;
+	}
+
+	.main .indicator .indicator-box .page-item.con {
+		background-color: #bbbaf6;
+		border: 4px solid #87cdff;
+	}
+
+	.main .indicator .indicator-box .page-item.first-col {
+		margin-left: 0;
+	}
+
+	.main .indicator .indicator-box .page-item.first-row {
+		margin-top: 0;
+	}
+
+	.main .paper {
+		margin: 20px 0 0;
+		width: 360px;
+		border-radius: 10px;
+		padding: 15px 25px;
+		background-color: #fff;
+		box-shadow: 0 0 10px 1px rgba(200, 200, 200, .1);
+		align-items: center;
+		justify-content: center;
+	}
+
+	.main .paper .title {
+		margin-top: 10px;
+		font-size: 20px;
+		color: #121113;
+		font-weight: bold;
+		line-height: 32px;
+	}
+
+	.main .paper .select-box {
+		width: 300px;
+		padding: 1px;
+		margin-top: 10px;
+		transition: height .3s;
+	}
+
+	.main .paper .select-box .item {
+		margin: 5px 0;
+		align-items: center;
+		flex-direction: row;
+		min-height: 24px;
+		border-radius: 24px;
+		padding: 12px 20px;
+		background-color: #ebebff;
+		transition: background-color .3s;
+	}
+
+	.main .paper .select-box .item.selected {
+		background-color: #5250b3;
+	}
+
+	.main .paper .select-box .item .serial {
+		width: 20px;
+		flex-shrink: 0;
+		text-align: left;
+		color: #6363b7;
+		margin-right: 15px;
+		transition: color .3s;
+	}
+
+	.main .paper .select-box .item .serial.selected {
+		color: #eeeefa;
+	}
+
+	.main .paper .select-box .item .content {
+		flex: 1;
+		line-height: 20px;
+		color: #6363b7;
+		transition: color .3s;
+	}
+
+	.main .paper .select-box .item .content.selected {
+		color: #eeeefa;
+	}
+
+	.main .foot {
+		flex-direction: row;
+		margin: 30px 0;
+	}
+
+	.main .foot .btn {
+		margin: 0 10px;
+		height: 44px;
+		border-radius: 22px;
+		padding: 0 36px;
+		border: 0px;
+		line-height: 44px;
+		color: #fff;
+		background-image: linear-gradient(to right, #b8b7f6, #5b5ab6);
+	}
+
+	.main .foot .btn.submit {
+		background-image: linear-gradient(to right, #e96202, #dc0804);
+	}
+
+	.main .foot .btn.disabled {
+		opacity: .6;
+	}
+
+	.main .foot .submit-hover {
+		background-image: linear-gradient(to right, #f86401, #ec0602);
+	}
+
+	.main .foot .btn-hover {
+		background-image: linear-gradient(to right, #bebeff, #6b6bd8);
+	}
+
+	.main .bottom-height {
+		height: 30px;
+	}
 </style>

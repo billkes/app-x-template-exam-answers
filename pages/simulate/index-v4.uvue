@@ -1,65 +1,73 @@
 <template>
-	<view class="main">
-		<!-- #ifdef APP -->
-		<scroll-view class="scroll-view" scroll-y="true">
-		<!-- #endif -->
+	<view class="exam-container">
+		<scroll-view class="scroll-view">
 
-			<view class="logo">
-				<view class="img">
-					<image src="@/static/logo.png" mode="widthFix" class="image"></image>
+			<view class="header-section">
+				<view class="progress-info">
+					<text class="question-counter">第 {{current+1}}/{{data.length}} 题</text>
+					<text class="timer">{{countdown}}</text>
 				</view>
 			</view>
 
-			<view class="indicator">
-				<view class="head">
-					<text class="tag">第 {{current+1}}/{{data.length}} 题</text>
-					<text class="countdown">{{countdown}}</text>
+			<view class="question-indicator">
+				<view class="indicator-header">
+					<text class="indicator-title">答题卡</text>
+					<view class="toggle-button" @click="open = !open">
+						<text class="toggle-icon">{{ open ? '收起' : '展开' }}</text>
+					</view>
 				</view>
-				<scroll-view :scroll-y="true" :class="['indicator-box', {'open':open}]" :scroll-top="scrollTop"
-					:show-scrollbar="true">
-					<button @click="indicator_handleClick(index)"
-						:class="['page-item',current == index?'con':'', index < 5?'first-row':'',index % 5 == 0?'first-col':'', item.select !== ''?'done':'']"
-						v-for="(item, index) in data" :key="index" :plain="true"
-						hover-class="page-item-hover">{{index + 1}}</button>
+
+				<scroll-view :class="['indicator-grid', {'expanded': open}]" :scroll-top="scrollTop"
+					:show-scrollbar="false">
+					<view @click="indicator_handleClick(index)"
+						:class="current === index ? 'question-item-current' : item.select !== '' ? 'question-item-answered' : 'question-item'"
+						v-for="(item, index: number) in data" :key="index">
+						<text
+							:class="current === index ? 'question-number-current' : item.select !== '' ? 'question-number-answered' : 'question-number'">{{index + 1}}</text>
+					</view>
 				</scroll-view>
-				<view class="open-box">
-					<button class="open" :type="open ? 'primary' : 'default'" @click="open = !open"></button>
-				</view>
 			</view>
 
-			<view class="paper" v-if="data.length">
+			<view class="question-section" v-if="data.length">
+				<view class="question-content">
+					<text class="question-title">
+						{{current+1}}. {{data[current].name}}
+					</text>
 
-				<text class="title">
-					{{data[current].name}}
-				</text>
-				<view class="select-box">
-					<view :class="['item', {'selected':data[current].select.includes(item)}]"
-						v-for="(item, index) in data[current].options" :key="index"
-						@click="selectItem_handleClick(item)">
-						<text :class="['serial',{'selected':data[current].select.includes(item)}]"
-							v-if="isSerial">{{serialStr.split('')[index]}}.</text>
-						<text :class="['content',{'selected':data[current].select.includes(item)}]">
-							{{item}}
-						</text>
+					<view class="options-container">
+						<view :class="['option-item', {'selected':data[current].select.includes(item)}]"
+							v-for="(item, index) in data[current].options" :key="index"
+							@click="selectItem_handleClick(item)">
+							<text :class="['option-label', {'selected':data[current].select.includes(item)}]">
+								{{serialStr.split('')[index]}}.
+							</text>
+							<text :class="['option-text', {'selected':data[current].select.includes(item)}]">
+								{{item}}
+							</text>
+						</view>
 					</view>
 				</view>
 			</view>
 
-			<view class="foot">
-				<button :class="['btn', {'disabled':current==0}]" hover-class="btn-hover" @click="handlePrev"
-					:plain='true' :disabled="current==0">上一题</button>
-				<button class="btn" v-if="current < data.length - 1" hover-class="btn-hover" @click="handleNext"
-					:plain='true'>下一题</button>
-				<button :class="[' btn', 'submit' , {'disabled':(!data.every((o):boolean=>o.select!==''))}]" v-else
-					hover-class="submit-hover" @click="handleSubmit" :plain='true'>提交</button>
+			<view class="navigation-buttons">
+				<button :class="['nav-button', 'prev-button', {'disabled':current==0}]" @click="handlePrev"
+					:disabled="current==0">
+					上一题
+				</button>
+
+				<button :class="['nav-button', 'next-button']" v-if="current < data.length - 1" @click="handleNext">
+					下一题
+				</button>
+
+				<button :class="['nav-button', 'submit-button', {'disabled':(!data.every((o):boolean=>o.select!==''))}]"
+					v-else @click="handleSubmit">
+					提交答卷
+				</button>
 			</view>
 
-			<view class="bottom-height"></view>
-		<!-- #ifdef APP -->
+			<view class="spacer"></view>
 		</scroll-view>
-		<!-- #endif -->
 	</view>
-
 </template>
 
 <script setup lang="uts">
@@ -73,14 +81,14 @@
 	const current = ref<number>(0)
 
 	// 分页器是否展开
-	const open = ref<boolean>(false)
+	const open = ref<boolean>(true)
 
 	// 指示器滚动高度
 	const scrollTop = ref<number>(0)
 
 	// 倒计时剩余时间 单位ms
 	const countdownTime = ref<number>(0)
-	const countdown = ref<string>("05:59")
+	const countdown = ref<string>("10:00")
 	let interval : number = 0
 
 	// 是否自动排序
@@ -127,7 +135,7 @@
 
 	function setScrollTop(index : number) {
 		const num = Math.floor(index / 5)
-		scrollTop.value = (54 + 15) * num
+		scrollTop.value = (70 + 20) * num
 	}
 
 	function handlePrev() {
@@ -149,8 +157,8 @@
 
 	function handleSubmit() {
 		uni.showModal({
-			title: '温馨提示',
-			content: '您还未答完所有题目,是否确认提交',
+			title: '确认提交',
+			content: '确认提交答卷吗？提交后无法修改',
 			success: (e) => {
 				if (e.confirm) {
 					console.log('handleSubmit')
@@ -217,212 +225,254 @@
 </script>
 
 <style>
-	.main {
+	.exam-container {
 		flex: 1;
-		background-image: linear-gradient(#27264b, #3a397a, #201f4c);
+		background-color: #f5f7fa;
+		padding: 20rpx;
 	}
 
-	.main .scroll-view {
+	.scroll-view {
+		flex: 1;
+	}
+
+	.header-section {
+		background-color: #ffffff;
+		border-radius: 20rpx;
+		padding: 30rpx;
+		margin-bottom: 20rpx;
+		box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+	}
+
+	.logo-container {
 		align-items: center;
-		flex: 1;
+		margin-bottom: 30rpx;
 	}
 
-	.main .logo {
-		margin-top: 50px;
+	.logo-image {
+		width: 160rpx;
+		height: 160rpx;
 	}
 
-	.main .logo .img {
-		width: 200px;
-	}
-
-	.main .logo .img .image {
-		display: flex;
-		width: 100%;
-	}
-
-	.main .indicator {
-		margin: 30px 0 0;
-		width: 360px;
-		border-radius: 10px;
-		padding: 15px;
-		background-color: #fff;
-		box-shadow: 0 0 10px 1px rgba(200, 200, 200, .1);
-	}
-
-	.main .indicator .head {
+	.progress-info {
 		flex-direction: row;
 		justify-content: space-between;
-		padding: 8px 10px;
-		background-image: linear-gradient(to right, #b9b8f5, #e3e3fe);
-		border-radius: 6px;
-	}
-
-	.main .indicator .head .tag {
-		color: #8180c8;
-		font-weight: bold;
-		font-size: 18px;
-	}
-
-	.main .indicator .head .countdown {
-		color: #00d800;
-		font-weight: bold;
-		font-size: 18px;
-	}
-
-	.main .indicator .open-box {
-		margin-top: 10px;
 		align-items: center;
 	}
 
-	.main .indicator .open-box .open {
-		height: 10px;
-		border-radius: 5px;
-		width: 185px;
-		border: 0;
+	.question-counter {
+		font-size: 32rpx;
+		font-weight: bold;
+		color: #333333;
 	}
 
-	.main .indicator .indicator-box {
+	.timer {
+		font-size: 32rpx;
+		font-weight: bold;
+		color: #ff6b6b;
+		background-color: #fff5f5;
+		padding: 10rpx 20rpx;
+		border-radius: 30rpx;
+	}
+
+	.question-indicator {
+		background-color: #ffffff;
+		border-radius: 20rpx;
+		padding: 30rpx;
+		margin-bottom: 20rpx;
+		box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+	}
+
+	.indicator-header {
 		flex-direction: row;
-		margin-top: 10px;
-		transition: height .3s;
-		height: 54px;
-		width: 330px;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 20rpx;
+	}
+
+	.indicator-title {
+		font-size: 36rpx;
+		font-weight: bold;
+		color: #333333;
+	}
+
+	.toggle-button {
+		background-color: #f0f2f5;
+		padding: 10rpx 20rpx;
+		border-radius: 30rpx;
+	}
+
+	.toggle-icon {
+		font-size: 28rpx;
+		color: #666666;
+	}
+
+	.indicator-grid {
+		flex-direction: row;
 		flex-wrap: wrap;
+		height: 80rpx;
+		overflow: hidden;
+		transition: height 0.3s ease;
 	}
 
-	.main .indicator .indicator-box.open {
-		height: 300px;
+	.indicator-grid.expanded {
+		height: auto;
+		max-height: 500rpx;
 	}
 
-	.main .indicator .indicator-box .page-item-hover {
-		background-color: #ebf5ff;
-	}
-
-	.main .indicator .indicator-box .page-item {
-		width: 54px;
-		height: 54px;
-		border-radius: 8px;
-		line-height: 46px;
-		color: #555;
-		margin-left: 15px;
-		margin-top: 15px;
-		font-size: 18px;
-		box-sizing: border-box;
-		background-color: #ebebff;
-		border: 4px solid #ebebff;
-	}
-
-	.main .indicator .indicator-box .page-item.con {
-		background-color: #bbbaf6;
-		border: 4px solid #87cdff;
-	}
-
-	.main .indicator .indicator-box .page-item.first-col {
-		margin-left: 0;
-	}
-
-	.main .indicator .indicator-box .page-item.first-row {
-		margin-top: 0;
-	}
-
-	.main .paper {
-		margin: 20px 0 0;
-		width: 360px;
-		border-radius: 10px;
-		padding: 15px 25px;
-		background-color: #fff;
-		box-shadow: 0 0 10px 1px rgba(200, 200, 200, .1);
+	.question-item-current {
+		width: 70rpx;
+		height: 70rpx;
+		border-radius: 16rpx;
+		background-color: #f0f2f5;
+		border: 2rpx solid #3a397a;
+		margin-right: 20rpx;
+		margin-bottom: 20rpx;
 		align-items: center;
 		justify-content: center;
 	}
 
-	.main .paper .title {
-		margin-top: 10px;
-		font-size: 20px;
-		color: #121113;
-		font-weight: bold;
-		line-height: 32px;
-	}
-
-	.main .paper .select-box {
-		width: 300px;
-		padding: 1px;
-		margin-top: 10px;
-		transition: height .3s;
-	}
-
-	.main .paper .select-box .item {
-		margin: 5px 0;
+	.question-item-answered {
+		width: 70rpx;
+		height: 70rpx;
+		border-radius: 16rpx;
+		background-color: #3a397a;
+		border: 2rpx solid #3a397a;
+		margin-right: 20rpx;
+		margin-bottom: 20rpx;
 		align-items: center;
-		flex-direction: row;
-		min-height: 24px;
-		border-radius: 24px;
-		padding: 12px 20px;
-		background-color: #ebebff;
-		transition: background-color .3s;
+		justify-content: center;
 	}
 
-	.main .paper .select-box .item.selected {
-		background-color: #5250b3;
+	.question-item {
+		width: 70rpx;
+		height: 70rpx;
+		border-radius: 16rpx;
+		background-color: #f0f2f5;
+		border: 2rpx solid #f0f2f5;
+		margin-right: 20rpx;
+		margin-bottom: 20rpx;
+		align-items: center;
+		justify-content: center;
 	}
 
-	.main .paper .select-box .item .serial {
-		width: 20px;
-		flex-shrink: 0;
-		text-align: left;
-		color: #6363b7;
-		margin-right: 15px;
-		transition: color .3s;
+	.question-number-current {
+		font-size: 28rpx;
+		color: #3a397a;
 	}
 
-	.main .paper .select-box .item .serial.selected {
-		color: #eeeefa;
+	.question-number-answered {
+		font-size: 28rpx;
+		color: #f0f2f5;
 	}
 
-	.main .paper .select-box .item .content {
+	.question-number {
+		font-size: 28rpx;
+		color: #666666;
+	}
+
+	.question-section {
+		background-color: #ffffff;
+		border-radius: 20rpx;
+		padding: 30rpx;
+		margin-bottom: 20rpx;
+		box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+	}
+
+	.question-content {
 		flex: 1;
-		line-height: 20px;
-		color: #6363b7;
-		transition: color .3s;
 	}
 
-	.main .paper .select-box .item .content.selected {
-		color: #eeeefa;
+	.question-title {
+		font-size: 36rpx;
+		font-weight: bold;
+		color: #333333;
+		line-height: 50rpx;
+		margin-bottom: 30rpx;
 	}
 
-	.main .foot {
+	.options-container {
+		flex: 1;
+	}
+
+	.option-item {
 		flex-direction: row;
-		margin: 30px 0;
+		align-items: center;
+		padding: 30rpx;
+		margin-bottom: 20rpx;
+		border-radius: 16rpx;
+		background-color: #f9fafc;
+		border: 2rpx solid #e4e6eb;
 	}
 
-	.main .foot .btn {
-		margin: 0 10px;
-		height: 44px;
-		border-radius: 22px;
-		padding: 0 36px;
-		border: 0px;
-		line-height: 44px;
-		color: #fff;
-		background-image: linear-gradient(to right, #b8b7f6, #5b5ab6);
+	.option-item.selected {
+		background-color: #f0f3ff;
+		border: 2rpx solid #3a397a;
 	}
 
-	.main .foot .btn.submit {
-		background-image: linear-gradient(to right, #e96202, #dc0804);
+	.option-label {
+		font-size: 32rpx;
+		font-weight: bold;
+		color: #666666;
+		width: 50rpx;
+		margin-right: 20rpx;
 	}
 
-	.main .foot .btn.disabled {
-		opacity: .6;
+	.option-label.selected {
+		color: #3a397a;
 	}
 
-	.main .foot .submit-hover {
-		background-image: linear-gradient(to right, #f86401, #ec0602);
+	.option-text {
+		flex: 1;
+		font-size: 32rpx;
+		color: #333333;
+		line-height: 44rpx;
 	}
 
-	.main .foot .btn-hover {
-		background-image: linear-gradient(to right, #bebeff, #6b6bd8);
+	.option-text.selected {
+		color: #3a397a;
+		font-weight: bold;
 	}
 
-	.main .bottom-height {
-		height: 30px;
+	.navigation-buttons {
+		flex-direction: row;
+		justify-content: space-between;
+		margin-bottom: 20rpx;
+	}
+
+	.nav-button {
+		flex: 1;
+		height: 88rpx;
+		border-radius: 44rpx;
+		font-size: 32rpx;
+		font-weight: bold;
+		border: none;
+		margin: 0 10rpx;
+	}
+
+	.prev-button {
+		background-color: #f0f2f5;
+		color: #606266;
+	}
+
+	.next-button {
+		background-color: #3a397a;
+		color: #ffffff;
+	}
+
+	.submit-button {
+		background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+		color: #ffffff;
+	}
+
+	.nav-button.disabled {
+		opacity: 0.5;
+	}
+
+	.nav-button:active {
+		opacity: 0.8;
+	}
+
+	.spacer {
+		height: 20rpx;
 	}
 </style>

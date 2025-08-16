@@ -51,7 +51,8 @@ This is a **UniApp X** examination template project for building online testing 
 - **Pages**: 
   - `pages/index/index.uvue` - Home navigation
   - `pages/dynamic/index.uvue` - Backend integration with UniCloud
-  - `pages/simulate/index.uvue` - Static data loading for testing
+  - `pages/simulate/index-v4.uvue` - Static data loading for testing (v4)
+  - `pages/simulate/index-v5.uvue` - Static data loading for testing (v5)
   - `pages/dynamic/answer.uvue` - Exam answering interface
 
 ### Core Architecture Patterns
@@ -86,7 +87,7 @@ assets/
    - Question CRUD with validation
    - Batch import support
    - Answer validation logic
-   - Question types: single-choice (1), multiple-choice (2)
+   - Question types: single-choice, multiple-choice
 
 3. **appx-template-exam-records** - Answer records
    - User answer tracking
@@ -111,13 +112,13 @@ assets/
 ### Key Integration Points
 
 #### Exam Flow Implementation
-1. **Initialization**: Import data in `mounted()` (lines 95-111 in template)
+1. **Initialization**: Import data in `mounted()` method
 2. **Question Navigation**: `update(current)` method for switching questions
 3. **Answer Submission**: `submit()` method for final submission
 4. **Timer**: Built-in countdown with auto-submit on expiry
 
 #### Data Structure Standards
-- **Questions**: `{content, type, score, options: [{key, value, is_correct}]}`
+- **Questions**: `{content, type, score, options: [{key, value}]}`
 - **Exams**: `{name, start_time, end_time, duration, total_score, status}`
 - **Records**: `{user_id, exam_id, question_id, answer, score, is_correct}`
 - **Users**: `{username, password, mobile, status, create_time}`
@@ -125,9 +126,9 @@ assets/
 ## Development Workflow
 
 ### Template Customization Steps
-1. **Data Initialization**: Update lines 66-69 and 95-111 in exam pages
-2. **Question Updates**: Implement `update(current)` method (lines 126-132)
-3. **Submission Logic**: Complete `submit()` method (lines 138-147)
+1. **Data Initialization**: Update data import in exam pages
+2. **Question Updates**: Implement `update(current)` method for question switching
+3. **Submission Logic**: Complete `submit()` method for answer submission
 4. **Backend Integration**: Replace static data with cloud function calls
 
 ### Testing Approach
@@ -162,7 +163,7 @@ assets/
 ### Frontend Pages
 1. **Home Page** (`pages/index/index.uvue`)
    - Entry point with navigation to dynamic or simulate modes
-   - Simple UI with two main action buttons
+   - Simple UI with action buttons for different modes
 
 2. **Dynamic Mode** (`pages/dynamic/index.uvue`)
    - Full backend integration with UniCloud
@@ -170,7 +171,7 @@ assets/
    - Exam listing with status indicators
    - Statistics dashboard for user's exams
 
-3. **Simulate Mode** (`pages/simulate/index.uvue`)
+3. **Simulate Mode** (`pages/simulate/index-v4.uvue` and `pages/simulate/index-v5.uvue`)
    - Static data loading for testing
    - Complete exam interface with timer
    - Question navigation and answer selection

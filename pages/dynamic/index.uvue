@@ -105,7 +105,6 @@
 	import { ref, computed, onMounted } from 'vue'
 	import { getMyExamList, getRandomExams, getMyExamStatistics } from '@/assets/api/exam.api.uts'
 	import { ExamListReq, ExamListRow, ExamStatistics } from '@/assets/type/exam.types.uts'
-	import { ResCode } from '@/assets/type/common.type.uts'
 
 	// 登录状态
 	const isLoggedIn = ref(false)
@@ -132,23 +131,29 @@
 	async function loadData() {
 		try {
 			// 加载统计数据
-			const statisticsRes = await getMyExamStatistics()
-			statistics.value = statisticsRes.data
+			const okCode : number = 200
+			const statisticsRes = await getMyExamStatistics('')
+			// console.log(statisticsRes);
+			if (statisticsRes.code === okCode && statisticsRes.data !== null) {
+				statistics.value = statisticsRes.data
+			}
 
 			// 加载我的考试
-			const res = await getMyExamList({})
-			if (res.code === ResCode.ok) {
-				myExams.value = res.data
+			const res = await getMyExamList({ user_id: '' })
+			// console.log(res);
+			if (res.code === okCode && res.data !== null) {
+				myExams.value = res.data.rows
 			}
 
 			// 加载随机考试（游客模式）
 			const randomRes = await getRandomExams(3)
-			if (randomRes.code === ResCode.ok) {
-				randomExams.value = res.data
+			// console.log(randomRes);
+			if (randomRes.code === okCode && randomRes.data !== null) {
+				myExams.value = randomRes.data
 			}
 
 		} catch (error) {
-			console.error('加载数据失败:', error)
+			console.error('加载数据失败:', JSON.stringify(error))
 			uni.showToast({ title: '加载数据失败', icon: 'error' })
 		}
 	}

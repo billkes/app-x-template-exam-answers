@@ -12,6 +12,7 @@ export type ExamListRow = {
 }
 
 export type ExamListReq = {
+	user_id ?: string
 	keyword ?: string
 	status ?: number
 	page ?: number

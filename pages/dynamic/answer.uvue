@@ -1,22 +1,22 @@
 <!-- answer-card.uvue -->
 <template>
-	<view class="page">
+	<scroll-view class="page">
 		<!-- 头部信息 -->
 		<view class="header">
 			<view class="title-row">
 				<text class="title">📝 前端开发工程师认证考试</text>
 			</view>
 			<view class="info-row">
-				<text>考试时间: 120分钟</text>
-				<text>剩余时间: 01:38:24</text>
+				<text class="info-row-text">考试时间: 120分钟</text>
+				<text class="info-row-text">剩余时间: 01:38:24</text>
 			</view>
 			<view class="progress-wrap">
 				<view class="progress-bar">
 					<view class="progress-fill" :style="{ width: progress + '%' }" />
 				</view>
 				<view class="progress-info">
-					<text>已完成 {{ progress }}%</text>
-					<text>{{ answered }}/{{ total }} 题</text>
+					<text class="progress-info-text">已完成 {{ progress }}%</text>
+					<text class="progress-info-text">{{ answered }}/{{ total }} 题</text>
 				</view>
 			</view>
 		</view>
@@ -32,7 +32,7 @@
 				<view class="grid">
 					<view v-for="(item, idx) in total" :key="idx" class="btn"
 						:class="{ current: idx + 1 === current, answered: isAnswered(idx + 1) }" @tap="jump(idx + 1)">
-						{{ item }}
+						<text class="btn-text">{{ item }}</text>
 					</view>
 				</view>
 			</view>
@@ -52,19 +52,23 @@
 			<view class="options">
 				<view v-for="(opt, idx) in options" :key="idx" class="option"
 					:class="{ selected: userAnswer === optKey[idx] }" @tap="select(optKey[idx])">
-					<view class="marker">{{ optKey[idx] }}</view>
+					<view class="marker">
+						<text class="marker-text">
+							{{ optKey[idx] }}
+						</text>
+					</view>
 					<text class="text">{{ opt }}</text>
 				</view>
 			</view>
 
 			<!-- 底部按钮 -->
 			<view class="footer">
-				<button class="btn-prev" @tap="prev">上一题</button>
-				<button v-if="current < total" class="btn-next" @tap="next">下一题</button>
-				<button v-else class="btn-submit" @tap="submit">提交试卷</button>
+				<button class="custom-btn btn-prev" @tap="prev">上一题</button>
+				<button v-if="current < total" class="custom-btn btn-next" @tap="next">下一题</button>
+				<button v-else class="custom-btn btn-submit" @tap="submit">提交试卷</button>
 			</view>
 		</view>
-	</view>
+	</scroll-view>
 </template>
 
 <script setup lang="uts">
@@ -138,6 +142,7 @@
 	.page {
 		flex-direction: column;
 		padding: 16px;
+		flex: 1;
 		background-color: #f5f7fa;
 	}
 
@@ -153,32 +158,36 @@
 	}
 
 	.title {
-		color: #fff;
+		color: #444;
 		font-size: 18px;
-		font-weight: 600;
+		font-weight: 700;
 	}
 
 	.info-row {
 		flex-direction: row;
 		justify-content: space-between;
-		color: #fff;
-		font-size: 13px;
 		margin-bottom: 12px;
 	}
 
+	.info-row-text {
+		color: #444;
+		font-size: 13px;
+	}
+
 	.progress-wrap {
-		margin-top: 8px;
+		margin-top: 5px;
 	}
 
 	.progress-bar {
 		height: 6px;
-		background-color: rgba(255, 255, 255, 0.3);
+		width: 100%;
+		background-color: #f5f7fa;
 		border-radius: 3px;
 	}
 
 	.progress-fill {
 		height: 100%;
-		background-color: #fff;
+		background-color: #5250b3;
 		border-radius: 3px;
 	}
 
@@ -186,8 +195,11 @@
 		flex-direction: row;
 		justify-content: space-between;
 		margin-top: 6px;
+	}
+
+	.progress-info-text {
 		font-size: 12px;
-		color: #fff;
+		color: #444;
 	}
 
 	/* 答题卡 */
@@ -207,13 +219,13 @@
 
 	.card-title {
 		font-size: 15px;
-		font-weight: 600;
+		font-weight: 700;
 		color: #5250b3;
 	}
 
 	.arrow {
 		font-size: 12px;
-		transition: transform 0.2s;
+		transition: all 0.2s;
 	}
 
 	.arrow.up {
@@ -227,7 +239,6 @@
 	.grid {
 		flex-direction: row;
 		flex-wrap: wrap;
-		gap: 8px;
 	}
 
 	.btn {
@@ -237,10 +248,13 @@
 		background-color: #f0f2f5;
 		border-width: 1px;
 		border-color: #e4e6eb;
-		font-size: 14px;
-		color: #333;
 		align-items: center;
 		justify-content: center;
+	}
+
+	.btn-text {
+		font-size: 14px;
+		color: #333;
 	}
 
 	.btn.answered {
@@ -250,8 +264,11 @@
 
 	.btn.current {
 		background-color: #5250b3;
-		color: #fff;
 		border-color: #5250b3;
+	}
+
+	.btn.current .btn-text {
+		color: #fff;
 	}
 
 	/* 题目卡片 */
@@ -281,7 +298,7 @@
 	.score {
 		color: #ff6b6b;
 		font-size: 13px;
-		font-weight: 600;
+		font-weight: 700;
 	}
 
 	.question-text {
@@ -319,12 +336,18 @@
 		align-items: center;
 		justify-content: center;
 		margin-right: 12px;
+	}
+
+	.marker-text {
+		font-weight: 700;
 		font-size: 13px;
-		font-weight: 500;
 	}
 
 	.option.selected .marker {
 		background-color: #5250b3;
+	}
+
+	.option.selected .marker-text {
 		color: #fff;
 	}
 
@@ -336,15 +359,14 @@
 	/* 底部按钮 */
 	.footer {
 		flex-direction: row;
-		gap: 12px;
 	}
 
-	button {
+	.custom-btn {
 		flex: 1;
-		padding: 14px 0;
+		padding: 8px 0;
 		border-radius: 8px;
 		font-size: 15px;
-		font-weight: 500;
+		font-weight: 700;
 		text-align: center;
 		border-width: 0;
 	}
@@ -352,6 +374,7 @@
 	.btn-prev {
 		background-color: #f0f2f5;
 		color: #606266;
+		margin-right: 5px;
 	}
 
 	.btn-next {

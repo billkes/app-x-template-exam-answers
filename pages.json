@@ -13,6 +13,12 @@
 			}
 		},
 		{
+			"path": "pages/dynamic/answer",
+			"style": {
+				"navigationBarTitleText": "接入后台管理-答题"
+			}
+		},
+		{
 			"path": "pages/simulate/index",
 			"style": {
 				"navigationBarTitleText": "静态数据加载"

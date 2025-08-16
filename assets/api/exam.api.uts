@@ -1,0 +1,37 @@
+import { ExamListReq, ExamListRow, ExamStatistics } from '@/assets/type/exam.types.uts'
+import { PageType, SubmitType } from '@/assets/type/common.type.uts'
+
+export async function getMyExamStatistics() : Promise<SubmitType<ExamStatistics>> {
+	const res = await uniCloud.callFunction<SubmitType<ExamStatistics>>({
+		name: 'appx-template-exam-exams',
+		data: {
+			action: 'list',
+			params: {}
+		}
+	})
+	return res.result
+}
+
+// 获取我的考试列表
+export async function getMyExamList(params : ExamListReq) : Promise<PageType<ExamListRow>> {
+	const res = await uniCloud.callFunction<PageType<ExamListRow>>({
+		name: 'appx-template-exam-exams',
+		data: {
+			action: 'list',
+			params
+		}
+	})
+	return res.result
+}
+
+// 获取随机考试列表
+export async function getRandomExams(num : number) : Promise<PageType<ExamListRow>> {
+	const res = await uniCloud.callFunction<PageType<ExamListRow>>({
+		name: 'appx-template-exam-exams',
+		data: {
+			action: 'list',
+			params: { num }
+		}
+	})
+	return res.result
+}

@@ -1,0 +1,23 @@
+export enum ResCode {
+	ok = 200,
+	err300 = 300,
+	err400 = 400,
+	err500 = 500,
+}
+
+export type PageType<T> = {
+	code : ResCode
+	data : T[]
+	list : T[]
+}
+
+export type SubmitType<T> = {
+	code : ResCode
+	data : T
+	list : T
+}
+
+export type CallFunctionResType<T> = {
+	errCode: number
+	result: T
+}

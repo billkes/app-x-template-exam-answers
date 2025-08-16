@@ -1,0 +1,30 @@
+export type ExamListRow = {
+	_id : string
+	title : string
+	description : string
+	start_time : string
+	end_time : string
+	duration : number
+	status : number
+	create_time : string
+	questions : number
+	totalScore : number
+}
+
+export type ExamListReq = {
+	keyword ?: string
+	status ?: number
+	page ?: number
+	pageSize ?: number
+	sortField ?: string
+	sortOrder ?: string
+}
+
+export type ExamStatistics = {
+	totalExams : number
+	activeExams : number
+	upcomingExams : number
+	endedExams : number
+	totalQuestions : number
+	totalScore : number
+}

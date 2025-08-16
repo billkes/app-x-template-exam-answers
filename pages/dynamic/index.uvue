@@ -1,15 +1,82 @@
 <template>
 	<!-- 页面级滚动：根节点 scroll-view -->
 	<scroll-view class="page-scroll">
-		<!-- 游客模式提示 -->
+		<!-- 游客模式提示面板 -->
 		<view v-if="!isLoggedIn" class="guest-banner">
 			<text class="guest-text">👋 欢迎！您正在以游客身份浏览，登录后可查看完整考试列表</text>
-			<button class="login-btn" @tap="login">登录</button>
+			<view class="guest-actions">
+				<button class="login-btn" @tap="openLoginModal">登录</button>
+				<button class="register-btn" @tap="openRegisterModal">注册</button>
+			</view>
+		</view>
+
+		<!-- 登录注册模态框 -->
+		<view v-if="showAuthModal" class="auth-modal">
+			<view class="auth-panel">
+				<view class="auth-header">
+					<text class="auth-title">{{ isLoginMode ? '登录' : '注册' }}</text>
+					<text class="close-btn" @tap="closeAuthModal">×</text>
+				</view>
+
+				<!-- 登录表单 -->
+				<view v-if="isLoginMode" class="auth-form">
+					<view class="form-item">
+						<text class="form-label">手机号</text>
+						<input v-model="loginForm.mobile" class="form-input" placeholder="请输入手机号" maxlength="20" />
+					</view>
+					<view class="form-item">
+						<text class="form-label">密码</text>
+						<input v-model="loginForm.password" class="form-input" type="password" placeholder="请输入密码"
+							maxlength="20" />
+					</view>
+					<button class="auth-submit" @tap="handleLogin" :disabled="loginLoading">
+						{{ loginLoading ? '登录中...' : '登录' }}
+					</button>
+				</view>
+
+				<!-- 注册表单 -->
+				<view v-else class="auth-form">
+					<view class="form-item">
+						<text class="form-label">用户名</text>
+						<input v-model="registerForm.username" class="form-input" placeholder="请输入用户名" maxlength="20" />
+					</view>
+					<view class="form-item">
+						<text class="form-label">密码</text>
+						<input v-model="registerForm.password" class="form-input" type="password" placeholder="请输入密码"
+							maxlength="20" />
+					</view>
+					<view class="form-item">
+						<text class="form-label">手机号</text>
+						<input v-model="registerForm.mobile" class="form-input" placeholder="请输入手机号" maxlength="11" />
+					</view>
+					<button class="auth-submit" @tap="handleRegister" :disabled="registerLoading">
+						{{ registerLoading ? '注册中...' : '注册' }}
+					</button>
+				</view>
+
+				<view class="auth-switch">
+					<text @tap="switchAuthMode" class="auth-switch-text">
+						{{ isLoginMode ? '没有账号？立即注册' : '已有账号？立即登录' }}
+					</text>
+				</view>
+			</view>
 		</view>
 
 		<!-- 用户基本信息面板 -->
-		<view>
-
+		<view v-if="isLoggedIn && currentUser !== null" class="user-info-panel">
+			<view class="user-avatar">
+				<view class="avatar-circle">
+					<text class="avatar-text">{{ currentUser!.username.charAt(0) }}</text>
+				</view>
+			</view>
+			<view class="user-details">
+				<text class="username">{{ currentUser!.username }}</text>
+				<text class="user-mobile">{{ currentUser!.mobile }}</text>
+				<text class="user-id">ID: {{ currentUser!._id.slice(-6) }}</text>
+			</view>
+			<view class="user-actions">
+				<button class="logout-btn" @tap="handleLogout">退出登录</button>
+			</view>
 		</view>
 
 		<!-- 考试统计看板 -->
@@ -32,12 +99,20 @@
 			</view>
 		</view>
 
+		<!-- 加载状态 -->
+		<view v-if="myExamsLoading || randomExamsLoading" class="loading">
+			<text>{{ myExamsLoading ? '加载我的考试中...' : '加载在线考试中...' }}</text>
+		</view>
+
 		<view class="exam-main">
 			<!-- 我的考试（登录后显示） -->
 			<view v-if="isLoggedIn" class="section">
 				<text class="section-title">我的考试</text>
 				<view class="exam-list">
-					<view v-if="myExams.length === (0 as number)" class="empty">
+					<view v-if="myExamsLoading" class="loading">
+						<text>加载中...</text>
+					</view>
+					<view v-else-if="myExams.length === (0 as number)" class="empty">
 						<text class="empty-text">暂无考试安排</text>
 					</view>
 					<view class="exam-card" v-for="item in myExams" :key="item._id">
@@ -64,7 +139,7 @@
 						<view class="card-footer">
 							<text class="card-duration">{{ item.duration }}</text>
 							<button :class="['start-btn', item.status === (2 as number) ? 'disabled' : '']"
-								:disabled="item.status === (2 as number)">
+								:disabled="item.status === (2 as number)" @tap="startExam(item._id)">
 								{{ item.status === (2 as number) ? '已结束' : item.status === (0 as number)  ? '未开始' : '开始考试' }}
 							</button>
 						</view>
@@ -76,7 +151,10 @@
 			<view class="section">
 				<text class="section-title">在线考试</text>
 				<view class="exam-list">
-					<view v-if="randomExams.length === (0 as number)" class="empty">
+					<view v-if="randomExamsLoading" class="loading">
+						<text class="loading-text">加载中...</text>
+					</view>
+					<view v-else-if="randomExams.length === (0 as number)" class="empty">
 						<text class="empty-text">暂无考试信息</text>
 					</view>
 					<view class="exam-card" v-for="item in randomExams" :key="item._id">
@@ -109,11 +187,15 @@
 <script setup lang="uts">
 	import { ref, computed, onMounted } from 'vue'
 	import { getMyExamList, getRandomExams, getMyExamStatistics } from '@/assets/api/exam.api.uts'
+	import { loginUser, registerUser, getUserInfo } from '@/assets/api/user.api.uts'
 	import { ExamListReq, ExamListRow, ExamStatistics } from '@/assets/type/exam.types.uts'
+	import { UserRow, LoginResquest, RegisterResquest } from '@/assets/type/user.types.uts'
 
 	// 登录状态
+	const okCode : number = 200
 	const isLoggedIn = ref(false)
-	const userName = ref('游客')
+	const currentUser = ref<UserRow | null>(null)
+	const userId = ref<string>('')
 	const ExamStatusTextMap = {
 		"0": '未开始',
 		"1": '进行中',
@@ -132,41 +214,152 @@
 		totalScore: 0
 	})
 
+	// 登录注册相关
+	const showAuthModal = ref(false)
+	const isLoginMode = ref(true)
+	const loginForm = ref<LoginResquest>({ mobile: '', password: '' })
+	const registerForm = ref<RegisterResquest>({ username: '', password: '', mobile: '' })
+	const loginLoading = ref(false)
+	const registerLoading = ref(false)
+	const myExamsLoading = ref(false)
+	const randomExamsLoading = ref(false)
+
 	// 方法
 	async function loadData() {
 		try {
 			// 加载统计数据
-			const okCode : number = 200
-			const statisticsRes = await getMyExamStatistics('')
-			// console.log(statisticsRes);
+			const statisticsRes = await getMyExamStatistics(userId.value)
 			if (statisticsRes.code === okCode && statisticsRes.data !== null) {
 				statistics.value = statisticsRes.data
 			}
 
-			// 加载我的考试
-			const res = await getMyExamList({ user_id: '' })
-			// console.log(res);
-			if (res.code === okCode && res.data !== null) {
-				myExams.value = res.data.rows
+			// 加载我的考试（仅登录用户）
+			if (isLoggedIn.value && userId.value !== '') {
+				myExamsLoading.value = true
+				const res = await getMyExamList({ user_id: userId.value })
+				if (res.code === okCode && res.data !== null) {
+					myExams.value = res.data.rows
+				}
+				myExamsLoading.value = false
 			}
 
 			// 加载随机考试（游客模式）
+			randomExamsLoading.value = true
 			const randomRes = await getRandomExams(3)
-			// console.log(randomRes);
 			if (randomRes.code === okCode && randomRes.data !== null) {
-				myExams.value = randomRes.data
+				randomExams.value = randomRes.data
 			}
+			randomExamsLoading.value = false
 
 		} catch (error) {
 			console.error('加载数据失败:', JSON.stringify(error))
 			uni.showToast({ title: '加载数据失败', icon: 'error' })
+			myExamsLoading.value = false
+			randomExamsLoading.value = false
 		}
 	}
 
-	function login() {
+	// 登录注册相关方法
+	function openLoginModal() {
+		isLoginMode.value = true
+		showAuthModal.value = true
 	}
 
-	function startExam(examId : number) {
+	function openRegisterModal() {
+		isLoginMode.value = false
+		showAuthModal.value = true
+	}
+
+	function closeAuthModal() {
+		showAuthModal.value = false
+		loginForm.value = { mobile: '', password: '' } as LoginResquest
+		registerForm.value = { username: '', password: '', mobile: '' } as RegisterResquest
+	}
+
+	function switchAuthMode() {
+		isLoginMode.value = !isLoginMode.value
+	}
+
+	async function loadUserInfo() {
+		if (userId.value === '') { return }
+		try {
+			const res = await getUserInfo(userId.value)
+			if (res.code === okCode && res.data !== null) {
+				currentUser.value = res.data
+			}
+		} catch (error) {
+			console.error('获取用户信息失败:', error)
+		}
+	}
+
+	async function handleLogin() {
+		if (loginForm.value.mobile === '' || loginForm.value.password === '') {
+			uni.showToast({ title: '请填写完整信息', icon: 'none' })
+			return
+		}
+
+		loginLoading.value = true
+		try {
+			const res = await loginUser({
+				mobile: loginForm.value.mobile,
+				password: loginForm.value.password,
+			})
+			if (res.code === okCode && res.data !== null) {
+				uni.showToast({ title: '登录成功', icon: 'success' })
+				isLoggedIn.value = true
+				userId.value = res.data.id
+				await loadUserInfo()
+				closeAuthModal()
+				await loadData()
+			} else {
+				uni.showToast({ title: res.message === null ? '登录失败' : res.message, icon: 'error' })
+			}
+		} catch (error) {
+			uni.showToast({ title: '登录失败', icon: 'error' })
+		} finally {
+			loginLoading.value = false
+		}
+	}
+
+	async function handleRegister() {
+		if (registerForm.value.username === '' || registerForm.value.password === '' || registerForm.value.mobile === '') {
+			uni.showToast({ title: '请填写完整信息', icon: 'none' })
+			return
+		}
+
+		registerLoading.value = true
+		try {
+			const res = await registerUser({
+				username: registerForm.value.username,
+				password: registerForm.value.password,
+				mobile: registerForm.value.mobile,
+			})
+			if (res.code === okCode && res.data !== null) {
+				uni.showToast({ title: '注册成功', icon: 'success' })
+				// 注册成功后自动登录
+				loginForm.value = { mobile: registerForm.value.mobile, password: registerForm.value.password } as LoginResquest
+				isLoginMode.value = true
+				registerForm.value = { username: '', password: '', mobile: '' } as RegisterResquest
+			} else {
+				uni.showToast({ title: res.message === null ? '注册失败' : res.message, icon: 'error' })
+			}
+		} catch (error) {
+			uni.showToast({ title: '注册失败', icon: 'error' })
+		} finally {
+			registerLoading.value = false
+		}
+	}
+
+	async function handleLogout() {
+		isLoggedIn.value = false
+		currentUser.value = null
+		userId.value = ''
+		myExams.value = []
+		await loadData()
+		uni.showToast({ title: '已退出登录', icon: 'success' })
+	}
+
+	function startExam(examId : string) {
 		uni.navigateTo({ url: `/pages/dynamic/answer?id=${examId}` })
 	}
 
@@ -187,10 +380,6 @@
 
 	/* === 游客提示横幅 === */
 	.guest-banner {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		align-items: center;
 		padding: 24rpx 32rpx;
 		background-color: #fff3cd;
 		border-bottom: 1rpx solid #ffeaa7;
@@ -202,13 +391,94 @@
 		flex: 1;
 	}
 
+	.guest-actions {
+		margin-top: 5px;
+		display: flex;
+		flex-direction: row;
+	}
+
 	.login-btn {
-		padding: 12rpx 24rpx;
 		background-color: #3a397a;
 		color: #ffffff;
 		border-radius: 8rpx;
 		font-size: 24rpx;
-		margin-left: 20rpx;
+		border: none;
+		margin-right: 10px;
+	}
+
+	.register-btn {
+		background-color: #28a745;
+		color: #ffffff;
+		border-radius: 8rpx;
+		font-size: 24rpx;
+		border: none;
+	}
+
+	/* === 用户基本信息面板 === */
+	.user-info-panel {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		padding: 32rpx;
+		background-color: #ffffff;
+		margin-bottom: 24rpx;
+		border-radius: 16rpx;
+		box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+	}
+
+	.user-avatar {
+		margin-right: 24rpx;
+	}
+
+	.avatar-circle {
+		width: 80rpx;
+		height: 80rpx;
+		border-radius: 40rpx;
+		background-color: #3a397a;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.avatar-text {
+		color: #ffffff;
+		font-size: 32rpx;
+		font-weight: bold;
+	}
+
+	.user-details {
+		flex: 1;
+	}
+
+	.user-actions {
+		margin-top: 2px;
+	}
+
+	.username {
+		font-size: 32rpx;
+		font-weight: bold;
+		color: #333333;
+		margin-bottom: 8rpx;
+	}
+
+	.user-mobile {
+		font-size: 24rpx;
+		color: #666666;
+		margin-bottom: 4rpx;
+	}
+
+	.user-id {
+		font-size: 20rpx;
+		color: #999999;
+	}
+
+	.logout-btn {
+		padding: 12rpx 24rpx;
+		background-color: #dc3545;
+		color: #ffffff;
+		border-radius: 8rpx;
+		font-size: 24rpx;
+		border: none;
 	}
 
 	/* === 统计看板 === */
@@ -255,6 +525,91 @@
 	.stat-label {
 		font-size: 24rpx;
 		color: #666666;
+	}
+
+	/* === 登录注册模态框 === */
+	.auth-modal {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0, 0, 0, 0.5);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 1000;
+	}
+
+	.auth-panel {
+		width: 80%;
+		max-width: 600rpx;
+		background-color: #ffffff;
+		border-radius: 16rpx;
+		padding: 40rpx;
+	}
+
+	.auth-header {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 40rpx;
+	}
+
+	.auth-title {
+		font-size: 36rpx;
+		font-weight: bold;
+		color: #333333;
+	}
+
+	.close-btn {
+		font-size: 48rpx;
+		color: #999999;
+	}
+
+	.auth-form {
+		margin-bottom: 32rpx;
+	}
+
+	.form-item {
+		margin-bottom: 32rpx;
+	}
+
+	.form-label {
+		font-size: 28rpx;
+		color: #333333;
+		margin-bottom: 12rpx;
+	}
+
+	.form-input {
+		width: 100%;
+		padding: 20rpx;
+		border: 1rpx solid #e0e0e0;
+		border-radius: 8rpx;
+		font-size: 28rpx;
+		background-color: #f8f9fa;
+	}
+
+	.auth-submit {
+		width: 100%;
+		padding: 8rpx 24rpx;
+		background-color: #3a397a;
+		color: #ffffff;
+		border: none;
+		border-radius: 8rpx;
+		font-size: 32rpx;
+		font-weight: bold;
+	}
+
+	.auth-switch {
+		margin-top: 2px;
+	}
+
+	.auth-switch-text {
+		text-align: center;
+		color: #3a397a;
+		font-size: 28rpx;
 	}
 
 	/* === 主体 === */
@@ -387,5 +742,16 @@
 
 	.start-btn.disabled {
 		background-color: #cccccc;
+	}
+
+	/* === 加载状态 === */
+	.loading {
+		padding: 40rpx;
+	}
+
+	.loading-text {
+		color: #999999;
+		font-size: 28rpx;
+		text-align: center;
 	}
 </style>

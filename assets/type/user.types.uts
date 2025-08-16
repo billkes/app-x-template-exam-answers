@@ -1,20 +1,20 @@
-export type loginResquest = {
-	username : string
+export type LoginResquest = {
+	mobile : string
 	password : string
 }
 
-export type loginResponse = {
+export type LoginResponse = {
 	id : string
 	username : string
 }
 
-export type registerResquest = {
+export type RegisterResquest = {
 	username : string
 	password : string
 	mobile : string
 }
 
-export type registerResponse = {
+export type RegisterResponse = {
 	id : string
 	username : string
 }

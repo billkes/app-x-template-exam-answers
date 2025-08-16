@@ -189,7 +189,7 @@
 	import { getMyExamList, getRandomExams, getMyExamStatistics } from '@/assets/api/exam.api.uts'
 	import { loginUser, registerUser, getUserInfo } from '@/assets/api/user.api.uts'
 	import { ExamListReq, ExamListRow, ExamStatistics } from '@/assets/type/exam.types.uts'
-	import { UserRow, LoginResquest, RegisterResquest } from '@/assets/type/user.types.uts'
+	import { UserRow, LoginResquest, RegisterResquest, LoginResponse } from '@/assets/type/user.types.uts'
 
 	// 登录状态
 	const okCode : number = 200
@@ -238,7 +238,7 @@
 				myExamsLoading.value = true
 				const res = await getMyExamList({ user_id: userId.value })
 				if (res.code === okCode && res.data !== null) {
-					myExams.value = res.data.rows
+					myExams.value = res.data
 				}
 				myExamsLoading.value = false
 			}
@@ -280,18 +280,6 @@
 		isLoginMode.value = !isLoginMode.value
 	}
 
-	async function loadUserInfo() {
-		if (userId.value === '') { return }
-		try {
-			const res = await getUserInfo(userId.value)
-			if (res.code === okCode && res.data !== null) {
-				currentUser.value = res.data
-			}
-		} catch (error) {
-			console.error('获取用户信息失败:', error)
-		}
-	}
-
 	async function handleLogin() {
 		if (loginForm.value.mobile === '' || loginForm.value.password === '') {
 			uni.showToast({ title: '请填写完整信息', icon: 'none' })
@@ -299,6 +287,7 @@
 		}
 
 		loginLoading.value = true
+		let token : LoginResponse | null = null
 		try {
 			const res = await loginUser({
 				mobile: loginForm.value.mobile,
@@ -308,9 +297,8 @@
 				uni.showToast({ title: '登录成功', icon: 'success' })
 				isLoggedIn.value = true
 				userId.value = res.data.id
-				await loadUserInfo()
+				token = res.data
 				closeAuthModal()
-				await loadData()
 			} else {
 				uni.showToast({ title: res.message === null ? '登录失败' : res.message, icon: 'error' })
 			}
@@ -319,6 +307,29 @@
 		} finally {
 			loginLoading.value = false
 		}
+
+		// 保存登录信息到本地存储
+		try {
+			if (token !== null) {
+				uni.setStorageSync('token', token)
+			}
+		} catch (error) {
+			console.error('保存登录信息失败:', error)
+		}
+
+		try {
+			if (token !== null) {
+				const res1 = await getUserInfo(token.id)
+				if (res1.code === okCode && res1.data !== null) {
+					currentUser.value = res1.data
+					const userInfo = res1.data
+					uni.setStorageSync('userInfo', userInfo)
+				}
+			}
+		} catch (error) {
+			console.error('获取用户信息失败:', error)
+		}
+		await loadData()
 	}
 
 	async function handleRegister() {
@@ -355,6 +366,13 @@
 		currentUser.value = null
 		userId.value = ''
 		myExams.value = []
+		// 清除本地存储的登录信息
+		try {
+			uni.removeStorageSync('token')
+			uni.removeStorageSync('userInfo')
+		} catch (error) {
+			console.error('清除本地存储失败:', error)
+		}
 		await loadData()
 		uni.showToast({ title: '已退出登录', icon: 'success' })
 	}
@@ -363,8 +381,30 @@
 		uni.navigateTo({ url: `/pages/dynamic/answer?id=${examId}` })
 	}
 
+	// 检查登录状态
+	function checkLoginStatus() {
+		try {
+			const userInfo = uni.getStorageSync('userInfo')
+			const token = uni.getStorageSync('token')
+			if (userInfo === '' || token === '') {
+				return
+			}
+			const newUserInfo = JSON.parse<UserRow>(JSON.stringify(userInfo))
+			const newToken = JSON.parse<LoginResponse>(JSON.stringify(token))
+			if (newToken !== null && newUserInfo !== null) {
+				console.log(newUserInfo, newToken);
+				currentUser.value = newUserInfo
+				userId.value = newToken.id
+				isLoggedIn.value = true
+			}
+		} catch (error) {
+			console.error('读取本地存储失败:', error)
+		}
+	}
+
 	// 生命周期
 	onMounted(() => {
+		checkLoginStatus()
 		loadData()
 	})
 </script>

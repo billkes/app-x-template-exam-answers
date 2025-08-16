@@ -13,8 +13,8 @@ export async function getMyExamStatistics(user_id : string) : Promise<SubmitType
 }
 
 // 获取我的考试列表
-export async function getMyExamList(params : ExamListReq) : Promise<SubmitType<PageType<ExamListRow>>> {
-	const res = await uniCloud.callFunction<SubmitType<PageType<ExamListRow>>>({
+export async function getMyExamList(params : ExamListReq) : Promise<SubmitType<ExamListRow[]>> {
+	const res = await uniCloud.callFunction<SubmitType<ExamListRow[]>>({
 		name: 'appx-template-exam-exams',
 		data: {
 			action: 'getMyExamList',

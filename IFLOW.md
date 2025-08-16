@@ -65,9 +65,11 @@ This is a **UniApp X** examination template project for building online testing 
 ```
 assets/
 ├── api/
-│   └── exam.api.uts          # Cloud function API wrappers
+│   ├── exam.api.uts          # Cloud function API wrappers for exams
+│   └── user.api.uts          # Cloud function API wrappers for users
 ├── type/
     ├── exam.types.uts        # Exam-related TypeScript interfaces
+    ├── user.types.uts        # User-related TypeScript interfaces
     └── common.type.uts       # Shared response types
 ```
 
@@ -78,6 +80,7 @@ assets/
    - CRUD operations for exams
    - Status management (0=未开始, 1=进行中, 2=已结束)
    - Time validation (start < end)
+   - Statistics and list operations for user exams
 
 2. **appx-template-exam-questions** - Question management
    - Question CRUD with validation
@@ -95,11 +98,15 @@ assets/
    - User info management
    - Mobile number support
 
+5. **appx-template-exam-user-exams** - User-exam relationship management
+   - Tracks which users are enrolled in which exams
+
 #### 4. Database Collections
 - `appx-template-exam-exams` - Exam definitions
 - `appx-template-exam-questions` - Question bank
 - `appx-template-exam-records` - User answers/scores
 - `appx-template-exam-users` - User accounts
+- `appx-template-exam-user-exams` - User-exam relationships
 
 ### Key Integration Points
 
@@ -113,6 +120,7 @@ assets/
 - **Questions**: `{content, type, score, options: [{key, value, is_correct}]}`
 - **Exams**: `{name, start_time, end_time, duration, total_score, status}`
 - **Records**: `{user_id, exam_id, question_id, answer, score, is_correct}`
+- **Users**: `{username, password, mobile, status, create_time}`
 
 ## Development Workflow
 

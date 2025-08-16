@@ -19,9 +19,15 @@
 			}
 		},
 		{
-			"path": "pages/simulate/index",
+			"path": "pages/simulate/index-v4",
 			"style": {
-				"navigationBarTitleText": "静态数据加载"
+				"navigationBarTitleText": "静态数据加载v4"
+			}
+		},
+		{
+			"path": "pages/simulate/index-v5",
+			"style": {
+				"navigationBarTitleText": "静态数据加载v5"
 			}
 		}
 	],

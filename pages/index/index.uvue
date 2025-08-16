@@ -12,7 +12,10 @@
 				<text class="btn-text">接入后台管理</text>
 			</view>
 			<view class="btn btn-secondary" hover-class="btn-hover" @click="navigateTo('simulate')">
-				<text class="btn-text">模拟数据加载</text>
+				<text class="btn-text">模拟数据加载1</text>
+			</view>
+			<view class="btn btn-secondary" hover-class="btn-hover" @click="navigateTo('simulate')">
+				<text class="btn-text">模拟数据加载2</text>
 			</view>
 		</view>
 	</view>

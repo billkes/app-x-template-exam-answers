@@ -1,5 +1,5 @@
 
-import { loginResquest, loginResponse, registerResquest, registerResponse } from "@/assets/type/user.types.uts"
+import { loginResquest, loginResponse, UserRow, registerResquest, registerResponse } from "@/assets/type/user.types.uts"
 import { SubmitType } from '@/assets/type/common.type.uts'
 
 // 登录
@@ -21,6 +21,18 @@ export async function register(params : registerResquest) : Promise<SubmitType<r
 		data: {
 			action: 'register',
 			params
+		}
+	})
+	return res.result
+}
+
+// 注册
+export async function getUserInfo(id : string) : Promise<SubmitType<UserRow>> {
+	const res = await uniCloud.callFunction<SubmitType<UserRow>>({
+		name: 'appx-template-exam-users',
+		data: {
+			action: 'getUserInfo',
+			params: { id }
 		}
 	})
 	return res.result

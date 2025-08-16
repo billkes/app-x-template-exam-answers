@@ -7,8 +7,13 @@
 			<button class="login-btn" @tap="login">登录</button>
 		</view>
 
-		<!-- 统计看板 -->
-		<!-- <view class="stats-dashboard">
+		<!-- 用户基本信息面板 -->
+		<view>
+
+		</view>
+
+		<!-- 考试统计看板 -->
+		<view class="stats-dashboard" v-if="isLoggedIn">
 			<view class="stat-card">
 				<text class="stat-number">{{ statistics.totalExams }}</text>
 				<text class="stat-label">总考试</text>
@@ -25,7 +30,7 @@
 				<text class="stat-number">{{ statistics.endedExams }}</text>
 				<text class="stat-label">已结束</text>
 			</view>
-		</view> -->
+		</view>
 
 		<view class="exam-main">
 			<!-- 我的考试（登录后显示） -->

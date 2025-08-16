@@ -1,20 +1,29 @@
 export type loginResquest = {
-	username: string
-	password: string
+	username : string
+	password : string
 }
 
 export type loginResponse = {
-	id: string
-	username: string
+	id : string
+	username : string
 }
 
 export type registerResquest = {
-	username: string
-	password: string
-	mobile: string
+	username : string
+	password : string
+	mobile : string
 }
 
 export type registerResponse = {
-	id: string
-	username: string
+	id : string
+	username : string
+}
+
+export type UserRow = {
+	_id : string
+	username : string
+	password : string
+	mobile : string
+	status : number
+	create_time : string
 }

@@ -148,7 +148,7 @@
 
 	.header {
 		padding: 16px;
-		background: linear-gradient(135deg, #5250b3 0%, #3a3899 100%);
+		background: linear-gradient(to bottom right, #5250b3, #3a3899);
 		border-radius: 12px;
 		margin-bottom: 16px;
 	}
@@ -158,7 +158,7 @@
 	}
 
 	.title {
-		color: #444;
+		color: #fff;
 		font-size: 18px;
 		font-weight: 700;
 	}
@@ -170,7 +170,7 @@
 	}
 
 	.info-row-text {
-		color: #444;
+		color: #fff;
 		font-size: 13px;
 	}
 
@@ -181,13 +181,13 @@
 	.progress-bar {
 		height: 6px;
 		width: 100%;
-		background-color: #f5f7fa;
+		background-color: #eee;
 		border-radius: 3px;
 	}
 
 	.progress-fill {
 		height: 100%;
-		background-color: #5250b3;
+		background-color: #999;
 		border-radius: 3px;
 	}
 
@@ -199,7 +199,7 @@
 
 	.progress-info-text {
 		font-size: 12px;
-		color: #444;
+		color: #fff;
 	}
 
 	/* 答题卡 */
@@ -250,6 +250,8 @@
 		border-color: #e4e6eb;
 		align-items: center;
 		justify-content: center;
+		margin-right: 5px;
+		margin-bottom: 5px;
 	}
 
 	.btn-text {

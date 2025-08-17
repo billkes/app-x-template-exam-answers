@@ -2,8 +2,6 @@
 	<!-- 页面级滚动：根节点 scroll-view -->
 	<scroll-view class="page-scroll">
 
-		<button @click="handleTest">测试按钮</button>
-
 		<!-- 游客模式提示面板 -->
 		<view v-if="!isLoggedIn" class="guest-banner">
 			<text class="guest-text">👋 欢迎！您正在以游客身份浏览，登录后可查看完整考试列表</text>
@@ -260,12 +258,6 @@
 			myExamsLoading.value = false
 			randomExamsLoading.value = false
 		}
-	}
-
-	function handleTest() {
-		uni.navigateTo({
-			url: '/pages/dynamic/answer'
-		})
 	}
 
 	// 登录注册相关方法

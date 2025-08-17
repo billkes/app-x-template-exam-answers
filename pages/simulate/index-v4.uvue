@@ -72,7 +72,7 @@
 
 <script setup lang="uts">
 	import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
-	import { DataType, dataList } from '@/pages/simulate/data.uts'
+	import { DataType, dataList } from '@/assets/mock/simulate.data.uts'
 
 	// 题目列表
 	const data = ref<DataType[]>([])

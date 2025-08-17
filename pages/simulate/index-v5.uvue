@@ -1,18 +1,28 @@
 <template>
+	<!-- 页面容器：滚动视图 -->
 	<scroll-view class="page">
-		<!-- 头部信息 -->
+		<!-- 头部信息区域 -->
 		<view class="header">
+			<!-- 标题行 -->
 			<view class="title-row">
 				<text class="title">📝 前端开发工程师认证考试</text>
 			</view>
+
+			<!-- 考试信息行 -->
 			<view class="info-row">
 				<text class="info-row-text">考试时间: 120分钟</text>
+				<!-- 动态显示格式化后的剩余时间 -->
 				<text class="info-row-text">剩余时间: {{ formattedTime }}</text>
 			</view>
+
+			<!-- 进度条区域 -->
 			<view class="progress-wrap">
+				<!-- 进度条背景 -->
 				<view class="progress-bar">
+					<!-- 动态进度填充条（根据progress计算宽度） -->
 					<view class="progress-fill" :style="{ width: progress + '%' }" />
 				</view>
+				<!-- 进度信息 -->
 				<view class="progress-info">
 					<text class="progress-info-text">已完成 {{ progress }}%</text>
 					<text class="progress-info-text">{{ answered }}/{{ questions.length }} 题</text>
@@ -22,16 +32,21 @@
 
 		<!-- 答题卡：可展开收起 -->
 		<view class="card">
+			<!-- 答题卡头部（点击可展开/收起） -->
 			<view class="card-header" @tap="toggleExpand">
 				<text class="card-title">🔢 答题卡</text>
+				<!-- 动态旋转箭头（根据展开状态） -->
 				<text class="arrow" :class="{ up: expanded }">▼</text>
 			</view>
 
+			<!-- 答题卡主体（展开时显示） -->
 			<view v-if="expanded" class="card-body">
 				<view class="grid">
-					<view v-for="(item, idx) in questions.length" :key="idx"
-						:class="questions[idx].id === current ? 'btn-current' : isAnswered(idx) ? 'btn-answered' : 'btn'"
-						@tap="handleJump(idx)">
+					<!-- 遍历生成所有题目的答题卡按钮 -->
+					<!-- 动态按钮样式：当前题/已答题/未答题 -->
+					<view v-for="(item, idx) in questions.length" :key="idx" :class="questions[idx].id === current ? 'btn-current' : isAnswered(idx) ? 'btn-answered' :
+						'btn'" @tap="handleJump(idx)">
+						<!-- 按钮文本样式 -->
 						<text
 							:class="questions[idx].id === current ? 'btn-text-current' : isAnswered(idx) ? 'btn-text-answered' : 'btn-text'">{{ item }}</text>
 					</view>
@@ -41,25 +56,33 @@
 
 		<!-- 题目区域 -->
 		<view class="question-card" v-if="current !== ''">
+			<!-- 题目头部信息 -->
 			<view class="question-header">
+				<!-- 显示题目类型（单选/多选） -->
 				<text class="type">{{ questionType }}</text>
+				<!-- 显示题目分值 -->
 				<text class="score">{{ questionScore }}</text>
 			</view>
+			<!-- 题目文本（显示题号和题干） -->
 			<text class="question-text">
 				{{ questions.findIndex(q=>q.id === current) + 1 }}. {{ stem }}
 			</text>
 
-			<!-- 选项 -->
+			<!-- 选项区域 -->
 			<view class="options">
+				<!-- 遍历生成选项 -->
+				<!-- 动态选项样式（是否被选中） -->
 				<view v-for="(opt, idx) in options" :key="idx" class="option"
-					:class="{ selected: isSelected(optKey[idx])  }" @tap="handleSelect(optKey[idx])">
+					:class="{ selected: isSelected(optKey[idx]) }" @tap="handleSelect(optKey[idx])">
+					<!-- 选项标记（A/B/C/D...） -->
 					<view class="marker">
 						<text class="marker-text">
 							{{ optKey[idx] }}
 						</text>
 					</view>
+					<!-- 选项文本内容 -->
 					<text class="text">{{ opt }}</text>
-					<!-- 多选题选中标记 -->
+					<!-- 多选题选中标记（只在多选题且选中时显示） -->
 					<view v-if="currentQuestion.type === 'multiple' && isSelected(optKey[idx])"
 						class="multi-select-mark">
 						<text class="multi-select-mark-text">✓</text>
@@ -67,9 +90,11 @@
 				</view>
 			</view>
 
-			<!-- 底部按钮 -->
+			<!-- 底部按钮区域 -->
 			<view class="footer">
+				<!-- 上一题按钮 -->
 				<button class="custom-btn btn-prev" @tap="handlePrev">上一题</button>
+				<!-- 动态按钮：最后一题前显示"下一题"，最后一题显示"提交试卷" -->
 				<button v-if="questions.findIndex(q=>q.id === current) < questions.length - 1"
 					class="custom-btn btn-next" @tap="handleNext">下一题</button>
 				<button v-else class="custom-btn btn-submit" @tap="handleSubmit">提交试卷</button>
@@ -83,11 +108,14 @@
 	import { dataList } from "@/assets/mock/simulate-v5.data.uts"
 	import { Question } from "@/assets/type/exam.type.uts"
 
-	// 基础数据
+	// 当前显示的题目ID
 	const current = ref('')
-	const answered = ref(0) // 已答
-	const userAnswers = ref<Map<string, string[]>>(new Map())// 用户答案记录
-	const currentAnswers = ref<string[]>([])// 当前题目答案
+	// 已答题数量
+	const answered = ref(0)
+	// 用户答案映射表（题目ID -> 答案数组）
+	const userAnswers = ref<Map<string, string[]>>(new Map())
+	// 当前题目的答案数组
+	const currentAnswers = ref<string[]>([])
 
 	// 获取当前题目的用户答案
 	const getCurrentUserAnswers = () => {
@@ -95,13 +123,15 @@
 		return (list !== null && Array.isArray(list)) ? list : []
 	}
 
-	// 倒计时相关
-	// const examDuration = 120 * 60 // 考试总时长(秒)
-	const examDuration = 100 // 考试总时长(秒)
-	const remainingTime = ref(examDuration) // 剩余时间(秒)
+	// 考试时长设置（秒）
+	// const examDuration = 120 * 60 // 实际考试时间（2小时）
+	const examDuration = 100 // 测试用时间（100秒）
+	// 剩余时间（秒）
+	const remainingTime = ref(examDuration)
+	// 计时器引用
 	let timer : number | null = null
 
-	// 格式化时间显示
+	// 计算属性：格式化显示时间（HH:MM:SS）
 	const formattedTime = computed(() => {
 		const hours = Math.floor(remainingTime.value / 3600)
 		const minutes = Math.floor((remainingTime.value % 3600) / 60)
@@ -109,35 +139,39 @@
 		return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
 	})
 
-	// 展开收起
+	// 答题卡展开/收起状态
 	const expanded = ref(false)
+	// 切换答题卡展开状态
 	const toggleExpand = () => {
 		expanded.value = !expanded.value
 	}
 
-	// 模拟题目数据
+	// 题目列表（从mock数据导入）
 	const questions = ref<Question[]>(dataList)
 
-	// 当前题目信息
+	// 计算属性：当前题目对象
 	const currentQuestion = computed(() : Question => {
 		const obj = questions.value.find(q => q.id === current.value)
 		return obj === null ? questions.value[0] : obj
 	})
+	// 计算属性：答题进度百分比
 	const progress = computed(() => Math.round((answered.value / questions.value.length) * 100))
 
+	// 当前题目的题干/选项/选项字母标记/类型/分值计算属性
 	const stem = computed(() => currentQuestion.value.stem)
 	const options = computed(() => currentQuestion.value.options)
 	const optKey = computed(() => ['A', 'B', 'C', 'D', 'E', 'F', 'G'].slice(0, options.value.length))
 	const questionType = computed(() => currentQuestion.value.type === 'single' ? '单选题' : '多选题')
 	const questionScore = computed(() => `本题分值: ${currentQuestion.value.score}分`)
 
+	// 判断指定索引的题目是否已回答
 	const isAnswered = (idx : number) => {
 		const id = questions.value[idx].id
 		const list = userAnswers.value.get(id)
 		return list !== null && Array.isArray(list) && list.length > 0
 	}
 
-	// 更新已答题数量
+	// 更新已答题数量（遍历答案映射表统计）
 	const updateAnsweredCount = () => {
 		let num : number = 0
 		userAnswers.value.forEach((value : string[]) => {
@@ -148,39 +182,43 @@
 		answered.value = num
 	}
 
-	// 跳转
+	// 跳转到指定索引的题目
 	const handleJump = (idx : number) => {
 		current.value = questions.value[idx].id
 		// 加载该题目的用户答案
 		currentAnswers.value = getCurrentUserAnswers()
 	}
 
-	// 选择
+	// 处理选项选择
 	const handleSelect = (key : string) => {
+		// 单选题处理逻辑
 		if (currentQuestion.value.type === 'single') {
-			// 单选题直接替换
+			// 直接替换为当前选项
 			currentAnswers.value = [key]
 		} else {
-			// 多选题切换选中状态
+			// 多选题处理逻辑：切换选中状态
 			const index = currentAnswers.value.indexOf(key)
 			if (index > -1) {
+				// 已选中则移除
 				currentAnswers.value.splice(index, 1)
 			} else {
+				// 未选中则添加
 				currentAnswers.value.push(key)
 			}
 		}
 
-		// 保存答案
+		// 保存当前题目答案到映射表
 		userAnswers.value.set(current.value, [...currentAnswers.value])
+		// 更新已答题数量统计
 		updateAnsweredCount()
 	}
 
-	// 检查选项是否被选中
+	// 判断选项是否被选中
 	const isSelected = (key : string) => {
 		return currentAnswers.value.some(str => str === key)
 	}
 
-	// 上一题 / 下一题 / 提交
+	// 切换到上一题
 	const handlePrev = () => {
 		const index = questions.value.findIndex(q => q.id === current.value)
 		if (index > 1) {
@@ -188,6 +226,7 @@
 		}
 	}
 
+	// 切换到下一题
 	const handleNext = () => {
 		const index = questions.value.findIndex(q => q.id === current.value)
 		if (index < questions.value.length) {
@@ -204,6 +243,7 @@
 		}
 	}
 
+	// 考试时间结束处理
 	const handleTimeout = () => {
 		stopTimer()
 		uni.showModal({
@@ -216,7 +256,7 @@
 		})
 	}
 
-	// 开始计时器
+	// 开始计时器（每秒更新）
 	const startTimer = () => {
 		if (timer !== null) return
 		timer = setInterval(() => {
@@ -227,6 +267,7 @@
 		}, 1000)
 	}
 
+	// 提交试卷处理
 	const handleSubmit = () => {
 		stopTimer()
 		uni.showModal({
@@ -246,18 +287,20 @@
 	 * 页面挂载完成钩子
 	 */
 	onMounted(() => {
-		// 初始化第一题的答案
+		// 初始化第一题
 		if (questions.value.length !== (0 as number)) {
 			current.value = questions.value[0].id
 			currentAnswers.value = getCurrentUserAnswers()
 		}
+		// 开始考试计时
 		startTimer()
 	})
 
 	/**
-	 * 页面卸载后
+	 * 页面卸载前钩子
 	 */
 	onBeforeUnmount(() => {
+		// 清理计时器
 		stopTimer()
 	})
 </script>

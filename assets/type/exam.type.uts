@@ -29,3 +29,12 @@ export type ExamStatistics = {
 	totalQuestions : number
 	totalScore : number
 }
+
+// 题目类型定义
+export type Question = {
+	id : string
+	type : 'single' | 'multiple'
+	stem : string
+	options : string[]
+	score : number
+}

@@ -2,7 +2,7 @@
 	<view class="app-home">
 		<!-- 欢迎卡片 -->
 		<view class="welcome-card">
-			<text class="welcome-title">考试答题模版V5.0</text>
+			<text class="welcome-title">考试答题系统模版</text>
 			<text class="welcome-subtitle">让学习更高效，让考试更轻松</text>
 		</view>
 

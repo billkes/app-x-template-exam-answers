@@ -189,8 +189,8 @@
 	import { ref, computed, onMounted } from 'vue'
 	import { getMyExamList, getRandomExams, getMyExamStatistics } from '@/assets/api/exam.api.uts'
 	import { loginUser, registerUser, getUserInfo } from '@/assets/api/user.api.uts'
-	import { ExamListReq, ExamListRow, ExamStatistics } from '@/assets/type/exam.types.uts'
-	import { UserRow, LoginResquest, RegisterResquest, LoginResponse } from '@/assets/type/user.types.uts'
+	import { ExamListReq, ExamListRow, ExamStatistics } from '@/assets/type/exam.type.uts'
+	import { UserRow, LoginResquest, RegisterResquest, LoginResponse } from '@/assets/type/user.type.uts'
 
 	// 登录状态
 	const okCode : number = 200

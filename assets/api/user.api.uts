@@ -1,5 +1,5 @@
 
-import { LoginResquest, LoginResponse, UserRow, RegisterResquest, RegisterResponse } from "@/assets/type/user.types.uts"
+import { LoginResquest, LoginResponse, UserRow, RegisterResquest, RegisterResponse } from "@/assets/type/user.type.uts"
 import { SubmitType } from '@/assets/type/common.type.uts'
 
 // 登录

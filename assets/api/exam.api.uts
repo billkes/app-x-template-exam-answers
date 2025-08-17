@@ -1,4 +1,4 @@
-import { ExamListReq, ExamListRow, ExamStatistics } from '@/assets/type/exam.types.uts'
+import { ExamListReq, ExamListRow, ExamStatistics } from '@/assets/type/exam.type.uts'
 import { PageType, SubmitType } from '@/assets/type/common.type.uts'
 
 export async function getMyExamStatistics(user_id : string) : Promise<SubmitType<ExamStatistics>> {

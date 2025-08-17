@@ -1,4 +1,3 @@
-<!-- answer-card.uvue -->
 <template>
 	<scroll-view class="page">
 		<!-- 头部信息 -->
@@ -8,7 +7,7 @@
 			</view>
 			<view class="info-row">
 				<text class="info-row-text">考试时间: 120分钟</text>
-				<text class="info-row-text">剩余时间: 01:38:24</text>
+				<text class="info-row-text">剩余时间: {{ formattedTime }}</text>
 			</view>
 			<view class="progress-wrap">
 				<view class="progress-bar">
@@ -16,7 +15,7 @@
 				</view>
 				<view class="progress-info">
 					<text class="progress-info-text">已完成 {{ progress }}%</text>
-					<text class="progress-info-text">{{ answered }}/{{ total }} 题</text>
+					<text class="progress-info-text">{{ answered }}/{{ questions.length }} 题</text>
 				</view>
 			</view>
 		</view>
@@ -30,11 +29,11 @@
 
 			<view v-if="expanded" class="card-body">
 				<view class="grid">
-					<view v-for="(item, idx) in total" :key="idx"
-						:class="idx + 1 === current ? 'btn-current' : isAnswered(idx + 1) ? 'btn-answered' : 'btn'"
-						@tap="jump(idx + 1)">
+					<view v-for="(item, idx) in questions.length" :key="idx"
+						:class="questions[idx].id === current ? 'btn-current' : isAnswered(idx) ? 'btn-answered' : 'btn'"
+						@tap="handleJump(idx)">
 						<text
-							:class="idx + 1 === current ? 'btn-text-current' : isAnswered(idx + 1) ? 'btn-text-answered' : 'btn-text'">{{ item }}</text>
+							:class="questions[idx].id === current ? 'btn-text-current' : isAnswered(idx) ? 'btn-text-answered' : 'btn-text'">{{ item }}</text>
 					</view>
 				</view>
 			</view>
@@ -43,100 +42,224 @@
 		<!-- 题目区域 -->
 		<view class="question-card">
 			<view class="question-header">
-				<text class="type">单选题</text>
-				<text class="score">本题分值: 5分</text>
+				<text class="type">{{ questionType }}</text>
+				<text class="score">{{ questionScore }}</text>
 			</view>
 			<text class="question-text">
-				{{ current }}. {{ stem }}
+				{{ questions.findIndex(q=>q.id === current) + 1 }}. {{ stem }}
 			</text>
 
 			<!-- 选项 -->
 			<view class="options">
 				<view v-for="(opt, idx) in options" :key="idx" class="option"
-					:class="{ selected: userAnswer === optKey[idx] }" @tap="select(optKey[idx])">
+					:class="{ selected: isSelected(optKey[idx])  }" @tap="handleSelect(optKey[idx])">
 					<view class="marker">
 						<text class="marker-text">
 							{{ optKey[idx] }}
 						</text>
 					</view>
 					<text class="text">{{ opt }}</text>
+					<!-- 多选题选中标记 -->
+					<view v-if="currentQuestion.type === 'multiple' && isSelected(optKey[idx])"
+						class="multi-select-mark">
+						<text class="multi-select-mark-text">✓</text>
+					</view>
 				</view>
 			</view>
 
 			<!-- 底部按钮 -->
 			<view class="footer">
-				<button class="custom-btn btn-prev" @tap="prev">上一题</button>
-				<button v-if="current < total" class="custom-btn btn-next" @tap="next">下一题</button>
-				<button v-else class="custom-btn btn-submit" @tap="submit">提交试卷</button>
+				<button class="custom-btn btn-prev" @tap="handlePrev">上一题</button>
+				<button v-if="questions.findIndex(q=>q.id === current) < questions.length - 1"
+					class="custom-btn btn-next" @tap="handleNext">下一题</button>
+				<button v-else class="custom-btn btn-submit" @tap="handleSubmit">提交试卷</button>
 			</view>
 		</view>
 	</scroll-view>
 </template>
 
 <script setup lang="uts">
-	import { ref, computed } from 'vue'
+	import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+	import { dataList } from "@/assets/mock/simulate-v5.data.uts"
+	import { Question } from "@/assets/type/exam.type.uts"
 
 	// 基础数据
-	const total = 50 // 题目总数
-	const current = ref(1)
-	const answered = ref(12) // 已答
-	const progress = computed(() => Math.round((answered.value / total) * 100))
-	const userAnswer = ref('') // 当前题答案
+	const current = ref('')
+	const answered = ref(0) // 已答
+	const userAnswers = ref<Map<string, string[]>>(new Map())// 用户答案记录
+	const currentAnswers = ref<string[]>([])// 当前题目答案
+
+	// 获取当前题目的用户答案
+	const getCurrentUserAnswers = () => {
+		const list = userAnswers.value.get(current.value)
+		return list === null ? [] : list
+	}
+
+	// 倒计时相关
+	// const examDuration = 120 * 60 // 考试总时长(秒)
+	const examDuration = 100 // 考试总时长(秒)
+	const remainingTime = ref(examDuration) // 剩余时间(秒)
+	let timer : number | null = null
+
+	// 格式化时间显示
+	const formattedTime = computed(() => {
+		const hours = Math.floor(remainingTime.value / 3600)
+		const minutes = Math.floor((remainingTime.value % 3600) / 60)
+		const seconds = remainingTime.value % 60
+		return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+	})
 
 	// 展开收起
 	const expanded = ref(false)
-	function toggleExpand() {
+	const toggleExpand = () => {
 		expanded.value = !expanded.value
 	}
 
-	// 当前题干 & 选项
-	const stem = ref('在uni-app-x中，以下关于样式的说法哪一项是正确的？')
-	const options = ['支持使用Sass和Less预处理器', '使用标准的CSS语法，但不支持Sass/Less', '只能使用内联样式，不支持外部样式表', '必须使用特定于uni-app-x的样式语言']
-	const optKey = ['A', 'B', 'C', 'D']
+	// 模拟题目数据
+	const questions = ref<Question[]>(dataList)
 
-	// 模拟历史答题记录
-	const record = ref<Set<number>>(new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]))
-	function isAnswered(no : number) {
-		return record.value.has(no)
+	// 当前题目信息
+	const currentQuestion = computed(() : Question => {
+		const obj = questions.value.find(q => q.id === current.value)
+		return obj === null ? questions.value[0] : obj
+	})
+	const progress = computed(() => Math.round((answered.value / questions.value.length) * 100))
+
+	const stem = computed(() => currentQuestion.value.stem)
+	const options = computed(() => currentQuestion.value.options)
+	const optKey = computed(() => ['A', 'B', 'C', 'D', 'E', 'F', 'G'].slice(0, options.value.length))
+	const questionType = computed(() => currentQuestion.value.type === 'single' ? '单选题' : '多选题')
+	const questionScore = computed(() => `本题分值: ${currentQuestion.value.score}分`)
+
+	const isAnswered = (idx : number) => {
+		const id = questions.value[idx].id
+		const list = userAnswers.value.get(id)
+		return list !== null && list.length > 0
+	}
+
+	// 更新已答题数量
+	const updateAnsweredCount = () => {
+		let num : number = 0
+		userAnswers.value.forEach((value : string[]) => {
+			if (value.length > 0) {
+				num++;
+			}
+		})
+		answered.value = num
 	}
 
 	// 跳转
-	function jump(no : number) {
-		current.value = no
-		userAnswer.value = ''
+	const handleJump = (idx : number) => {
+		current.value = questions.value[idx].id
+		// 加载该题目的用户答案
+		currentAnswers.value = getCurrentUserAnswers()
 	}
 
 	// 选择
-	function select(key : string) {
-		userAnswer.value = key
-		record.value.add(current.value)
-		answered.value = record.value.size
+	const handleSelect = (key : string) => {
+		if (currentQuestion.value.type === 'single') {
+			// 单选题直接替换
+			currentAnswers.value = [key]
+		} else {
+			// 多选题切换选中状态
+			const index = currentAnswers.value.indexOf(key)
+			if (index > -1) {
+				currentAnswers.value.splice(index, 1)
+			} else {
+				currentAnswers.value.push(key)
+			}
+		}
+
+		// 保存答案
+		userAnswers.value.set(current.value, [...currentAnswers.value])
+		updateAnsweredCount()
+	}
+
+	// 检查选项是否被选中
+	const isSelected = (key : string) => {
+		return currentAnswers.value.includes(key)
 	}
 
 	// 上一题 / 下一题 / 提交
-	function prev() {
-		if (current.value > 1) {
-			current.value--
-			userAnswer.value = ''
+	const handlePrev = () => {
+		const index = questions.value.findIndex(q => q.id === current.value)
+		if (index > 1) {
+			handleJump(index - 1)
 		}
 	}
-	function next() {
-		if (current.value < total) {
-			current.value++
-			userAnswer.value = ''
+
+	const handleNext = () => {
+		const index = questions.value.findIndex(q => q.id === current.value)
+		if (index < questions.value.length) {
+			handleJump(index + 1)
 		}
 	}
-	function submit() {
+
+	// 停止计时器
+	const stopTimer = () => {
+		const currentTimer = timer
+		if (currentTimer !== null) {
+			clearInterval(currentTimer)
+			timer = null
+		}
+	}
+
+	const handleTimeout = () => {
+		stopTimer()
+		uni.showModal({
+			title: '时间到',
+			content: '系统已自动交卷',
+			confirmText: '查看成绩',
+			success: () => {
+				// 这里可以跳转到成绩页面
+			}
+		})
+	}
+
+	// 开始计时器
+	const startTimer = () => {
+		if (timer !== null) return
+		timer = setInterval(() => {
+			remainingTime.value--
+			if (remainingTime.value <= 0) {
+				handleTimeout()
+			}
+		}, 1000)
+	}
+
+	const handleSubmit = () => {
+		stopTimer()
 		uni.showModal({
 			title: '提示',
 			content: '确认提交试卷？',
 			success: (res) => {
 				if (res.confirm) {
 					uni.showToast({ title: '提交成功', icon: 'success' })
+				} else {
+					startTimer() // 取消提交则重新开始计时
 				}
 			}
 		})
 	}
+
+	/**
+	 * 页面挂载完成钩子
+	 */
+	onMounted(() => {
+		// 初始化第一题的答案
+		if (questions.value.length !== (0 as number)) {
+			current.value = questions.value[0].id
+		}
+		currentAnswers.value = getCurrentUserAnswers()
+		startTimer()
+	})
+
+	/**
+	 * 页面卸载后
+	 */
+	onBeforeUnmount(() => {
+		stopTimer()
+	})
 </script>
 
 <style>
@@ -338,15 +461,35 @@
 		margin-bottom: 20px;
 	}
 
+	/* 多选题选中标记 */
+	.multi-select-mark {
+		position: absolute;
+		right: 12px;
+		width: 20px;
+		height: 20px;
+		border-radius: 10px;
+		background-color: #5250b3;
+	}
+
+	.multi-select-mark-text {
+		color: white;
+		text-align: center;
+		line-height: 20px;
+		font-size: 12px;
+	}
+
 	.option {
 		flex-direction: row;
 		align-items: center;
 		padding: 14px;
+		flex: 1;
+		box-sizing: border-box;
 		margin-bottom: 10px;
 		border-radius: 8px;
 		background-color: #f9fafc;
 		border-width: 1px;
 		border-color: #e4e6eb;
+		position: relative;
 	}
 
 	.option.selected {
@@ -362,6 +505,7 @@
 		align-items: center;
 		justify-content: center;
 		margin-right: 12px;
+		flex-shrink: 0;
 	}
 
 	.marker-text {
@@ -380,6 +524,7 @@
 	.text {
 		font-size: 15px;
 		color: #333;
+		flex: 1;
 	}
 
 	/* 底部按钮 */
@@ -409,7 +554,7 @@
 	}
 
 	.btn-submit {
-		background: linear-gradient(135deg, #5250b3 0%, #3a3899 100%);
+		background: linear-gradient(to bottom right, #5250b3, #3a3899);
 		color: #fff;
 	}
 </style>

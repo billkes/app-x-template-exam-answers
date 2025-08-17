@@ -20,10 +20,10 @@
 				<scroll-view :class="['indicator-grid', {'expanded': open}]" :scroll-top="scrollTop"
 					:show-scrollbar="false">
 					<view @click="indicator_handleClick(index)"
-						:class="current === index ? 'question-item-current' : item.select !== '' ? 'question-item-answered' : 'question-item'"
-						v-for="(item, index: number) in data" :key="index">
+						:class="current === index ? 'question-item-current' : item.select.length !== (0 as number) ? 'question-item-answered' : 'question-item'"
+						v-for="(item, index) in data" :key="index">
 						<text
-							:class="current === index ? 'question-number-current' : item.select !== '' ? 'question-number-answered' : 'question-number'">{{index + 1}}</text>
+							:class="current === index ? 'question-number-current' : item.select.length !== (0 as number) ? 'question-number-answered' : 'question-number'">{{index + 1}}</text>
 					</view>
 				</scroll-view>
 			</view>
@@ -50,16 +50,15 @@
 			</view>
 
 			<view class="navigation-buttons">
-				<button :class="['nav-button', 'prev-button', {'disabled':current==0}]" @click="handlePrev"
-					:disabled="current==0">
+				<button class="prev-button" @click="handlePrev" v-if="current!==(0 as number)">
 					上一题
 				</button>
 
-				<button :class="['nav-button', 'next-button']" v-if="current < data.length - 1" @click="handleNext">
+				<button class="next-button" v-if="current < data.length - 1" @click="handleNext">
 					下一题
 				</button>
 
-				<button :class="['nav-button', 'submit-button', {'disabled':(!data.every((o):boolean=>o.select!==''))}]"
+				<button :disabled="(!data.every((o):boolean=>o.select.length!==(0 as number)))" class="submit-button"
 					v-else @click="handleSubmit">
 					提交答卷
 				</button>
@@ -99,7 +98,7 @@
 	 * @description 每切换题目时请求接口更新题的数据
 	 * @param current
 	 */
-	function update(current : number) {
+	const update = (current : number) => {
 		console.log('题目下标', current)
 		console.log('题目答案', data.value[current].select)
 		// 请求接口
@@ -108,7 +107,7 @@
 	/**
 	 * @description 提交答题
 	 */
-	function submit() {
+	const submit = () => {
 		console.log('全部数据', data.value)
 		console.log('答案数据', data.value.map((o) => o.select))
 		// 请求接口
@@ -120,7 +119,7 @@
 	// -----分 割 线-----
 	// 以下为固定写法 有能力者修改
 
-	function getRemainingTime(milliseconds : number) : string {
+	const getRemainingTime = (milliseconds : number) : string => {
 		// 计算剩余时间
 		let seconds = Math.floor(milliseconds / 1000)
 		let minutes = Math.floor(seconds / 60)
@@ -133,12 +132,12 @@
 		return `${formattedMinutes}:${formattedSeconds}`
 	}
 
-	function setScrollTop(index : number) {
+	const setScrollTop = (index : number) => {
 		const num = Math.floor(index / 5)
 		scrollTop.value = (70 + 20) * num
 	}
 
-	function handlePrev() {
+	const handlePrev = () => {
 		const firstCurrent : number = 0
 		if (current.value === firstCurrent) {
 			current.value = 0
@@ -148,14 +147,14 @@
 		setScrollTop(current.value)
 	}
 
-	function handleNext() {
+	const handleNext = () => {
 		if (current.value !== data.value.length - 1) {
 			current.value = current.value + 1
 		}
 		setScrollTop(current.value)
 	}
 
-	function handleSubmit() {
+	const handleSubmit = () => {
 		uni.showModal({
 			title: '确认提交',
 			content: '确认提交答卷吗？提交后无法修改',
@@ -168,7 +167,7 @@
 		})
 	}
 
-	function handleClick() {
+	const handleClick = () => {
 		if (current.value < data.value.length - 1) {
 			handleNext()
 		} else {
@@ -176,19 +175,18 @@
 		}
 	}
 
-	function selectItem_handleClick(value : string) {
-		let select : string[] = data.value[current.value].select === '' ? [] : data.value[current.value].select.split(',,')
-		const index : number = select.findIndex((v : string) => v === value)
-		const noFoundIndex : number = -1
-		if (index !== noFoundIndex) {
-			select.splice(index, 1)
+	const selectItem_handleClick = (value : string) => {
+		let select : string[] = data.value[current.value].select
+		if (select.some((v : string) => v === value)) {
+			// select.splice(index, 1)
+			select = select.filter(v => v !== value)
 		} else {
 			select.push(value)
 		}
-		data.value[current.value].select = select.join(',,')
+		data.value[current.value].select = [...select]
 	}
 
-	function indicator_handleClick(index : number) {
+	const indicator_handleClick = (index : number) => {
 		current.value = index
 	}
 
@@ -228,11 +226,11 @@
 	.exam-container {
 		flex: 1;
 		background-color: #f5f7fa;
-		padding: 20rpx;
 	}
 
 	.scroll-view {
 		flex: 1;
+		padding: 20rpx;
 	}
 
 	.header-section {
@@ -240,7 +238,6 @@
 		border-radius: 20rpx;
 		padding: 30rpx;
 		margin-bottom: 20rpx;
-		box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
 	}
 
 	.logo-container {
@@ -279,7 +276,6 @@
 		border-radius: 20rpx;
 		padding: 30rpx;
 		margin-bottom: 20rpx;
-		box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
 	}
 
 	.indicator-header {
@@ -311,7 +307,7 @@
 		flex-wrap: wrap;
 		height: 80rpx;
 		overflow: hidden;
-		transition: height 0.3s ease;
+		transition: all 0.3s;
 	}
 
 	.indicator-grid.expanded {
@@ -375,7 +371,6 @@
 		border-radius: 20rpx;
 		padding: 30rpx;
 		margin-bottom: 20rpx;
-		box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
 	}
 
 	.question-content {
@@ -439,7 +434,7 @@
 		margin-bottom: 20rpx;
 	}
 
-	.nav-button {
+	.prev-button {
 		flex: 1;
 		height: 88rpx;
 		border-radius: 44rpx;
@@ -447,29 +442,32 @@
 		font-weight: bold;
 		border: none;
 		margin: 0 10rpx;
-	}
-
-	.prev-button {
-		background-color: #f0f2f5;
+		background-color: #ffffff;
 		color: #606266;
 	}
 
 	.next-button {
+		flex: 1;
+		height: 88rpx;
+		border-radius: 44rpx;
+		font-size: 32rpx;
+		font-weight: bold;
+		border: none;
+		margin: 0 10rpx;
 		background-color: #3a397a;
 		color: #ffffff;
 	}
 
 	.submit-button {
-		background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+		flex: 1;
+		height: 88rpx;
+		border-radius: 44rpx;
+		font-size: 32rpx;
+		font-weight: bold;
+		border: none;
+		margin: 0 10rpx;
+		background: linear-gradient(to bottom right, #ff6b6b, #ff8e53);
 		color: #ffffff;
-	}
-
-	.nav-button.disabled {
-		opacity: 0.5;
-	}
-
-	.nav-button:active {
-		opacity: 0.8;
 	}
 
 	.spacer {

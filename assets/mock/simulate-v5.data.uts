@@ -1,0 +1,245 @@
+import { Question } from "@/assets/type/exam.type.uts"
+
+export const dataList : Question[] = [
+	{
+		"id": "q1",
+		"stem": "uni-app x 是什么？",
+		"options": [
+			"uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。",
+			"在App端，uni-app x 在iOS编译为swift、在Android编译为kotlin。没有使用js引擎、webview，完全达到了原生应用的功能、性能。",
+			"uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。"
+		],
+		"type": "single",
+		"score": 3
+	},
+	{
+		"id": "q2",
+		"stem": "与web开发相比，uni-app x最大的变化有",
+		"options": [
+			"弱类型的js改为了强类型的uts",
+			"不再使用webview渲染，导致css有变化",
+			"App-iOS平台暂不支持async、await",
+			"不支持undefined。任何变量被定义后，都需要赋值",
+			"函数声明方式不支持作为值传递",
+			"函数表达式方式不支持默认参数"
+		],
+		"type": "multiple",
+		"score": 5
+	},
+	{
+		"id": "q3",
+		"stem": "uvue css使用,App端与web常见的区别是：",
+		"options": [
+			"当uni-app x编译到web、小程序等平台时，可以支持web的全部css。同时，编译器会进行css重置，保证ucss这个子集在各端效果的一致性。",
+			"这个子集有时也被称为ucss，但工程文件仍然是css、less、scss等后缀，style节点的lang属性也没有特殊之处。选择器只能用class，不能用tag、#id、[attr]等选择器",
+			"清晰易用、全平台支持的布局,样式不继承，即父元素样式不影响子元素",
+			"但以上仅是常见的区别，并非所有，需开发者继续阅读全文"
+		],
+		"type": "single",
+		"score": 2
+	},
+	{
+		"id": "q4",
+		"stem": "uni-app x 支持哪些平台？",
+		"options": [
+			"iOS、Android、Web、小程序",
+			"仅支持iOS和Android",
+			"支持所有主流平台，包括Windows和macOS",
+			"仅支持Web和小程序"
+		],
+		"type": "single",
+		"score": 4
+	},
+	{
+		"id": "q5",
+		"stem": "uni-app x 的渲染引擎是什么？",
+		"options": [
+			"uvue",
+			"WebView",
+			"Flutter",
+			"React Native"
+		],
+		"type": "single",
+		"score": 3
+	},
+	{
+		"id": "q6",
+		"stem": "uni-app x 的编程语言是什么？",
+		"options": [
+			"uts",
+			"JavaScript",
+			"TypeScript",
+			"Dart"
+		],
+		"type": "single",
+		"score": 1
+	},
+	{
+		"id": "q7",
+		"stem": "uni-app x 的性能优化方式有哪些？",
+		"options": [
+			"原生编译（iOS→Swift，Android→Kotlin）",
+			"使用WebView渲染",
+			"减少不必要的组件嵌套",
+			"支持多线程渲染"
+		],
+		"type": "multiple",
+		"score": 4
+	},
+	{
+		"id": "q8",
+		"stem": "uni-app x 是否支持热更新？",
+		"options": [
+			"支持，但有限制",
+			"完全支持，无限制",
+			"不支持",
+			"仅iOS支持"
+		],
+		"type": "single",
+		"score": 2
+	},
+	{
+		"id": "q9",
+		"stem": "uni-app x 的组件库是基于什么设计的？",
+		"options": [
+			"类似Vue的组件化设计",
+			"类似React的JSX语法",
+			"类似Flutter的Widget系统",
+			"原生平台UI组件"
+		],
+		"type": "single",
+		"score": 3
+	},
+	{
+		"id": "q10",
+		"stem": "uni-app x 是否兼容旧版uni-app项目？",
+		"options": [
+			"部分兼容，需适配",
+			"完全兼容",
+			"不兼容",
+			"仅兼容JavaScript项目"
+		],
+		"type": "single",
+		"score": 5
+	},
+	{
+		"id": "q11",
+		"stem": "uni-app x 的开发工具是什么？",
+		"options": [
+			"HBuilderX",
+			"VS Code",
+			"Android Studio",
+			"Xcode"
+		],
+		"type": "single",
+		"score": 1
+	},
+	{
+		"id": "q12",
+		"stem": "uni-app x 是否支持动态导入模块？",
+		"options": [
+			"支持",
+			"不支持",
+			"仅iOS支持",
+			"仅Android支持"
+		],
+		"type": "single",
+		"score": 2
+	},
+	{
+		"id": "q13",
+		"stem": "uni-app x 的UI布局方式有哪些？",
+		"options": [
+			"Flex布局",
+			"Grid布局",
+			"绝对定位",
+			"浮动布局"
+		],
+		"type": "multiple",
+		"score": 4
+	},
+	{
+		"id": "q14",
+		"stem": "uni-app x 是否支持WebAssembly？",
+		"options": [
+			"支持",
+			"不支持",
+			"未来计划支持",
+			"仅H5支持"
+		],
+		"type": "single",
+		"score": 3
+	},
+	{
+		"id": "q15",
+		"stem": "uni-app x 的调试方式有哪些？",
+		"options": [
+			"Chrome DevTools",
+			"HBuilderX内置调试器",
+			"Xcode/Android Studio原生调试",
+			"命令行日志"
+		],
+		"type": "multiple",
+		"score": 5
+	},
+	{
+		"id": "q16",
+		"stem": "uni-app x 是否支持TypeScript？",
+		"options": [
+			"支持",
+			"不支持",
+			"部分支持",
+			"仅H5支持"
+		],
+		"type": "single",
+		"score": 2
+	},
+	{
+		"id": "q17",
+		"stem": "uni-app x 的打包方式是什么？",
+		"options": [
+			"原生编译打包",
+			"Webpack打包",
+			"Vite打包",
+			"Rollup打包"
+		],
+		"type": "single",
+		"score": 4
+	},
+	{
+		"id": "q18",
+		"stem": "uni-app x 是否支持PWA？",
+		"options": [
+			"支持",
+			"不支持",
+			"未来计划支持",
+			"仅部分平台支持"
+		],
+		"type": "single",
+		"score": 1
+	},
+	{
+		"id": "q19",
+		"stem": "uni-app x 的官方文档在哪里？",
+		"options": [
+			"https://uniapp.dcloud.net.cn/uni-app-x/",
+			"GitHub Wiki",
+			"官方论坛",
+			"无官方文档"
+		],
+		"type": "single",
+		"score": 3
+	},
+	{
+		"id": "q20",
+		"stem": "uni-app x 是否支持插件扩展？",
+		"options": [
+			"支持",
+			"不支持",
+			"仅企业版支持",
+			"仅H5支持"
+		],
+		"type": "single",
+		"score": 2
+	}
+]

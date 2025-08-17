@@ -1,18 +1,20 @@
 {
 	"id": "billkes-test",
-	"displayName": "考试答题",
-	"version": "2",
-	"description": "测试答题",
+	"displayName": "考试答题系统模版",
+	"version": "5",
+	"description": "一站式智能考试平台，集成模拟练习、动态组卷和后台管理，为师生提供便捷高效的考试解决方案。",
 	"keywords": [
-		"测试答题",
-		"uni-app",
-		"x"
-	],
-	"repository": "",
+        "测试",
+        "答题",
+        "考试",
+        "刷题",
+        "admin"
+    ],
+	"repository": "https://gitee.com/hu-yuanbiao/app-x-template-exam-answers",
 	"engines": {
 		"HBuilderX": "^3.2.6",
-		"uni-app": "^3.2.6",
-		"uni-app-x": "^3.2.6"
+		"uni-app": "^4.66",
+		"uni-app-x": "^4.66"
 	},
 	"dcloudext": {
 		"sale": {
@@ -31,19 +33,19 @@
 			"data": "无",
 			"permissions": "无"
 		},
-		"npmurl": "",
-		"darkmode": "-",
-		"i18n": "-",
-		"widescreen": "-"
+		"npmurl": "https://gitee.com/hu-yuanbiao/app-x-template-exam-answers",
+		"darkmode": "x",
+		"i18n": "x",
+		"widescreen": "x"
 	},
 	"uni_modules": {
 		"dependencies": [],
 		"encrypt": [],
 		"platforms": {
 			"cloud": {
-				"tcb": "-",
-				"aliyun": "-",
-				"alipay": "-"
+				"tcb": "√",
+				"aliyun": "√",
+				"alipay": "√"
 			},
 			"client": {
 				"uni-app": {
@@ -80,13 +82,28 @@
 				},
 				"uni-app-x": {
 					"web": {
-						"safari": "-",
-						"chrome": "-"
+						"safari": {
+                            "extVersion": "5",
+                            "minVersion": "建议最新"
+                        },
+						"chrome": {
+                            "extVersion": "5",
+                            "minVersion": "建议最新"
+                        }
 					},
 					"app": {
-						"android": "-",
-						"ios": "-",
-						"harmony": "-"
+						"android": {
+                            "extVersion": "5",
+                            "minVersion": "24"
+                        },
+						"ios": {
+                            "extVersion": "5",
+                            "minVersion": "14"
+                        },
+						"harmony": {
+                            "extVersion": "5",
+                            "minVersion": "HarmonyOS 5.0.5(17)"
+                        }
 					},
 					"mp": {
 						"weixin": "-"

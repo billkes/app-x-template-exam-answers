@@ -30,9 +30,11 @@
 
 			<view v-if="expanded" class="card-body">
 				<view class="grid">
-					<view v-for="(item, idx) in total" :key="idx" class="btn"
-						:class="{ current: idx + 1 === current, answered: isAnswered(idx + 1) }" @tap="jump(idx + 1)">
-						<text class="btn-text">{{ item }}</text>
+					<view v-for="(item, idx) in total" :key="idx"
+						:class="idx + 1 === current ? 'btn-current' : isAnswered(idx + 1) ? 'btn-answered' : 'btn'"
+						@tap="jump(idx + 1)">
+						<text
+							:class="idx + 1 === current ? 'btn-text-current' : isAnswered(idx + 1) ? 'btn-text-answered' : 'btn-text'">{{ item }}</text>
 					</view>
 				</view>
 			</view>
@@ -245,13 +247,39 @@
 		width: 36px;
 		height: 36px;
 		border-radius: 6px;
-		background-color: #f0f2f5;
 		border-width: 1px;
-		border-color: #e4e6eb;
 		align-items: center;
 		justify-content: center;
 		margin-right: 5px;
 		margin-bottom: 5px;
+		background-color: #f0f2f5;
+		border-color: #e4e6eb;
+	}
+
+	.btn-answered {
+		width: 36px;
+		height: 36px;
+		border-radius: 6px;
+		border-width: 1px;
+		align-items: center;
+		justify-content: center;
+		margin-right: 5px;
+		margin-bottom: 5px;
+		background-color: #d0d7ff;
+		border-color: #b8c2ff;
+	}
+
+	.btn-current {
+		width: 36px;
+		height: 36px;
+		border-radius: 6px;
+		border-width: 1px;
+		align-items: center;
+		justify-content: center;
+		margin-right: 5px;
+		margin-bottom: 5px;
+		background-color: #5250b3;
+		border-color: #5250b3;
 	}
 
 	.btn-text {
@@ -259,18 +287,14 @@
 		color: #333;
 	}
 
-	.btn.answered {
-		background-color: #d0d7ff;
-		border-color: #b8c2ff;
-	}
-
-	.btn.current {
-		background-color: #5250b3;
-		border-color: #5250b3;
-	}
-
-	.btn.current .btn-text {
+	.btn-text-current {
+		font-size: 14px;
 		color: #fff;
+	}
+
+	.btn-text-answered {
+		font-size: 14px;
+		color: #2a3360;
 	}
 
 	/* 题目卡片 */

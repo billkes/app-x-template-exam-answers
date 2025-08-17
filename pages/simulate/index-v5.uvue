@@ -40,7 +40,7 @@
 		</view>
 
 		<!-- 题目区域 -->
-		<view class="question-card">
+		<view class="question-card" v-if="current !== ''">
 			<view class="question-header">
 				<text class="type">{{ questionType }}</text>
 				<text class="score">{{ questionScore }}</text>
@@ -92,7 +92,7 @@
 	// 获取当前题目的用户答案
 	const getCurrentUserAnswers = () => {
 		const list = userAnswers.value.get(current.value)
-		return list === null ? [] : list
+		return (list !== null && Array.isArray(list)) ? list : []
 	}
 
 	// 倒计时相关
@@ -134,7 +134,7 @@
 	const isAnswered = (idx : number) => {
 		const id = questions.value[idx].id
 		const list = userAnswers.value.get(id)
-		return list !== null && list.length > 0
+		return list !== null && Array.isArray(list) && list.length > 0
 	}
 
 	// 更新已答题数量
@@ -177,7 +177,7 @@
 
 	// 检查选项是否被选中
 	const isSelected = (key : string) => {
-		return currentAnswers.value.includes(key)
+		return currentAnswers.value.some(str => str === key)
 	}
 
 	// 上一题 / 下一题 / 提交
@@ -249,8 +249,8 @@
 		// 初始化第一题的答案
 		if (questions.value.length !== (0 as number)) {
 			current.value = questions.value[0].id
+			currentAnswers.value = getCurrentUserAnswers()
 		}
-		currentAnswers.value = getCurrentUserAnswers()
 		startTimer()
 	})
 

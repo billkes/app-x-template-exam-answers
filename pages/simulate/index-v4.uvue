@@ -1,71 +1,75 @@
 <template>
 	<view class="exam-container">
-		<scroll-view class="scroll-view">
-
-			<view class="header-section">
-				<view class="progress-info">
-					<text class="question-counter">第 {{current+1}}/{{data.length}} 题</text>
-					<text class="timer">{{countdown}}</text>
-				</view>
-			</view>
-
-			<view class="question-indicator">
-				<view class="indicator-header">
-					<text class="indicator-title">答题卡</text>
-					<view class="toggle-button" @click="open = !open">
-						<text class="toggle-icon">{{ open ? '收起' : '展开' }}</text>
+		<scroll-view class="exam-container-scroll">
+			<view class="exam-container-scroll-view">
+				<view class="header-section">
+					<view class="progress-info">
+						<text class="question-counter">第 {{current+1}}/{{data.length}} 题</text>
+						<text class="timer">{{countdown}}</text>
 					</view>
 				</view>
 
-				<scroll-view :class="['indicator-grid', {'expanded': open}]" :scroll-top="scrollTop"
-					:show-scrollbar="false">
-					<view @click="indicator_handleClick(index)"
-						:class="current === index ? 'question-item-current' : item.select.length !== (0 as number) ? 'question-item-answered' : 'question-item'"
-						v-for="(item, index) in data" :key="index">
-						<text
-							:class="current === index ? 'question-number-current' : item.select.length !== (0 as number) ? 'question-number-answered' : 'question-number'">{{index + 1}}</text>
+				<view class="question-indicator">
+					<view class="indicator-header">
+						<text class="indicator-title">答题卡</text>
+						<view class="toggle-button" @click="open = !open">
+							<text class="toggle-icon">{{ open ? '收起' : '展开' }}</text>
+						</view>
 					</view>
-				</scroll-view>
-			</view>
 
-			<view class="question-section" v-if="data.length">
-				<view class="question-content">
-					<text class="question-title">
-						{{current+1}}. {{data[current].name}}
-					</text>
+					<scroll-view :class="open ? 'scroll-view-expanded' : 'scroll-view'" :scroll-top="scrollTop"
+						:show-scrollbar="false">
+						<view :class="open ? 'indicator-grid-expanded' : 'indicator-grid'">
+							<view @click="indicator_handleClick(index)"
+								:class="current === index ? 'question-item-current' : item.select.length !== (0 as number) ? 'question-item-answered' : 'question-item'"
+								v-for="(item, index) in data" :key="index">
+								<text
+									:class="current === index ? 'question-number-current' : item.select.length !== (0 as number) ? 'question-number-answered' : 'question-number'">{{index + 1}}</text>
+							</view>
+						</view>
+					</scroll-view>
+				</view>
 
-					<view class="options-container">
-						<view :class="['option-item', {'selected':data[current].select.includes(item)}]"
-							v-for="(item, index) in data[current].options" :key="index"
-							@click="selectItem_handleClick(item)">
-							<text :class="['option-label', {'selected':data[current].select.includes(item)}]">
-								{{serialStr.split('')[index]}}.
-							</text>
-							<text :class="['option-text', {'selected':data[current].select.includes(item)}]">
-								{{item}}
-							</text>
+				<view class="question-section" v-if="data.length">
+					<view class="question-content">
+						<text class="question-title">
+							{{current+1}}. {{data[current].name}}
+						</text>
+
+						<view class="options-container">
+							<view :class="['option-item', {'selected':data[current].select.includes(item)}]"
+								v-for="(item, index) in data[current].options" :key="index"
+								@click="selectItem_handleClick(item)">
+								<text :class="['option-label', {'selected':data[current].select.includes(item)}]">
+									{{serialStr.split('')[index]}}.
+								</text>
+								<text :class="['option-text', {'selected':data[current].select.includes(item)}]">
+									{{item}}
+								</text>
+							</view>
 						</view>
 					</view>
 				</view>
+
+				<view class="navigation-buttons">
+					<button class="prev-button" @click="handlePrev" v-if="current!==(0 as number)">
+						上一题
+					</button>
+
+					<button class="next-button" v-if="current < data.length - 1" @click="handleNext">
+						下一题
+					</button>
+
+					<button :disabled="(!data.every((o):boolean=>o.select.length!==(0 as number)))"
+						class="submit-button" v-else @click="handleSubmit">
+						提交答卷
+					</button>
+				</view>
+
+				<view class="spacer"></view>
 			</view>
-
-			<view class="navigation-buttons">
-				<button class="prev-button" @click="handlePrev" v-if="current!==(0 as number)">
-					上一题
-				</button>
-
-				<button class="next-button" v-if="current < data.length - 1" @click="handleNext">
-					下一题
-				</button>
-
-				<button :disabled="(!data.every((o):boolean=>o.select.length!==(0 as number)))" class="submit-button"
-					v-else @click="handleSubmit">
-					提交答卷
-				</button>
-			</view>
-
-			<view class="spacer"></view>
 		</scroll-view>
+
 	</view>
 </template>
 
@@ -228,8 +232,11 @@
 		background-color: #f5f7fa;
 	}
 
-	.scroll-view {
+	.exam-container-scroll {
 		flex: 1;
+	}
+
+	.exam-container-scroll-view {
 		padding: 20rpx;
 	}
 
@@ -302,17 +309,26 @@
 		color: #666666;
 	}
 
+	.scroll-view {
+		height: 80rpx;
+	}
+
+	.scroll-view-expanded {
+		height: 300rpx;
+	}
+
 	.indicator-grid {
 		flex-direction: row;
 		flex-wrap: wrap;
 		height: 80rpx;
-		overflow: hidden;
 		transition: all 0.3s;
 	}
 
-	.indicator-grid.expanded {
+	.indicator-grid-expanded {
+		flex-direction: row;
+		flex-wrap: wrap;
 		height: auto;
-		max-height: 500rpx;
+		transition: all 0.3s;
 	}
 
 	.question-item-current {
@@ -325,6 +341,7 @@
 		margin-bottom: 20rpx;
 		align-items: center;
 		justify-content: center;
+		flex-shrink: 0;
 	}
 
 	.question-item-answered {

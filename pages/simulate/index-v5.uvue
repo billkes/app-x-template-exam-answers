@@ -1,106 +1,110 @@
 <template>
-	<!-- 页面容器：滚动视图 -->
-	<scroll-view class="page">
-		<!-- 头部信息区域 -->
-		<view class="header">
-			<!-- 标题行 -->
-			<view class="title-row">
-				<text class="title">📝 前端开发工程师认证考试</text>
-			</view>
+	<view class="page">
+		<!-- 页面容器：滚动视图 -->
+		<scroll-view class="page-scroll">
+			<view class="page-scroll-view">
+				<!-- 头部信息区域 -->
+				<view class="header">
+					<!-- 标题行 -->
+					<view class="title-row">
+						<text class="title">📝 前端开发工程师认证考试</text>
+					</view>
 
-			<!-- 考试信息行 -->
-			<view class="info-row">
-				<text class="info-row-text">考试时间: 120分钟</text>
-				<!-- 动态显示格式化后的剩余时间 -->
-				<text class="info-row-text">剩余时间: {{ formattedTime }}</text>
-			</view>
+					<!-- 考试信息行 -->
+					<view class="info-row">
+						<text class="info-row-text">考试时间: 120分钟</text>
+						<!-- 动态显示格式化后的剩余时间 -->
+						<text class="info-row-text">剩余时间: {{ formattedTime }}</text>
+					</view>
 
-			<!-- 进度条区域 -->
-			<view class="progress-wrap">
-				<!-- 进度条背景 -->
-				<view class="progress-bar">
-					<!-- 动态进度填充条（根据progress计算宽度） -->
-					<view class="progress-fill" :style="{ width: progress + '%' }" />
+					<!-- 进度条区域 -->
+					<view class="progress-wrap">
+						<!-- 进度条背景 -->
+						<view class="progress-bar">
+							<!-- 动态进度填充条（根据progress计算宽度） -->
+							<view class="progress-fill" :style="{ width: progress + '%' }" />
+						</view>
+						<!-- 进度信息 -->
+						<view class="progress-info">
+							<text class="progress-info-text">已完成 {{ progress }}%</text>
+							<text class="progress-info-text">{{ answered }}/{{ questions.length }} 题</text>
+						</view>
+					</view>
 				</view>
-				<!-- 进度信息 -->
-				<view class="progress-info">
-					<text class="progress-info-text">已完成 {{ progress }}%</text>
-					<text class="progress-info-text">{{ answered }}/{{ questions.length }} 题</text>
+
+				<!-- 答题卡：可展开收起 -->
+				<view class="card">
+					<!-- 答题卡头部（点击可展开/收起） -->
+					<view class="card-header" @tap="toggleExpand">
+						<text class="card-title">🔢 答题卡</text>
+						<!-- 动态旋转箭头（根据展开状态） -->
+						<text class="arrow" :class="{ up: expanded }">▼</text>
+					</view>
+
+					<!-- 答题卡主体（展开时显示） -->
+					<view v-if="expanded" class="card-body">
+						<view class="grid">
+							<!-- 遍历生成所有题目的答题卡按钮 -->
+							<!-- 动态按钮样式：当前题/已答题/未答题 -->
+							<view v-for="(item, idx) in questions.length" :key="idx" :class="questions[idx].id === current ? 'btn-current' : isAnswered(idx) ? 'btn-answered' :
+								'btn'" @tap="handleJump(idx)">
+								<!-- 按钮文本样式 -->
+								<text
+									:class="questions[idx].id === current ? 'btn-text-current' : isAnswered(idx) ? 'btn-text-answered' : 'btn-text'">{{ item }}</text>
+							</view>
+						</view>
+					</view>
 				</view>
-			</view>
-		</view>
 
-		<!-- 答题卡：可展开收起 -->
-		<view class="card">
-			<!-- 答题卡头部（点击可展开/收起） -->
-			<view class="card-header" @tap="toggleExpand">
-				<text class="card-title">🔢 答题卡</text>
-				<!-- 动态旋转箭头（根据展开状态） -->
-				<text class="arrow" :class="{ up: expanded }">▼</text>
-			</view>
+				<!-- 题目区域 -->
+				<view class="question-card" v-if="current !== ''">
+					<!-- 题目头部信息 -->
+					<view class="question-header">
+						<!-- 显示题目类型（单选/多选） -->
+						<text class="type">{{ questionType }}</text>
+						<!-- 显示题目分值 -->
+						<text class="score">{{ questionScore }}</text>
+					</view>
+					<!-- 题目文本（显示题号和题干） -->
+					<text class="question-text">
+						{{ questions.findIndex(q=>q.id === current) + 1 }}. {{ stem }}
+					</text>
 
-			<!-- 答题卡主体（展开时显示） -->
-			<view v-if="expanded" class="card-body">
-				<view class="grid">
-					<!-- 遍历生成所有题目的答题卡按钮 -->
-					<!-- 动态按钮样式：当前题/已答题/未答题 -->
-					<view v-for="(item, idx) in questions.length" :key="idx" :class="questions[idx].id === current ? 'btn-current' : isAnswered(idx) ? 'btn-answered' :
-						'btn'" @tap="handleJump(idx)">
-						<!-- 按钮文本样式 -->
-						<text
-							:class="questions[idx].id === current ? 'btn-text-current' : isAnswered(idx) ? 'btn-text-answered' : 'btn-text'">{{ item }}</text>
+					<!-- 选项区域 -->
+					<view class="options">
+						<!-- 遍历生成选项 -->
+						<!-- 动态选项样式（是否被选中） -->
+						<view v-for="(opt, idx) in options" :key="idx" class="option"
+							:class="{ selected: isSelected(optKey[idx]) }" @tap="handleSelect(optKey[idx])">
+							<!-- 选项标记（A/B/C/D...） -->
+							<view class="marker">
+								<text class="marker-text">
+									{{ optKey[idx] }}
+								</text>
+							</view>
+							<!-- 选项文本内容 -->
+							<text class="text">{{ opt }}</text>
+							<!-- 多选题选中标记（只在多选题且选中时显示） -->
+							<view v-if="currentQuestion.type === 'multiple' && isSelected(optKey[idx])"
+								class="multi-select-mark">
+								<text class="multi-select-mark-text">✓</text>
+							</view>
+						</view>
+					</view>
+
+					<!-- 底部按钮区域 -->
+					<view class="footer">
+						<!-- 上一题按钮 -->
+						<button class="custom-btn btn-prev" @tap="handlePrev">上一题</button>
+						<!-- 动态按钮：最后一题前显示"下一题"，最后一题显示"提交试卷" -->
+						<button v-if="questions.findIndex(q=>q.id === current) < questions.length - 1"
+							class="custom-btn btn-next" @tap="handleNext">下一题</button>
+						<button v-else class="custom-btn btn-submit" @tap="handleSubmit">提交试卷</button>
 					</view>
 				</view>
 			</view>
-		</view>
-
-		<!-- 题目区域 -->
-		<view class="question-card" v-if="current !== ''">
-			<!-- 题目头部信息 -->
-			<view class="question-header">
-				<!-- 显示题目类型（单选/多选） -->
-				<text class="type">{{ questionType }}</text>
-				<!-- 显示题目分值 -->
-				<text class="score">{{ questionScore }}</text>
-			</view>
-			<!-- 题目文本（显示题号和题干） -->
-			<text class="question-text">
-				{{ questions.findIndex(q=>q.id === current) + 1 }}. {{ stem }}
-			</text>
-
-			<!-- 选项区域 -->
-			<view class="options">
-				<!-- 遍历生成选项 -->
-				<!-- 动态选项样式（是否被选中） -->
-				<view v-for="(opt, idx) in options" :key="idx" class="option"
-					:class="{ selected: isSelected(optKey[idx]) }" @tap="handleSelect(optKey[idx])">
-					<!-- 选项标记（A/B/C/D...） -->
-					<view class="marker">
-						<text class="marker-text">
-							{{ optKey[idx] }}
-						</text>
-					</view>
-					<!-- 选项文本内容 -->
-					<text class="text">{{ opt }}</text>
-					<!-- 多选题选中标记（只在多选题且选中时显示） -->
-					<view v-if="currentQuestion.type === 'multiple' && isSelected(optKey[idx])"
-						class="multi-select-mark">
-						<text class="multi-select-mark-text">✓</text>
-					</view>
-				</view>
-			</view>
-
-			<!-- 底部按钮区域 -->
-			<view class="footer">
-				<!-- 上一题按钮 -->
-				<button class="custom-btn btn-prev" @tap="handlePrev">上一题</button>
-				<!-- 动态按钮：最后一题前显示"下一题"，最后一题显示"提交试卷" -->
-				<button v-if="questions.findIndex(q=>q.id === current) < questions.length - 1"
-					class="custom-btn btn-next" @tap="handleNext">下一题</button>
-				<button v-else class="custom-btn btn-submit" @tap="handleSubmit">提交试卷</button>
-			</view>
-		</view>
-	</scroll-view>
+		</scroll-view>
+	</view>
 </template>
 
 <script setup lang="uts">
@@ -308,10 +312,17 @@
 <style>
 	/* 仅支持 flex，主题色 #5250b3 */
 	.page {
-		flex-direction: column;
-		padding: 16px;
 		flex: 1;
 		background-color: #f5f7fa;
+	}
+
+	.page-scroll {
+		flex: 1;
+	}
+
+	.page-scroll-view {
+		padding: 16px;
+		flex-direction: column;
 	}
 
 	.header {

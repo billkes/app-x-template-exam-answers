@@ -1,137 +1,141 @@
 <template>
-	<scroll-view class="container">
-		<!-- 用户信息区域 -->
-		<view class="user-header">
-			<view class="user-info">
-				<text class="user-greeting">下午好，李明</text>
-				<text class="user-subtitle">继续你的学习之旅</text>
-			</view>
-			<view class="avatar">
-				<text class="avatar-text">L</text>
-			</view>
-		</view>
+	<view class="container">
+		<scroll-view class="container-scroll">
+			<view class="container-scroll-view">
 
-		<!-- 学习进度卡片 -->
-		<view class="progress-card">
-			<view class="progress-header">
-				<text class="progress-title">本周学习进度</text>
-				<text class="progress-stats">65% 已完成</text>
-			</view>
-			<view class="progress-bar">
-				<view class="progress-fill"></view>
-			</view>
-			<text class="progress-desc">已完成 13/20 小时目标</text>
-		</view>
-
-		<!-- 核心功能按钮 -->
-		<view class="actions-grid">
-			<view class="action-card" @tap="navigateTo('practice')">
-				<view class="action-icon practice-icon"></view>
-				<text class="action-title">开始练习</text>
-				<text class="action-desc">随机题目测试</text>
-			</view>
-
-			<view class="action-card" @tap="navigateTo('exam')">
-				<view class="action-icon exam-icon"></view>
-				<text class="action-title">模拟考试</text>
-				<text class="action-desc">全真模拟测试</text>
-			</view>
-
-			<view class="action-card" @tap="navigateTo('materials')">
-				<view class="action-icon materials-icon"></view>
-				<text class="action-title">学习资料</text>
-				<text class="action-desc">知识点与讲义</text>
-			</view>
-
-			<view class="action-card" @tap="navigateTo('analysis')">
-				<view class="action-icon analysis-icon"></view>
-				<text class="action-title">成绩分析</text>
-				<text class="action-desc">学习报告与统计</text>
-			</view>
-		</view>
-
-		<!-- 开始学习 CTA 按钮 -->
-		<button class="cta-button" @tap="startLearning">开始今日学习</button>
-
-		<!-- 近期考试列表 -->
-		<view class="section">
-			<text class="section-title">近期考试</text>
-			<view class="exam-list">
-				<view class="exam-card" v-for="(exam, index) in recentExams" :key="index">
-					<view class="exam-info">
-						<text class="exam-name">{{ exam.name }}</text>
-						<text class="exam-details">{{ exam.location }} | {{ exam.time }}</text>
+				<!-- 用户信息区域 -->
+				<view class="user-header">
+					<view>
+						<text class="user-greeting">下午好，李明</text>
+						<text class="user-subtitle">继续你的学习之旅</text>
 					</view>
-					<view class="exam-date-info">
-						<text class="exam-date">{{ exam.date }}</text>
-						<text class="exam-days-left">还剩{{ exam.daysLeft }}天</text>
+					<view class="avatar">
+						<text class="avatar-text">L</text>
+					</view>
+				</view>
+
+				<!-- 学习进度卡片 -->
+				<view class="progress-card">
+					<view class="progress-header">
+						<text class="progress-title">本周学习进度</text>
+						<text class="progress-stats">65% 已完成</text>
+					</view>
+					<view class="progress-bar">
+						<view class="progress-fill"></view>
+					</view>
+					<text class="progress-desc">已完成 13/20 小时目标</text>
+				</view>
+
+				<!-- 核心功能按钮 -->
+				<view class="actions-grid">
+					<view class="grid-col grid-col-1">
+						<view class="action-card action-card-1" hover-class="action-card-hover-1" hover-start-time="0"
+							hover-stay-time="100" @tap="navigateTo('practice')">
+							<view class="action-icon">
+								<text class="action-icon-text action-icon-play">🚩</text>
+							</view>
+							<text class="action-title">开始练习</text>
+							<text class="action-desc">随机题目测试</text>
+						</view>
+					</view>
+					<view class="grid-col grid-col-2">
+						<view class="action-card action-card-2" hover-class="action-card-hover-2" hover-start-time="0"
+							hover-stay-time="100" @tap="navigateTo('exam')">
+							<view class="action-icon">
+								<text class="action-icon-text">📋</text>
+							</view>
+							<view></view>
+							<text class="action-title">模拟考试</text>
+							<text class="action-desc">全真模拟测试</text>
+						</view>
+					</view>
+					<view class="grid-col grid-col-3">
+						<view class="action-card action-card-3" hover-class="action-card-hover-3" hover-start-time="0"
+							hover-stay-time="100" @tap="navigateTo('materials')">
+							<view class="action-icon">
+								<text class="action-icon-text">📚</text>
+							</view>
+							<text class="action-title">学习资料</text>
+							<text class="action-desc">知识点与讲义</text>
+						</view>
+					</view>
+					<view class="grid-col grid-col-4">
+						<view class="action-card action-card-4" hover-class="action-card-hover-4" hover-start-time="0"
+							hover-stay-time="100" @tap="navigateTo('analysis')">
+							<view class="action-icon">
+								<text class="action-icon-text">📊</text>
+							</view>
+							<text class="action-title">成绩分析</text>
+							<text class="action-desc">学习报告与统计</text>
+						</view>
+					</view>
+				</view>
+
+				<!-- 近期考试列表 -->
+				<view class="section">
+					<view class="section-title">
+						<text class="section-title-text">近期考试</text>
+					</view>
+					<view class="exam-card" v-for="(exam, index) in recentExams" :key="index">
+						<view>
+							<text class="exam-name">{{ exam.name }}</text>
+							<text class="exam-details">{{ exam.location }} | {{ exam.time }}</text>
+						</view>
+						<view class="exam-date-info">
+							<text class="exam-date">{{ exam.date }}</text>
+							<text class="exam-days-left">还剩{{ exam.daysLeft }}天</text>
+						</view>
+					</view>
+				</view>
+
+				<!-- 学科导航 -->
+				<view class="section">
+					<view class="section-title">
+						<text class="section-title-text">学科导航</text>
+					</view>
+					<view class="subject-view">
+						<view class="subject-item" v-for="(subject, index) in subjects" :key="index"
+							@tap="navigateToSubject(subject.name)">
+							<view class="subject-icon">
+								<text :style="`font-size: ${subject.size}rpx;`">{{subject.icon}}</text>
+							</view>
+							<text class="subject-name">{{ subject.name }}</text>
+						</view>
+					</view>
+				</view>
+
+				<!-- 学习数据统计 -->
+				<view class="section">
+					<view class="section-title">
+						<text class="section-title-text">学习数据</text>
+					</view>
+					<view class="stats-card">
+						<view class="stats-grid">
+							<view class="stat-item stat-item-1">
+								<text class="stat-value">{{ learningStats.completedExercises }}</text>
+								<text class="stat-label">已完成练习</text>
+							</view>
+
+							<view class="stat-item stat-item-2">
+								<text class="stat-value">{{ learningStats.accuracyRate }}</text>
+								<text class="stat-label">正确率</text>
+							</view>
+
+							<view class="stat-item stat-item-3">
+								<text class="stat-value">{{ learningStats.studyHours }}</text>
+								<text class="stat-label">学习小时数</text>
+							</view>
+
+							<view class="stat-item stat-item-4">
+								<text class="stat-value">{{ learningStats.mockExams }}</text>
+								<text class="stat-label">模拟考试</text>
+							</view>
+						</view>
 					</view>
 				</view>
 			</view>
-		</view>
-
-		<!-- 学科导航 -->
-		<view class="section">
-			<text class="section-title">学科导航</text>
-			<view class="subject-scroll">
-				<view class="subject-item" v-for="(subject, index) in subjects" :key="index"
-					@tap="navigateToSubject(subject.name)">
-					<view class="subject-icon" :class="subject.iconClass"></view>
-					<text class="subject-name">{{ subject.name }}</text>
-				</view>
-			</view>
-		</view>
-
-		<!-- 学习数据统计 -->
-		<view class="section">
-			<text class="section-title">学习数据</text>
-			<view class="stats-card">
-				<view class="stats-grid">
-					<view class="stat-item">
-						<text class="stat-value">{{ learningStats.completedExercises }}</text>
-						<text class="stat-label">已完成练习</text>
-					</view>
-
-					<view class="stat-item">
-						<text class="stat-value">{{ learningStats.accuracyRate }}</text>
-						<text class="stat-label">正确率</text>
-					</view>
-
-					<view class="stat-item">
-						<text class="stat-value">{{ learningStats.studyHours }}</text>
-						<text class="stat-label">学习小时数</text>
-					</view>
-
-					<view class="stat-item">
-						<text class="stat-value">{{ learningStats.mockExams }}</text>
-						<text class="stat-label">模拟考试</text>
-					</view>
-				</view>
-			</view>
-		</view>
-	</scroll-view>
-
-	<!-- 底部导航栏 -->
-	<view class="bottom-nav">
-		<view class="nav-item active" @tap="navigateTo('home')">
-			<view class="nav-icon home-icon"></view>
-			<text class="nav-label">首页</text>
-		</view>
-
-		<view class="nav-item" @tap="navigateTo('learning')">
-			<view class="nav-icon learning-icon"></view>
-			<text class="nav-label">学习</text>
-		</view>
-
-		<view class="nav-item" @tap="navigateTo('statistics')">
-			<view class="nav-icon statistics-icon"></view>
-			<text class="nav-label">统计</text>
-		</view>
-
-		<view class="nav-item" @tap="navigateTo('profile')">
-			<view class="nav-icon profile-icon"></view>
-			<text class="nav-label">我的</text>
-		</view>
+		</scroll-view>
+		<BottomNav />
 	</view>
 </template>
 
@@ -165,11 +169,11 @@
 
 	// 学科导航数据
 	const subjects = ref([
-		{ name: '数学', iconClass: 'math-icon' },
-		{ name: '英语', iconClass: 'english-icon' },
-		{ name: '计算机', iconClass: 'computer-icon' },
-		{ name: '物理', iconClass: 'physics-icon' },
-		{ name: '化学', iconClass: 'chemistry-icon' }
+		{ name: '数学', icon: '∑', size: 40 },
+		{ name: '英语', icon: '🔤', size: 40 },
+		{ name: '计算机', icon: '💻', size: 40 },
+		{ name: '物理', icon: '⚛', size: 60 },
+		{ name: '化学', icon: '🧪', size: 40 }
 	])
 
 	// 学习统计数据
@@ -197,46 +201,53 @@
 	}
 </script>
 
-<style>
+<style scoped>
 	/* 基本样式 */
 	.container {
-		display: flex;
-		flex-direction: column;
-		gap: 24rpx;
-		padding: 20rpx;
+		flex: 1;
+		background-color: #f8f9fc;
+	}
+
+	.container-scroll {
+		flex: 1;
+	}
+
+	.container-scroll-view {
+		padding: 40rpx;
 		padding-bottom: 120rpx;
 	}
 
 	/* 用户信息区域 */
 	.user-header {
-		display: flex;
+		flex-direction: row;
 		justify-content: space-between;
 		align-items: center;
-		padding: 16rpx 0;
-	}
-
-	.user-info {
-		display: flex;
-		flex-direction: column;
+		padding: 20rpx 0;
+		margin-bottom: 24rpx;
 	}
 
 	.user-greeting {
-		font-size: 24rpx;
-		font-weight: 600;
-		margin-bottom: 4rpx;
+		font-size: 48rpx;
+		font-weight: bold;
+		margin-bottom: 8rpx;
+		color: #333;
+		height: 76rpx;
+		line-height: 76rpx;
 	}
 
 	.user-subtitle {
 		color: #6c757d;
-		font-size: 14rpx;
+		font-size: 28rpx;
+		height: 44rpx;
+		line-height: 44rpx;
 	}
 
-		.avatar {
-		width: 50rpx;
-		height: 50rpx;
-		border-radius: 25rpx;
-		background-color: #3a397a;
-		display: flex;
+	.avatar {
+		width: 100rpx;
+		height: 100rpx;
+		border-radius: 50rpx;
+		background-color: #333;
+		background: linear-gradient(to bottom right, #3a397a, #6a69b3);
 		align-items: center;
 		justify-content: center;
 	}
@@ -244,238 +255,245 @@
 	.avatar-text {
 		color: white;
 		font-weight: bold;
-		font-size: 20rpx;
+		font-size: 40rpx;
 	}
 
 	/* 进度卡片 */
 	.progress-card {
 		background: white;
-		border-radius: 20rpx;
-		padding: 20rpx;
-		box-shadow: 0 8rpx 20rpx rgba(58, 57, 122, 0.08);
+		border-radius: 40rpx;
+		padding: 40rpx;
+		margin-bottom: 24rpx;
+		background-image: linear-gradient(to right, #3a397a, #6b6aa3);
 	}
 
 	.progress-header {
-		display: flex;
+		flex-direction: row;
 		justify-content: space-between;
 		align-items: center;
-		margin-bottom: 16rpx;
+		margin-bottom: 32rpx;
 	}
 
 	.progress-title {
-		font-size: 18rpx;
-		font-weight: 600;
+		font-size: 36rpx;
+		height: 56rpx;
+		line-height: 56rpx;
+		font-weight: bold;
+		color: #fff;
 	}
 
 	.progress-stats {
-		font-size: 14rpx;
-		color: #6c757d;
+		font-size: 28rpx;
+		height: 56rpx;
+		line-height: 56rpx;
+		color: #fff;
 	}
 
 	.progress-bar {
-		height: 8rpx;
-		background: #e9ecef;
-		border-radius: 4rpx;
+		height: 16rpx;
+		background: #999;
+		border-radius: 8rpx;
 		overflow: hidden;
-		margin-bottom: 8rpx;
+		margin-bottom: 16rpx;
 	}
 
 	.progress-fill {
 		height: 100%;
 		width: 65%;
-		background-color: #3a397a;
-		border-radius: 4rpx;
+		background: linear-gradient(to bottom, #fff, #999);
+		border-radius: 8rpx;
 	}
 
 	.progress-desc {
-		font-size: 14rpx;
-		color: #6c757d;
+		font-size: 28rpx;
+		color: #fff;
+		height: 50rpx;
+		line-height: 50rpx;
 	}
 
 	/* 核心功能按钮 */
 	.actions-grid {
-		display: flex;
+		margin-bottom: 48rpx;
 		flex-direction: row;
 		flex-wrap: wrap;
-		justify-content: space-between;
+	}
+
+	.grid-col {
+		width: 50%;
+	}
+
+	.grid-col-1,
+	.grid-col-2 {
+		padding-bottom: 24rpx;
+	}
+
+	.grid-col-1,
+	.grid-col-3 {
+		padding-right: 12rpx;
+	}
+
+	.grid-col-2,
+	.grid-col-4 {
+		padding-left: 12rpx;
 	}
 
 	.action-card {
-		width: 48%;
+		flex: 1;
 		background: white;
-		border-radius: 16rpx;
-		padding: 20rpx;
+		border-radius: 32rpx;
+		padding: 30rpx;
 		text-align: center;
-		box-shadow: 0 8rpx 20rpx rgba(58, 57, 122, 0.08);
-		margin-bottom: 16rpx;
+	}
+
+	.action-card-1,
+	.action-card-4 {
+		background-image: linear-gradient(to bottom right, #e0e0fa, #f2f5fa, #e0e0fa);
+	}
+
+	.action-card-2,
+	.action-card-3 {
+		background-image: linear-gradient(to top right, #e0e0fa, #f2f5fa, #e0e0fa);
+	}
+
+	.action-card-hover-1,
+	.action-card-hover-4 {
+		background-image: linear-gradient(to bottom right, #d7d7ef, #f2f5fa, #d7d7ef);
+		transform: translateY(2rpx);
+	}
+
+	.action-card-hover-2,
+	.action-card-hover-3 {
+		background-image: linear-gradient(to top right, #d7d7ef, #f2f5fa, #d7d7ef);
+		transform: translateY(2rpx);
 	}
 
 	.action-icon {
-		width: 50rpx;
-		height: 50rpx;
-		background: #f0f3ff;
-		border-radius: 50%;
-		display: flex;
+		width: 60rpx;
+		height: 60rpx;
+		border-radius: 50rpx;
 		align-items: center;
 		justify-content: center;
-		margin: 0 auto 12rpx;
-		color: #3a397a;
-		font-size: 20rpx;
+		margin: 0 auto;
 	}
 
-	.practice-icon {
-		content: '▶';
+	.action-icon-text {
+		color: #333;
+		font-size: 40rpx;
 	}
 
-	.exam-icon {
-		content: '📋';
-	}
-
-	.materials-icon {
-		content: '📚';
-	}
-
-	.analysis-icon {
-		content: '📊';
+	.action-icon-play {
+		position: relative;
+		left: 5rpx;
 	}
 
 	.action-title {
-		font-size: 16rpx;
-		margin-bottom: 8rpx;
+		font-size: 32rpx;
+		margin-bottom: 16rpx;
+		color: #333;
+		text-align: center;
+		font-weight: bold;
 	}
 
 	.action-desc {
-		font-size: 13rpx;
+		font-size: 26rpx;
 		color: #6c757d;
-	}
-
-	/* CTA按钮 */
-	.cta-button {
-		display: block;
-		width: 100%;
-		padding: 18rpx;
-		background: #3a397a;
-		color: white;
-		border: none;
-		border-radius: 16rpx;
-		font-size: 18rpx;
-		font-weight: 600;
 		text-align: center;
-		box-shadow: 0 8rpx 20rpx rgba(58, 57, 122, 0.3);
 	}
 
 	/* 区块标题 */
 	.section {
-		margin-bottom: 24rpx;
+		margin-bottom: 48rpx;
 	}
 
 	.section-title {
-		font-size: 20rpx;
-		font-weight: 600;
-		margin-bottom: 16rpx;
-		padding-left: 8rpx;
-		border-left: 4rpx solid #3a397a;
+		margin-bottom: 32rpx;
+		padding-left: 16rpx;
+		border-left: 8rpx solid #3a397a;
+	}
+
+	.section-title-text {
+		font-size: 40rpx;
+		font-weight: bold;
+		color: #333;
 	}
 
 	/* 考试列表 */
-	.exam-list {
-		display: flex;
-		flex-direction: column;
-		gap: 12rpx;
-	}
-
 	.exam-card {
-		background: white;
-		border-radius: 16rpx;
-		padding: 16rpx;
-		display: flex;
+		background: #fff;
+		border-radius: 32rpx;
+		padding: 32rpx;
+		flex-direction: row;
 		justify-content: space-between;
-		box-shadow: 0 8rpx 20rpx rgba(58, 57, 122, 0.08);
-	}
-
-	.exam-info {
-		display: flex;
-		flex-direction: column;
+		margin-bottom: 20rpx;
+		background-image: linear-gradient(to bottom right, #e0e0fa, #f2f0ff, #f6f5ff);
 	}
 
 	.exam-name {
-		font-size: 16rpx;
-		margin-bottom: 4rpx;
+		font-size: 32rpx;
+		margin-bottom: 8rpx;
+		height: 50rpx;
+		line-height: 50rpx;
+		color: #333;
 	}
 
 	.exam-details {
-		font-size: 13rpx;
+		font-size: 26rpx;
 		color: #6c757d;
+		height: 40rpx;
+		line-height: 40rpx;
 	}
 
 	.exam-date-info {
-		display: flex;
-		flex-direction: column;
 		align-items: flex-end;
 	}
 
 	.exam-date {
-		font-weight: 600;
-		color: #3a397a;
+		font-weight: bold;
+		color: #333;
+		height: 50rpx;
+		line-height: 50rpx;
+		margin-bottom: 8rpx;
 	}
 
 	.exam-days-left {
-		font-size: 12rpx;
+		font-size: 24rpx;
 		color: #ff7e5f;
-		font-weight: 500;
+		font-weight: bold;
+		height: 40rpx;
+		line-height: 40rpx;
 	}
 
 	/* 学科导航 */
-	.subject-scroll {
-		display: flex;
+	.subject-view {
 		flex-direction: row;
-		gap: 12rpx;
-		padding: 4rpx 0 16rpx;
+		flex-wrap: wrap;
+		padding: 8rpx 0 32rpx;
 	}
 
 	.subject-item {
-		flex: 0 0 auto;
-		width: 80rpx;
-		text-align: center;
+		width: 25%;
+		padding: 0 0 20rpx 0;
 	}
 
 	.subject-icon {
-		width: 60rpx;
-		height: 60rpx;
-		border-radius: 16rpx;
+		width: 120rpx;
+		height: 120rpx;
+		border-radius: 32rpx;
 		background: white;
-		display: flex;
 		align-items: center;
 		justify-content: center;
 		margin: 0 auto 8rpx;
-		box-shadow: 0 4rpx 12rpx rgba(58, 57, 122, 0.1);
-		color: #3a397a;
+		color: #333;
+		background-image: linear-gradient(to bottom right, #e0e0fa, #f2f0ff, #f6f5ff);
 		font-size: 24rpx;
 	}
 
-	.math-icon {
-		content: '∑';
-	}
-
-	.english-icon {
-		content: '🔤';
-	}
-
-	.computer-icon {
-		content: '💻';
-	}
-
-	.physics-icon {
-		content: '⚛';
-	}
-
-	.chemistry-icon {
-		content: '🧪';
-	}
-
 	.subject-name {
-		font-size: 13rpx;
-		font-weight: 500;
+		font-size: 26rpx;
+		font-weight: bold;
+		text-align: center;
+		line-height: 50rpx;
+		height: 50rpx;
 	}
 
 	/* 学习数据卡片 */
@@ -483,84 +501,48 @@
 		background: white;
 		border-radius: 20rpx;
 		padding: 20rpx;
-		box-shadow: 0 8rpx 20rpx rgba(58, 57, 122, 0.08);
 	}
 
 	.stats-grid {
-		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
-		justify-content: space-between;
 	}
 
 	.stat-item {
-		width: 48%;
-		text-align: center;
-		margin-bottom: 20rpx;
+		width: 50%;
+	}
+
+	.stat-item-1,
+	.stat-item-2 {
+		padding-bottom: 12rpx;
+	}
+
+	.stat-item-3,
+	.stat-item-4 {
+		padding-top: 12rpx;
+	}
+
+	.stat-item-1,
+	.stat-item-3 {
+		padding-right: 12rpx;
+	}
+
+	.stat-item-2,
+	.stat-item-4 {
+		padding-left: 12rpx;
 	}
 
 	.stat-value {
-		font-size: 24rpx;
-		font-weight: 700;
-		color: #3a397a;
-		margin-bottom: 4rpx;
+		font-size: 48rpx;
+		text-align: center;
+		font-weight: bold;
+		color: #333;
+		margin-bottom: 8rpx;
 	}
 
 	.stat-label {
-		font-size: 14rpx;
+		font-size: 28rpx;
+		text-align: center;
 		color: #6c757d;
-	}
-
-	/* 底部导航 */
-	.bottom-nav {
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		background: white;
-		display: flex;
-		flex-direction: row;
-		justify-content: space-around;
-		padding: 16rpx;
-		border-top: 1rpx solid #e9ecef;
-		z-index: 999;
-	}
-
-	.nav-item {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		color: #6c757d;
-		font-size: 12rpx;
-	}
-
-	.nav-item.active {
-		color: #3a397a;
-	}
-
-	.nav-icon {
-		width: 20rpx;
-		height: 20rpx;
-		margin-bottom: 4rpx;
-	}
-
-	.home-icon {
-		content: '🏠';
-	}
-
-	.learning-icon {
-		content: '📖';
-	}
-
-	.statistics-icon {
-		content: '📈';
-	}
-
-	.profile-icon {
-		content: '👤';
-	}
-
-	.nav-label {
-		font-size: 12rpx;
 	}
 </style>

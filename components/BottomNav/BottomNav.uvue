@@ -1,0 +1,79 @@
+<template>
+	<!-- 底部导航栏 -->
+	<view class="bottom-nav">
+		<view class="nav-item active">
+			<view class="nav-icon">
+				<text>🏠</text>
+			</view>
+			<text class="nav-label">首页</text>
+		</view>
+
+		<view class="nav-item">
+			<view class="nav-icon">
+				<text>📖</text>
+			</view>
+			<text class="nav-label">学习</text>
+		</view>
+
+		<view class="nav-item">
+			<view class="nav-icon">
+				<text>📈</text>
+			</view>
+			<text class="nav-label">统计</text>
+		</view>
+
+		<view class="nav-item">
+			<view class="nav-icon">
+				<text>👤</text>
+			</view>
+			<text class="nav-label">我的</text>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		name: "BottomNav",
+		data() {
+			return {
+
+			};
+		}
+	}
+</script>
+
+<style scoped>
+	/* 底部导航 */
+	.bottom-nav {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background: white;
+		flex-direction: row;
+		justify-content: space-around;
+		padding: 24rpx 32rpx;
+		border-top: 2rpx solid #e9ecef;
+		z-index: 999;
+	}
+
+	.nav-item {
+		align-items: center;
+		color: #6c757d;
+		font-size: 24rpx;
+	}
+
+	.nav-item.active {
+		color: #333;
+	}
+
+	.nav-icon {
+		width: 40rpx;
+		height: 40rpx;
+		margin-bottom: 8rpx;
+	}
+
+	.nav-label {
+		font-size: 24rpx;
+	}
+</style>

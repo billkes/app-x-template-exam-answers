@@ -1,480 +1,240 @@
 <template>
-	<!-- 页面级滚动：根节点 scroll-view -->
-	<scroll-view class="page-scroll">
-
-		<!-- 游客模式提示面板 -->
-		<view v-if="!isLoggedIn" class="guest-banner">
-			<text class="guest-text">👋 欢迎！您正在以游客身份浏览，登录后可查看完整考试列表</text>
-			<view class="guest-actions">
-				<button class="login-btn" @tap="openLoginModal">登录</button>
-				<button class="register-btn" @tap="openRegisterModal">注册</button>
+	<scroll-view class="container">
+		<!-- 用户信息区域 -->
+		<view class="user-header">
+			<view class="user-info">
+				<text class="user-greeting">下午好，李明</text>
+				<text class="user-subtitle">继续你的学习之旅</text>
+			</view>
+			<view class="avatar">
+				<text class="avatar-text">L</text>
 			</view>
 		</view>
 
-		<!-- 登录注册模态框 -->
-		<view v-if="showAuthModal" class="auth-modal">
-			<view class="auth-panel">
-				<view class="auth-header">
-					<text class="auth-title">{{ isLoginMode ? '登录' : '注册' }}</text>
-					<text class="close-btn" @tap="closeAuthModal">×</text>
-				</view>
+		<!-- 学习进度卡片 -->
+		<view class="progress-card">
+			<view class="progress-header">
+				<text class="progress-title">本周学习进度</text>
+				<text class="progress-stats">65% 已完成</text>
+			</view>
+			<view class="progress-bar">
+				<view class="progress-fill"></view>
+			</view>
+			<text class="progress-desc">已完成 13/20 小时目标</text>
+		</view>
 
-				<!-- 登录表单 -->
-				<view v-if="isLoginMode" class="auth-form">
-					<view class="form-item">
-						<text class="form-label">手机号</text>
-						<input v-model="loginForm.mobile" class="form-input" placeholder="请输入手机号" maxlength="20" />
-					</view>
-					<view class="form-item">
-						<text class="form-label">密码</text>
-						<input v-model="loginForm.password" class="form-input" type="password" placeholder="请输入密码"
-							maxlength="20" />
-					</view>
-					<button class="auth-submit" @tap="handleLogin" :disabled="loginLoading">
-						{{ loginLoading ? '登录中...' : '登录' }}
-					</button>
-				</view>
+		<!-- 核心功能按钮 -->
+		<view class="actions-grid">
+			<view class="action-card" @tap="navigateTo('practice')">
+				<view class="action-icon practice-icon"></view>
+				<text class="action-title">开始练习</text>
+				<text class="action-desc">随机题目测试</text>
+			</view>
 
-				<!-- 注册表单 -->
-				<view v-else class="auth-form">
-					<view class="form-item">
-						<text class="form-label">用户名</text>
-						<input v-model="registerForm.username" class="form-input" placeholder="请输入用户名" maxlength="20" />
-					</view>
-					<view class="form-item">
-						<text class="form-label">密码</text>
-						<input v-model="registerForm.password" class="form-input" type="password" placeholder="请输入密码"
-							maxlength="20" />
-					</view>
-					<view class="form-item">
-						<text class="form-label">手机号</text>
-						<input v-model="registerForm.mobile" class="form-input" placeholder="请输入手机号" maxlength="11" />
-					</view>
-					<button class="auth-submit" @tap="handleRegister" :disabled="registerLoading">
-						{{ registerLoading ? '注册中...' : '注册' }}
-					</button>
-				</view>
+			<view class="action-card" @tap="navigateTo('exam')">
+				<view class="action-icon exam-icon"></view>
+				<text class="action-title">模拟考试</text>
+				<text class="action-desc">全真模拟测试</text>
+			</view>
 
-				<view class="auth-switch">
-					<text @tap="switchAuthMode" class="auth-switch-text">
-						{{ isLoginMode ? '没有账号？立即注册' : '已有账号？立即登录' }}
-					</text>
+			<view class="action-card" @tap="navigateTo('materials')">
+				<view class="action-icon materials-icon"></view>
+				<text class="action-title">学习资料</text>
+				<text class="action-desc">知识点与讲义</text>
+			</view>
+
+			<view class="action-card" @tap="navigateTo('analysis')">
+				<view class="action-icon analysis-icon"></view>
+				<text class="action-title">成绩分析</text>
+				<text class="action-desc">学习报告与统计</text>
+			</view>
+		</view>
+
+		<!-- 开始学习 CTA 按钮 -->
+		<button class="cta-button" @tap="startLearning">开始今日学习</button>
+
+		<!-- 近期考试列表 -->
+		<view class="section">
+			<text class="section-title">近期考试</text>
+			<view class="exam-list">
+				<view class="exam-card" v-for="(exam, index) in recentExams" :key="index">
+					<view class="exam-info">
+						<text class="exam-name">{{ exam.name }}</text>
+						<text class="exam-details">{{ exam.location }} | {{ exam.time }}</text>
+					</view>
+					<view class="exam-date-info">
+						<text class="exam-date">{{ exam.date }}</text>
+						<text class="exam-days-left">还剩{{ exam.daysLeft }}天</text>
+					</view>
 				</view>
 			</view>
 		</view>
 
-		<!-- 用户基本信息面板 -->
-		<view v-if="isLoggedIn && currentUser !== null" class="user-info-panel">
-			<view class="user-avatar">
-				<view class="avatar-circle">
-					<text class="avatar-text">{{ currentUser!.username.charAt(0) }}</text>
+		<!-- 学科导航 -->
+		<view class="section">
+			<text class="section-title">学科导航</text>
+			<view class="subject-scroll">
+				<view class="subject-item" v-for="(subject, index) in subjects" :key="index"
+					@tap="navigateToSubject(subject.name)">
+					<view class="subject-icon" :class="subject.iconClass"></view>
+					<text class="subject-name">{{ subject.name }}</text>
 				</view>
 			</view>
-			<view class="user-details">
-				<text class="username">{{ currentUser!.username }}</text>
-				<text class="user-mobile">{{ currentUser!.mobile }}</text>
-				<text class="user-id">ID: {{ currentUser!._id.slice(-6) }}</text>
-			</view>
-			<view class="user-actions">
-				<button class="logout-btn" @tap="handleLogout">退出登录</button>
-			</view>
 		</view>
 
-		<!-- 考试统计看板 -->
-		<view class="stats-dashboard" v-if="isLoggedIn">
-			<view class="stat-card">
-				<text class="stat-number">{{ statistics.totalExams }}</text>
-				<text class="stat-label">总考试</text>
-			</view>
-			<view class="stat-card active">
-				<text class="stat-number">{{ statistics.activeExams }}</text>
-				<text class="stat-label">进行中</text>
-			</view>
-			<view class="stat-card upcoming">
-				<text class="stat-number">{{ statistics.upcomingExams }}</text>
-				<text class="stat-label">即将开始</text>
-			</view>
-			<view class="stat-card ended">
-				<text class="stat-number">{{ statistics.endedExams }}</text>
-				<text class="stat-label">已结束</text>
-			</view>
-		</view>
-
-		<!-- 加载状态 -->
-		<view v-if="myExamsLoading || randomExamsLoading" class="loading">
-			<text>{{ myExamsLoading ? '加载我的考试中...' : '加载在线考试中...' }}</text>
-		</view>
-
-		<view class="exam-main">
-			<!-- 我的考试（登录后显示） -->
-			<view v-if="isLoggedIn" class="section">
-				<text class="section-title">我的考试</text>
-				<view class="exam-list">
-					<view v-if="myExamsLoading" class="loading">
-						<text>加载中...</text>
+		<!-- 学习数据统计 -->
+		<view class="section">
+			<text class="section-title">学习数据</text>
+			<view class="stats-card">
+				<view class="stats-grid">
+					<view class="stat-item">
+						<text class="stat-value">{{ learningStats.completedExercises }}</text>
+						<text class="stat-label">已完成练习</text>
 					</view>
-					<view v-else-if="myExams.length === (0 as number)" class="empty">
-						<text class="empty-text">暂无考试安排</text>
+
+					<view class="stat-item">
+						<text class="stat-value">{{ learningStats.accuracyRate }}</text>
+						<text class="stat-label">正确率</text>
 					</view>
-					<view class="exam-card" v-for="item in myExams" :key="item._id">
-						<view class="card-header">
-							<text class="card-title">{{ item.title }}</text>
-							<text :class="['card-status', 'status-' + item.status]">
-								{{ ExamStatusTextMap[item.status] }}
-							</text>
-						</view>
 
-						<view class="card-info">
-							<view class="info-item">
-								<text class="info-icon"></text>
-								<text>{{ item.start_time }} - {{ item.end_time }}</text>
-							</view>
-							<view class="info-item">
-								<text class="info-icon"></text>
-								<text class="info-text">{{ item.questions }}题 · 总分{{ item.totalScore }}分</text>
-							</view>
-						</view>
-
-						<text class="card-desc">{{ item.description }}</text>
-
-						<view class="card-footer">
-							<text class="card-duration">{{ item.duration }}</text>
-							<button :class="['start-btn', item.status === (2 as number) ? 'disabled' : '']"
-								:disabled="item.status === (2 as number)" @tap="startExam(item._id)">
-								{{ item.status === (2 as number) ? '已结束' : item.status === (0 as number)  ? '未开始' : '开始考试' }}
-							</button>
-						</view>
+					<view class="stat-item">
+						<text class="stat-value">{{ learningStats.studyHours }}</text>
+						<text class="stat-label">学习小时数</text>
 					</view>
-				</view>
-			</view>
 
-			<!-- 在线考试（游客模式显示随机3条） -->
-			<view class="section">
-				<text class="section-title">在线考试</text>
-				<view class="exam-list">
-					<view v-if="randomExamsLoading" class="loading">
-						<text class="loading-text">加载中...</text>
-					</view>
-					<view v-else-if="randomExams.length === (0 as number)" class="empty">
-						<text class="empty-text">暂无考试信息</text>
-					</view>
-					<view class="exam-card" v-for="item in randomExams" :key="item._id">
-						<view class="card-header">
-							<text class="card-title">{{ item.title }}</text>
-							<text :class="['card-status', 'status-' + item.status]">
-								{{ ExamStatusTextMap[item.status] }}
-							</text>
-						</view>
-
-						<view class="card-info">
-							<view class="info-item">
-								<text class="info-icon"></text>
-								<text>{{ item.start_time }} - {{ item.end_time }}</text>
-							</view>
-							<view class="info-item">
-								<text class="info-icon"></text>
-								<text class="info-text">{{ item.questions }}题 · 总分{{ item.totalScore }}分</text>
-							</view>
-						</view>
-
-						<text class="card-desc">{{ item.description }}</text>
+					<view class="stat-item">
+						<text class="stat-value">{{ learningStats.mockExams }}</text>
+						<text class="stat-label">模拟考试</text>
 					</view>
 				</view>
 			</view>
 		</view>
 	</scroll-view>
+
+	<!-- 底部导航栏 -->
+	<view class="bottom-nav">
+		<view class="nav-item active" @tap="navigateTo('home')">
+			<view class="nav-icon home-icon"></view>
+			<text class="nav-label">首页</text>
+		</view>
+
+		<view class="nav-item" @tap="navigateTo('learning')">
+			<view class="nav-icon learning-icon"></view>
+			<text class="nav-label">学习</text>
+		</view>
+
+		<view class="nav-item" @tap="navigateTo('statistics')">
+			<view class="nav-icon statistics-icon"></view>
+			<text class="nav-label">统计</text>
+		</view>
+
+		<view class="nav-item" @tap="navigateTo('profile')">
+			<view class="nav-icon profile-icon"></view>
+			<text class="nav-label">我的</text>
+		</view>
+	</view>
 </template>
 
 <script setup lang="uts">
-	import { ref, computed, onMounted } from 'vue'
-	import { getMyExamList, getRandomExams, getMyExamStatistics } from '@/assets/api/exam.api.uts'
-	import { loginUser, registerUser, getUserInfo } from '@/assets/api/user.api.uts'
-	import { ExamListReq, ExamListRow, ExamStatistics } from '@/assets/type/exam.type.uts'
-	import { UserRow, LoginResquest, RegisterResquest, LoginResponse } from '@/assets/type/user.type.uts'
+	import { ref } from 'vue'
 
-	// 登录状态
-	const okCode : number = 200
-	const isLoggedIn = ref(false)
-	const currentUser = ref<UserRow | null>(null)
-	const userId = ref<string>('')
-	const ExamStatusTextMap = {
-		"0": '未开始',
-		"1": '进行中',
-		"2": '已结束'
-	}
+	// 近期考试数据
+	const recentExams = ref([
+		{
+			name: '高等数学 - 期中考试',
+			location: '第10教室',
+			time: '上午9:00-11:00',
+			date: '5月28日',
+			daysLeft: 7
+		},
+		{
+			name: '大学英语 - 期末考试',
+			location: '第3教室',
+			time: '下午2:00-4:00',
+			date: '6月15日',
+			daysLeft: 25
+		},
+		{
+			name: '计算机科学 - 实践考试',
+			location: '计算机实验室',
+			time: '上午10:00-12:00',
+			date: '6月5日',
+			daysLeft: 15
+		}
+	])
 
-	// 数据
-	const myExams = ref<ExamListRow[]>([])
-	const randomExams = ref<ExamListRow[]>([])
-	const statistics = ref<ExamStatistics>({
-		totalExams: 0,
-		activeExams: 0,
-		upcomingExams: 0,
-		endedExams: 0,
-		totalQuestions: 0,
-		totalScore: 0
+	// 学科导航数据
+	const subjects = ref([
+		{ name: '数学', iconClass: 'math-icon' },
+		{ name: '英语', iconClass: 'english-icon' },
+		{ name: '计算机', iconClass: 'computer-icon' },
+		{ name: '物理', iconClass: 'physics-icon' },
+		{ name: '化学', iconClass: 'chemistry-icon' }
+	])
+
+	// 学习统计数据
+	const learningStats = ref({
+		completedExercises: 36,
+		accuracyRate: '87%',
+		studyHours: 24,
+		mockExams: 5
 	})
 
-	// 登录注册相关
-	const showAuthModal = ref(false)
-	const isLoginMode = ref(true)
-	const loginForm = ref<LoginResquest>({ mobile: '', password: '' })
-	const registerForm = ref<RegisterResquest>({ username: '', password: '', mobile: '' })
-	const loginLoading = ref(false)
-	const registerLoading = ref(false)
-	const myExamsLoading = ref(false)
-	const randomExamsLoading = ref(false)
-
-	// 方法
-	async function loadData() {
-		try {
-			// 加载统计数据
-			const statisticsRes = await getMyExamStatistics(userId.value)
-			if (statisticsRes.code === okCode && statisticsRes.data !== null) {
-				statistics.value = statisticsRes.data
-			}
-
-			// 加载我的考试（仅登录用户）
-			if (isLoggedIn.value && userId.value !== '') {
-				myExamsLoading.value = true
-				const res = await getMyExamList({ user_id: userId.value })
-				if (res.code === okCode && res.data !== null) {
-					myExams.value = res.data
-				}
-				myExamsLoading.value = false
-			}
-
-			// 加载随机考试（游客模式）
-			randomExamsLoading.value = true
-			const randomRes = await getRandomExams(3)
-			if (randomRes.code === okCode && randomRes.data !== null) {
-				randomExams.value = randomRes.data
-			}
-			randomExamsLoading.value = false
-
-		} catch (error) {
-			console.error('加载数据失败:', JSON.stringify(error))
-			uni.showToast({ title: '加载数据失败', icon: 'error' })
-			myExamsLoading.value = false
-			randomExamsLoading.value = false
-		}
+	// 导航方法
+	function navigateTo(page : string) {
+		console.log('Navigating to:', page)
+		// 这里可以使用 uni.navigateTo 或其他导航方法
 	}
 
-	// 登录注册相关方法
-	function openLoginModal() {
-		isLoginMode.value = true
-		showAuthModal.value = true
+	function navigateToSubject(subject : string) {
+		console.log('Navigating to subject:', subject)
+		// 这里可以使用 uni.navigateTo 或其他导航方法
 	}
 
-	function openRegisterModal() {
-		isLoginMode.value = false
-		showAuthModal.value = true
+	function startLearning() {
+		console.log('Starting today,s learning')
+		// 这里可以添加开始学习的逻辑
 	}
-
-	function closeAuthModal() {
-		showAuthModal.value = false
-		loginForm.value = { mobile: '', password: '' } as LoginResquest
-		registerForm.value = { username: '', password: '', mobile: '' } as RegisterResquest
-	}
-
-	function switchAuthMode() {
-		isLoginMode.value = !isLoginMode.value
-	}
-
-	async function handleLogin() {
-		if (loginForm.value.mobile === '' || loginForm.value.password === '') {
-			uni.showToast({ title: '请填写完整信息', icon: 'none' })
-			return
-		}
-
-		loginLoading.value = true
-		let token : LoginResponse | null = null
-		try {
-			const res = await loginUser({
-				mobile: loginForm.value.mobile,
-				password: loginForm.value.password,
-			})
-			if (res.code === okCode && res.data !== null) {
-				uni.showToast({ title: '登录成功', icon: 'success' })
-				isLoggedIn.value = true
-				userId.value = res.data.id
-				token = res.data
-				closeAuthModal()
-			} else {
-				uni.showToast({ title: res.message === null ? '登录失败' : res.message, icon: 'error' })
-			}
-		} catch (error) {
-			uni.showToast({ title: '登录失败', icon: 'error' })
-		} finally {
-			loginLoading.value = false
-		}
-
-		// 保存登录信息到本地存储
-		try {
-			if (token !== null) {
-				uni.setStorageSync('token', token)
-			}
-		} catch (error) {
-			console.error('保存登录信息失败:', error)
-		}
-
-		try {
-			if (token !== null) {
-				const res1 = await getUserInfo(token.id)
-				if (res1.code === okCode && res1.data !== null) {
-					currentUser.value = res1.data
-					const userInfo = res1.data
-					uni.setStorageSync('userInfo', userInfo)
-				}
-			}
-		} catch (error) {
-			console.error('获取用户信息失败:', error)
-		}
-		await loadData()
-	}
-
-	async function handleRegister() {
-		if (registerForm.value.username === '' || registerForm.value.password === '' || registerForm.value.mobile === '') {
-			uni.showToast({ title: '请填写完整信息', icon: 'none' })
-			return
-		}
-
-		registerLoading.value = true
-		try {
-			const res = await registerUser({
-				username: registerForm.value.username,
-				password: registerForm.value.password,
-				mobile: registerForm.value.mobile,
-			})
-			if (res.code === okCode && res.data !== null) {
-				uni.showToast({ title: '注册成功', icon: 'success' })
-				// 注册成功后自动登录
-				loginForm.value = { mobile: registerForm.value.mobile, password: registerForm.value.password } as LoginResquest
-				isLoginMode.value = true
-				registerForm.value = { username: '', password: '', mobile: '' } as RegisterResquest
-			} else {
-				uni.showToast({ title: res.message === null ? '注册失败' : res.message, icon: 'error' })
-			}
-		} catch (error) {
-			uni.showToast({ title: '注册失败', icon: 'error' })
-		} finally {
-			registerLoading.value = false
-		}
-	}
-
-	async function handleLogout() {
-		isLoggedIn.value = false
-		currentUser.value = null
-		userId.value = ''
-		myExams.value = []
-		// 清除本地存储的登录信息
-		try {
-			uni.removeStorageSync('token')
-			uni.removeStorageSync('userInfo')
-		} catch (error) {
-			console.error('清除本地存储失败:', error)
-		}
-		await loadData()
-		uni.showToast({ title: '已退出登录', icon: 'success' })
-	}
-
-	function startExam(examId : string) {
-		uni.navigateTo({ url: `/pages/dynamic/answer?id=${examId}` })
-	}
-
-	// 检查登录状态
-	function checkLoginStatus() {
-		try {
-			const userInfo = uni.getStorageSync('userInfo')
-			const token = uni.getStorageSync('token')
-			if (userInfo === '' || token === '') {
-				return
-			}
-			const newUserInfo = JSON.parse<UserRow>(JSON.stringify(userInfo))
-			const newToken = JSON.parse<LoginResponse>(JSON.stringify(token))
-			if (newToken !== null && newUserInfo !== null) {
-				console.log(newUserInfo, newToken);
-				currentUser.value = newUserInfo
-				userId.value = newToken.id
-				isLoggedIn.value = true
-			}
-		} catch (error) {
-			console.error('读取本地存储失败:', error)
-		}
-	}
-
-	// 生命周期
-	onMounted(() => {
-		checkLoginStatus()
-		loadData()
-	})
 </script>
 
 <style>
-	/* ===== appx 兼容样式 ===== */
-	.page-scroll {
+	/* 基本样式 */
+	.container {
 		display: flex;
 		flex-direction: column;
-		background-color: #f9f9ff;
-		flex: 1;
+		gap: 24rpx;
+		padding: 20rpx;
+		padding-bottom: 120rpx;
 	}
 
-	/* === 游客提示横幅 === */
-	.guest-banner {
-		padding: 24rpx 32rpx;
-		background-color: #fff3cd;
-		border-bottom: 1rpx solid #ffeaa7;
-	}
-
-	.guest-text {
-		font-size: 28rpx;
-		color: #856404;
-		flex: 1;
-	}
-
-	.guest-actions {
-		margin-top: 5px;
+	/* 用户信息区域 */
+	.user-header {
 		display: flex;
-		flex-direction: row;
-	}
-
-	.login-btn {
-		background-color: #3a397a;
-		color: #ffffff;
-		border-radius: 8rpx;
-		font-size: 24rpx;
-		border: none;
-		margin-right: 10px;
-	}
-
-	.register-btn {
-		background-color: #28a745;
-		color: #ffffff;
-		border-radius: 8rpx;
-		font-size: 24rpx;
-		border: none;
-	}
-
-	/* === 用户基本信息面板 === */
-	.user-info-panel {
-		display: flex;
-		flex-direction: row;
+		justify-content: space-between;
 		align-items: center;
-		padding: 32rpx;
-		background-color: #ffffff;
-		margin-bottom: 24rpx;
-		border-radius: 16rpx;
-		box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+		padding: 16rpx 0;
 	}
 
-	.user-avatar {
-		margin-right: 24rpx;
+	.user-info {
+		display: flex;
+		flex-direction: column;
 	}
 
-	.avatar-circle {
-		width: 80rpx;
-		height: 80rpx;
-		border-radius: 40rpx;
+	.user-greeting {
+		font-size: 24rpx;
+		font-weight: 600;
+		margin-bottom: 4rpx;
+	}
+
+	.user-subtitle {
+		color: #6c757d;
+		font-size: 14rpx;
+	}
+
+		.avatar {
+		width: 50rpx;
+		height: 50rpx;
+		border-radius: 25rpx;
 		background-color: #3a397a;
 		display: flex;
 		align-items: center;
@@ -482,317 +242,325 @@
 	}
 
 	.avatar-text {
-		color: #ffffff;
-		font-size: 32rpx;
+		color: white;
 		font-weight: bold;
-	}
-
-	.user-details {
-		flex: 1;
-	}
-
-	.user-actions {
-		margin-top: 2px;
-	}
-
-	.username {
-		font-size: 32rpx;
-		font-weight: bold;
-		color: #333333;
-		margin-bottom: 8rpx;
-	}
-
-	.user-mobile {
-		font-size: 24rpx;
-		color: #666666;
-		margin-bottom: 4rpx;
-	}
-
-	.user-id {
 		font-size: 20rpx;
-		color: #999999;
 	}
 
-	.logout-btn {
-		padding: 12rpx 24rpx;
-		background-color: #dc3545;
-		color: #ffffff;
-		border-radius: 8rpx;
-		font-size: 24rpx;
-		border: none;
+	/* 进度卡片 */
+	.progress-card {
+		background: white;
+		border-radius: 20rpx;
+		padding: 20rpx;
+		box-shadow: 0 8rpx 20rpx rgba(58, 57, 122, 0.08);
 	}
 
-	/* === 统计看板 === */
-	.stats-dashboard {
+	.progress-header {
 		display: flex;
-		flex-direction: row;
 		justify-content: space-between;
-		padding: 32rpx;
-		background-color: #ffffff;
-		margin-bottom: 24rpx;
-	}
-
-	.stat-card {
-		display: flex;
-		flex-direction: column;
 		align-items: center;
-		justify-content: center;
-		padding: 24rpx;
-		border-radius: 16rpx;
-		background-color: #f8f9fa;
-		flex: 1;
-		margin: 0 8rpx;
+		margin-bottom: 16rpx;
 	}
 
-	.stat-card.active {
-		background-color: #e6f7e6;
+	.progress-title {
+		font-size: 18rpx;
+		font-weight: 600;
 	}
 
-	.stat-card.upcoming {
-		background-color: #fff8e1;
+	.progress-stats {
+		font-size: 14rpx;
+		color: #6c757d;
 	}
 
-	.stat-card.ended {
-		background-color: #fbe9e7;
-	}
-
-	.stat-number {
-		font-size: 36rpx;
-		font-weight: 700;
-		color: #3a397a;
+	.progress-bar {
+		height: 8rpx;
+		background: #e9ecef;
+		border-radius: 4rpx;
+		overflow: hidden;
 		margin-bottom: 8rpx;
 	}
 
-	.stat-label {
-		font-size: 24rpx;
-		color: #666666;
+	.progress-fill {
+		height: 100%;
+		width: 65%;
+		background-color: #3a397a;
+		border-radius: 4rpx;
 	}
 
-	/* === 登录注册模态框 === */
-	.auth-modal {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background-color: rgba(0, 0, 0, 0.5);
+	.progress-desc {
+		font-size: 14rpx;
+		color: #6c757d;
+	}
+
+	/* 核心功能按钮 */
+	.actions-grid {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+
+	.action-card {
+		width: 48%;
+		background: white;
+		border-radius: 16rpx;
+		padding: 20rpx;
+		text-align: center;
+		box-shadow: 0 8rpx 20rpx rgba(58, 57, 122, 0.08);
+		margin-bottom: 16rpx;
+	}
+
+	.action-icon {
+		width: 50rpx;
+		height: 50rpx;
+		background: #f0f3ff;
+		border-radius: 50%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		z-index: 1000;
-	}
-
-	.auth-panel {
-		width: 80%;
-		max-width: 600rpx;
-		background-color: #ffffff;
-		border-radius: 16rpx;
-		padding: 40rpx;
-	}
-
-	.auth-header {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 40rpx;
-	}
-
-	.auth-title {
-		font-size: 36rpx;
-		font-weight: bold;
-		color: #333333;
-	}
-
-	.close-btn {
-		font-size: 48rpx;
-		color: #999999;
-	}
-
-	.auth-form {
-		margin-bottom: 32rpx;
-	}
-
-	.form-item {
-		margin-bottom: 32rpx;
-	}
-
-	.form-label {
-		font-size: 28rpx;
-		color: #333333;
-		margin-bottom: 12rpx;
-	}
-
-	.form-input {
-		width: 100%;
-		padding: 20rpx;
-		border: 1rpx solid #e0e0e0;
-		border-radius: 8rpx;
-		font-size: 28rpx;
-		background-color: #f8f9fa;
-	}
-
-	.auth-submit {
-		width: 100%;
-		padding: 8rpx 24rpx;
-		background-color: #3a397a;
-		color: #ffffff;
-		border: none;
-		border-radius: 8rpx;
-		font-size: 32rpx;
-		font-weight: bold;
-	}
-
-	.auth-switch {
-		margin-top: 2px;
-	}
-
-	.auth-switch-text {
-		text-align: center;
+		margin: 0 auto 12rpx;
 		color: #3a397a;
-		font-size: 28rpx;
+		font-size: 20rpx;
 	}
 
-	/* === 主体 === */
-	.exam-main {
-		padding: 30rpx;
+	.practice-icon {
+		content: '▶';
 	}
 
+	.exam-icon {
+		content: '📋';
+	}
+
+	.materials-icon {
+		content: '📚';
+	}
+
+	.analysis-icon {
+		content: '📊';
+	}
+
+	.action-title {
+		font-size: 16rpx;
+		margin-bottom: 8rpx;
+	}
+
+	.action-desc {
+		font-size: 13rpx;
+		color: #6c757d;
+	}
+
+	/* CTA按钮 */
+	.cta-button {
+		display: block;
+		width: 100%;
+		padding: 18rpx;
+		background: #3a397a;
+		color: white;
+		border: none;
+		border-radius: 16rpx;
+		font-size: 18rpx;
+		font-weight: 600;
+		text-align: center;
+		box-shadow: 0 8rpx 20rpx rgba(58, 57, 122, 0.3);
+	}
+
+	/* 区块标题 */
 	.section {
-		margin-bottom: 48rpx;
+		margin-bottom: 24rpx;
 	}
 
 	.section-title {
-		font-size: 36rpx;
-		font-weight: 700;
-		color: #3a397a;
-		margin-bottom: 24rpx;
+		font-size: 20rpx;
+		font-weight: 600;
+		margin-bottom: 16rpx;
+		padding-left: 8rpx;
+		border-left: 4rpx solid #3a397a;
 	}
 
-	/* === 考试卡片 === */
+	/* 考试列表 */
 	.exam-list {
+		display: flex;
+		flex-direction: column;
+		gap: 12rpx;
+	}
+
+	.exam-card {
+		background: white;
+		border-radius: 16rpx;
+		padding: 16rpx;
+		display: flex;
+		justify-content: space-between;
+		box-shadow: 0 8rpx 20rpx rgba(58, 57, 122, 0.08);
+	}
+
+	.exam-info {
 		display: flex;
 		flex-direction: column;
 	}
 
-	.empty {
-		padding: 64rpx;
+	.exam-name {
+		font-size: 16rpx;
+		margin-bottom: 4rpx;
 	}
 
-	.empty-text {
-		text-align: center;
-		color: #777777;
-		font-size: 28rpx;
+	.exam-details {
+		font-size: 13rpx;
+		color: #6c757d;
 	}
 
-	.exam-card {
-		padding: 32rpx;
-		margin-bottom: 24rpx;
-		background-color: #ffffff;
-		border-left: 8rpx solid #3a397a;
-		border-radius: 16rpx;
-		box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+	.exam-date-info {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
 	}
 
-	.card-header {
+	.exam-date {
+		font-weight: 600;
+		color: #3a397a;
+	}
+
+	.exam-days-left {
+		font-size: 12rpx;
+		color: #ff7e5f;
+		font-weight: 500;
+	}
+
+	/* 学科导航 */
+	.subject-scroll {
 		display: flex;
 		flex-direction: row;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 16rpx;
+		gap: 12rpx;
+		padding: 4rpx 0 16rpx;
 	}
 
-	.card-title {
-		font-size: 32rpx;
+	.subject-item {
+		flex: 0 0 auto;
+		width: 80rpx;
+		text-align: center;
+	}
+
+	.subject-icon {
+		width: 60rpx;
+		height: 60rpx;
+		border-radius: 16rpx;
+		background: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: 0 auto 8rpx;
+		box-shadow: 0 4rpx 12rpx rgba(58, 57, 122, 0.1);
+		color: #3a397a;
+		font-size: 24rpx;
+	}
+
+	.math-icon {
+		content: '∑';
+	}
+
+	.english-icon {
+		content: '🔤';
+	}
+
+	.computer-icon {
+		content: '💻';
+	}
+
+	.physics-icon {
+		content: '⚛';
+	}
+
+	.chemistry-icon {
+		content: '🧪';
+	}
+
+	.subject-name {
+		font-size: 13rpx;
+		font-weight: 500;
+	}
+
+	/* 学习数据卡片 */
+	.stats-card {
+		background: white;
+		border-radius: 20rpx;
+		padding: 20rpx;
+		box-shadow: 0 8rpx 20rpx rgba(58, 57, 122, 0.08);
+	}
+
+	.stats-grid {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+
+	.stat-item {
+		width: 48%;
+		text-align: center;
+		margin-bottom: 20rpx;
+	}
+
+	.stat-value {
+		font-size: 24rpx;
 		font-weight: 700;
 		color: #3a397a;
-		flex: 1;
-		margin-right: 16rpx;
+		margin-bottom: 4rpx;
 	}
 
-	.card-status {
-		padding: 4rpx 12rpx;
-		border-radius: 20rpx;
-		font-size: 24rpx;
-		white-space: nowrap;
+	.stat-label {
+		font-size: 14rpx;
+		color: #6c757d;
 	}
 
-	.status-active {
-		background-color: #e6f7e6;
-		color: #2e7d32;
-	}
-
-	.status-upcoming {
-		background-color: #fff8e1;
-		color: #ff8f00;
-	}
-
-	.status-ended {
-		background-color: #fbe9e7;
-		color: #d84315;
-	}
-
-	.card-info {
-		margin-bottom: 16rpx;
-	}
-
-	.info-item {
+	/* 底部导航 */
+	.bottom-nav {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background: white;
 		display: flex;
 		flex-direction: row;
-		align-items: center;
-		margin-bottom: 8rpx;
+		justify-content: space-around;
+		padding: 16rpx;
+		border-top: 1rpx solid #e9ecef;
+		z-index: 999;
 	}
 
-	.info-text {
-		font-size: 28rpx;
-		color: #777777;
-	}
-
-	.info-icon {
-		margin-right: 8rpx;
-		font-size: 28rpx;
-	}
-
-	.card-desc {
-		font-size: 28rpx;
-		color: #777777;
-		margin-bottom: 24rpx;
-		line-height: 1.5;
-	}
-
-	.card-footer {
+	.nav-item {
 		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
+		flex-direction: column;
 		align-items: center;
+		color: #6c757d;
+		font-size: 12rpx;
 	}
 
-	.card-duration {
-		font-size: 28rpx;
-		color: #777777;
+	.nav-item.active {
+		color: #3a397a;
 	}
 
-	.start-btn {
-		padding: 16rpx 32rpx;
-		background-color: #3a397a;
-		color: #ffffff;
-		border-radius: 8rpx;
-		font-size: 28rpx;
-		border: none;
+	.nav-icon {
+		width: 20rpx;
+		height: 20rpx;
+		margin-bottom: 4rpx;
 	}
 
-	.start-btn.disabled {
-		background-color: #cccccc;
+	.home-icon {
+		content: '🏠';
 	}
 
-	/* === 加载状态 === */
-	.loading {
-		padding: 40rpx;
+	.learning-icon {
+		content: '📖';
 	}
 
-	.loading-text {
-		color: #999999;
-		font-size: 28rpx;
-		text-align: center;
+	.statistics-icon {
+		content: '📈';
+	}
+
+	.profile-icon {
+		content: '👤';
+	}
+
+	.nav-label {
+		font-size: 12rpx;
 	}
 </style>

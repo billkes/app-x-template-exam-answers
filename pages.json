@@ -9,7 +9,7 @@
 		{
 			"path": "pages/dynamic/index",
 			"style": {
-				"navigationBarTitleText": "接入后台管理"
+				"navigationBarTitleText": "接入后台管理-首页"
 			}
 		},
 		{

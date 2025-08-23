@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>考易 - 极简考试助手</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            color: #2c2c2c;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            padding-bottom: 80px;
+        }
+        
+        /* 顶部用户信息 */
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+        
+        .user-info h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .user-info p {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3a397a, #6a69b3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        /* 进度卡片 */
+        .progress-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(58, 57, 122, 0.08);
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .progress-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .progress-stats {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 65%;
+            background: linear-gradient(90deg, #3a397a, #6a69b3);
+            border-radius: 4px;
+        }
+        
+        /* 核心功能区域 */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .action-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(58, 57, 122, 0.08);
+            transition: transform 0.2s;
+        }
+        
+        .action-card:active {
+            transform: scale(0.97);
+        }
+        
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            background: #f0f3ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            color: #3a397a;
+            font-size: 20px;
+        }
+        
+        .action-card h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .action-card p {
+            font-size: 13px;
+            color: #6c757d;
+        }
+        
+        /* 近期考试区域 */
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            padding-left: 8px;
+            border-left: 4px solid #3a397a;
+        }
+        
+        .exam-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .exam-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 8px 20px rgba(58, 57, 122, 0.08);
+        }
+        
+        .exam-info h3 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .exam-info p {
+            font-size: 13px;
+            color: #6c757d;
+        }
+        
+        .exam-date {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        
+        .date {
+            font-weight: 600;
+            color: #3a397a;
+        }
+        
+        .days-left {
+            font-size: 12px;
+            color: #ff7e5f;
+            font-weight: 500;
+        }
+        
+        /* 学科导航 */
+        .subject-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            padding: 4px 0 16px;
+            scrollbar-width: none;
+        }
+        
+        .subject-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .subject-item {
+            flex: 0 0 auto;
+            width: 80px;
+            text-align: center;
+        }
+        
+        .subject-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            box-shadow: 0 4px 12px rgba(58, 57, 122, 0.1);
+            color: #3a397a;
+            font-size: 24px;
+        }
+        
+        .subject-name {
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        /* 学习数据卡片 */
+        .stats-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(58, 57, 122, 0.08);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3a397a;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 16px;
+            border-top: 1px solid #e9ecef;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #6c757d;
+            font-size: 12px;
+        }
+        
+        .nav-item.active {
+            color: #3a397a;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        /* CTA按钮 */
+        .cta-button {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: #3a397a;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(58, 57, 122, 0.3);
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+        
+        .cta-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 4px 10px rgba(58, 57, 122, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 用户问候与进度 -->
+        <div class="user-header">
+            <div class="user-info">
+                <h1>下午好，李明</h1>
+                <p>继续你的学习之旅</p>
+            </div>
+            <div class="avatar">L</div>
+        </div>
+        
+        <!-- 进度卡片 -->
+        <div class="progress-card">
+            <div class="progress-header">
+                <div class="progress-title">本周学习进度</div>
+                <div class="progress-stats">65% 已完成</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <p>已完成 13/20 小时目标</p>
+        </div>
+        
+        <!-- 核心功能按钮 -->
+        <div class="actions-grid">
+            <div class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-play"></i>
+                </div>
+                <h3>开始练习</h3>
+                <p>随机题目测试</p>
+            </div>
+            
+            <div class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h3>模拟考试</h3>
+                <p>全真模拟测试</p>
+            </div>
+            
+            <div class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h3>学习资料</h3>
+                <p>知识点与讲义</p>
+            </div>
+            
+            <div class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>成绩分析</h3>
+                <p>学习报告与统计</p>
+            </div>
+        </div>
+        
+        <button class="cta-button">开始今日学习</button>
+        
+        <!-- 近期考试列表 -->
+        <h2 class="section-title">近期考试</h2>
+        <div class="exam-list">
+            <div class="exam-card">
+                <div class="exam-info">
+                    <h3>高等数学 - 期中考试</h3>
+                    <p>第10教室 | 上午9:00-11:00</p>
+                </div>
+                <div class="exam-date">
+                    <div class="date">5月28日</div>
+                    <div class="days-left">还剩7天</div>
+                </div>
+            </div>
+            
+            <div class="exam-card">
+                <div class="exam-info">
+                    <h3>大学英语 - 期末考试</h3>
+                    <p>第3教室 | 下午2:00-4:00</p>
+                </div>
+                <div class="exam-date">
+                    <div class="date">6月15日</div>
+                    <div class="days-left">还剩25天</div>
+                </div>
+            </div>
+            
+            <div class="exam-card">
+                <div class="exam-info">
+                    <h3>计算机科学 - 实践考试</h3>
+                    <p>计算机实验室 | 上午10:00-12:00</p>
+                </div>
+                <div class="exam-date">
+                    <div class="date">6月5日</div>
+                    <div class="days-left">还剩15天</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 学科导航 -->
+        <h2 class="section-title">学科导航</h2>
+        <div class="subject-scroll">
+            <div class="subject-item">
+                <div class="subject-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <div class="subject-name">数学</div>
+            </div>
+            
+            <div class="subject-item">
+                <div class="subject-icon">
+                    <i class="fas fa-language"></i>
+                </div>
+                <div class="subject-name">英语</div>
+            </div>
+            
+            <div class="subject-item">
+                <div class="subject-icon">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <div class="subject-name">计算机</div>
+            </div>
+            
+            <div class="subject-item">
+                <div class="subject-icon">
+                    <i class="fas fa-atom"></i>
+                </div>
+                <div class="subject-name">物理</div>
+            </div>
+            
+            <div class="subject-item">
+                <div class="subject-icon">
+                    <i class="fas fa-flask"></i>
+                </div>
+                <div class="subject-name">化学</div>
+            </div>
+        </div>
+        
+        <!-- 学习数据卡片 -->
+        <h2 class="section-title">学习数据</h2>
+        <div class="stats-card">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">36</div>
+                    <div class="stat-label已完成练习">已完成练习</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-value">87%</div>
+                    <div class="stat-label">正确率</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-value">24</div>
+                    <div class="stat-label">学习小时数</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">模拟考试</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部导航栏 -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <div class="nav-icon"><i class="fas fa-home"></i></div>
+            <span>首页</span>
+        </a>
+        
+        <a href="#" class="nav-item">
+            <div class="nav-icon"><i class="fas fa-book"></i></div>
+            <span>学习</span>
+        </a>
+        
+        <a href="#" class="nav-item">
+            <div class="nav-icon"><i class="fas fa-chart-pie"></i></div>
+            <span>统计</span>
+        </a>
+        
+        <a href="#" class="nav-item">
+            <div class="nav-icon"><i class="fas fa-user"></i></div>
+            <span>我的</span>
+        </a>
+    </div>
+</body>
+</html>

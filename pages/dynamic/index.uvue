@@ -29,8 +29,8 @@
 				<!-- 核心功能按钮 -->
 				<view class="actions-grid">
 					<view class="grid-col grid-col-1">
-						<view class="action-card action-card-1" hover-class="action-card-hover-1" hover-start-time="0"
-							hover-stay-time="100" @tap="navigateTo('practice')">
+						<view class="action-card" hover-class="click-hover" hover-start-time="0" hover-stay-time="100"
+							@tap="navigateTo('practice')">
 							<view class="action-icon">
 								<text class="action-icon-text action-icon-play">🚩</text>
 							</view>
@@ -39,8 +39,8 @@
 						</view>
 					</view>
 					<view class="grid-col grid-col-2">
-						<view class="action-card action-card-2" hover-class="action-card-hover-2" hover-start-time="0"
-							hover-stay-time="100" @tap="navigateTo('exam')">
+						<view class="action-card" hover-class="click-hover" hover-start-time="0" hover-stay-time="100"
+							@tap="navigateTo('exam')">
 							<view class="action-icon">
 								<text class="action-icon-text">📋</text>
 							</view>
@@ -50,8 +50,8 @@
 						</view>
 					</view>
 					<view class="grid-col grid-col-3">
-						<view class="action-card action-card-3" hover-class="action-card-hover-3" hover-start-time="0"
-							hover-stay-time="100" @tap="navigateTo('materials')">
+						<view class="action-card" hover-class="click-hover" hover-start-time="0" hover-stay-time="100"
+							@tap="navigateTo('materials')">
 							<view class="action-icon">
 								<text class="action-icon-text">📚</text>
 							</view>
@@ -60,8 +60,8 @@
 						</view>
 					</view>
 					<view class="grid-col grid-col-4">
-						<view class="action-card action-card-4" hover-class="action-card-hover-4" hover-start-time="0"
-							hover-stay-time="100" @tap="navigateTo('analysis')">
+						<view class="action-card" hover-class="click-hover" hover-start-time="0" hover-stay-time="100"
+							@tap="navigateTo('analysis')">
 							<view class="action-icon">
 								<text class="action-icon-text">📊</text>
 							</view>
@@ -76,7 +76,8 @@
 					<view class="section-title">
 						<text class="section-title-text">近期考试</text>
 					</view>
-					<view class="exam-card" v-for="(exam, index) in recentExams" :key="index">
+					<view class="exam-card" hover-class="click-hover" hover-start-time="0" hover-stay-time="100"
+						v-for="(exam, index) in recentExams" :key="index">
 						<view>
 							<text class="exam-name">{{ exam.name }}</text>
 							<text class="exam-details">{{ exam.location }} | {{ exam.time }}</text>
@@ -96,7 +97,8 @@
 					<view class="subject-view">
 						<view class="subject-item" v-for="(subject, index) in subjects" :key="index"
 							@tap="navigateToSubject(subject.name)">
-							<view class="subject-icon">
+							<view class="subject-icon" hover-class="click-hover" hover-start-time="0"
+								hover-stay-time="100">
 								<text :style="`font-size: ${subject.size}rpx;`">{{subject.icon}}</text>
 							</view>
 							<text class="subject-name">{{ subject.name }}</text>
@@ -205,7 +207,7 @@
 	/* 基本样式 */
 	.container {
 		flex: 1;
-		background-color: #f8f9fc;
+		background: linear-gradient(to bottom right, #f8f9fc, #eef0f8);
 	}
 
 	.container-scroll {
@@ -260,11 +262,11 @@
 
 	/* 进度卡片 */
 	.progress-card {
-		background: white;
 		border-radius: 40rpx;
 		padding: 40rpx;
 		margin-bottom: 24rpx;
-		background-image: linear-gradient(to right, #3a397a, #6b6aa3);
+		background-image: linear-gradient(to bottom, #ffffff, #f8f9fc);
+		border: 2rpx solid #e6e9f0;
 	}
 
 	.progress-header {
@@ -279,19 +281,19 @@
 		height: 56rpx;
 		line-height: 56rpx;
 		font-weight: bold;
-		color: #fff;
+		color: #2c2c2c;
 	}
 
 	.progress-stats {
 		font-size: 28rpx;
 		height: 56rpx;
 		line-height: 56rpx;
-		color: #fff;
+		color: #6c757d;
 	}
 
 	.progress-bar {
 		height: 16rpx;
-		background: #999;
+		background: #e9ecef;
 		border-radius: 8rpx;
 		overflow: hidden;
 		margin-bottom: 16rpx;
@@ -300,13 +302,13 @@
 	.progress-fill {
 		height: 100%;
 		width: 65%;
-		background: linear-gradient(to bottom, #fff, #999);
+		background: linear-gradient(to right, #3a397a, #6a69b3);
 		border-radius: 8rpx;
 	}
 
 	.progress-desc {
 		font-size: 28rpx;
-		color: #fff;
+		color: #2c2c2c;
 		height: 50rpx;
 		line-height: 50rpx;
 	}
@@ -343,37 +345,22 @@
 		border-radius: 32rpx;
 		padding: 30rpx;
 		text-align: center;
+		background-image: linear-gradient(to bottom, #ffffff, #f8f9fc);
+		border: 2rpx solid #e6e9f0;
 	}
 
-	.action-card-1,
-	.action-card-4 {
-		background-image: linear-gradient(to bottom right, #e0e0fa, #f2f5fa, #e0e0fa);
-	}
-
-	.action-card-2,
-	.action-card-3 {
-		background-image: linear-gradient(to top right, #e0e0fa, #f2f5fa, #e0e0fa);
-	}
-
-	.action-card-hover-1,
-	.action-card-hover-4 {
-		background-image: linear-gradient(to bottom right, #d7d7ef, #f2f5fa, #d7d7ef);
-		transform: translateY(2rpx);
-	}
-
-	.action-card-hover-2,
-	.action-card-hover-3 {
-		background-image: linear-gradient(to top right, #d7d7ef, #f2f5fa, #d7d7ef);
-		transform: translateY(2rpx);
+	.click-hover {
+		transform: scale(0.97);
 	}
 
 	.action-icon {
-		width: 60rpx;
-		height: 60rpx;
+		width: 100rpx;
+		height: 100rpx;
+		background: linear-gradient(to bottom left, #f0f3ff, #e6e9ff);
 		border-radius: 50rpx;
 		align-items: center;
 		justify-content: center;
-		margin: 0 auto;
+		margin: 0 auto 16rpx;
 	}
 
 	.action-icon-text {
@@ -388,8 +375,8 @@
 
 	.action-title {
 		font-size: 32rpx;
-		margin-bottom: 16rpx;
-		color: #333;
+		margin-bottom: 8rpx;
+		color: #2c2c2c;
 		text-align: center;
 		font-weight: bold;
 	}
@@ -414,7 +401,7 @@
 	.section-title-text {
 		font-size: 40rpx;
 		font-weight: bold;
-		color: #333;
+		color: #2c2c2c;
 	}
 
 	/* 考试列表 */
@@ -425,7 +412,8 @@
 		flex-direction: row;
 		justify-content: space-between;
 		margin-bottom: 20rpx;
-		background-image: linear-gradient(to bottom right, #e0e0fa, #f2f0ff, #f6f5ff);
+		border: 2rpx solid #e6e9f0;
+		background: linear-gradient(to bottom, #ffffff, #f8f9fc);
 	}
 
 	.exam-name {
@@ -433,7 +421,7 @@
 		margin-bottom: 8rpx;
 		height: 50rpx;
 		line-height: 50rpx;
-		color: #333;
+		color: #2c2c2c;
 	}
 
 	.exam-details {
@@ -449,7 +437,7 @@
 
 	.exam-date {
 		font-weight: bold;
-		color: #333;
+		color: #3a397a;
 		height: 50rpx;
 		line-height: 50rpx;
 		margin-bottom: 8rpx;
@@ -483,8 +471,9 @@
 		align-items: center;
 		justify-content: center;
 		margin: 0 auto 8rpx;
-		color: #333;
-		background-image: linear-gradient(to bottom right, #e0e0fa, #f2f0ff, #f6f5ff);
+		color: #3a397a;
+		background: linear-gradient(to bottom, #ffffff, #f8f9fc);
+		border: 2rpx solid #e6e9f0;
 		font-size: 24rpx;
 	}
 
@@ -498,9 +487,10 @@
 
 	/* 学习数据卡片 */
 	.stats-card {
-		background: white;
+		background: linear-gradient(to bottom, #ffffff, #f8f9fc);
+		border: 2rpx solid #e6e9f0;
 		border-radius: 20rpx;
-		padding: 20rpx;
+		padding: 40rpx 20rpx;
 	}
 
 	.stats-grid {
@@ -514,12 +504,12 @@
 
 	.stat-item-1,
 	.stat-item-2 {
-		padding-bottom: 12rpx;
+		padding-bottom: 18rpx;
 	}
 
 	.stat-item-3,
 	.stat-item-4 {
-		padding-top: 12rpx;
+		padding-top: 18rpx;
 	}
 
 	.stat-item-1,
@@ -536,7 +526,7 @@
 		font-size: 48rpx;
 		text-align: center;
 		font-weight: bold;
-		color: #333;
+		color: #3a397a;
 		margin-bottom: 8rpx;
 	}
 

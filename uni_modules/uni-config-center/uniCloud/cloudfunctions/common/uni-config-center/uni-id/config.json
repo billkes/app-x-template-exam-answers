@@ -1,0 +1,202 @@
+[{
+	"dcloudAppid": "__UNI__B89C90B",
+	"isDefaultConfig": true,
+	"passwordStrength": "weak",
+	"passwordSecret": "billkes-exam-template-appx",
+	"tokenSecret": "billkes-exam-template-appx",
+	"sensitiveInfoEncryptSecret": "billkes-exam-template-appx",
+	"requestAuthSecret": "billkes-exam-template-appx",
+	"tokenExpiresThreshold": 3600,
+	"passwordErrorLimit": 6,
+	"passwordErrorRetryTime": 300,
+	"userRegisterDefaultRole": ["student"],
+	"app": {
+		"tokenExpiresIn": 2592000,
+		"tokenExpiresThreshold": 864000,
+		"oauth": {
+			"weixin": {
+				"appid": "",
+				"appsecret": ""
+			},
+			"qq": {
+				"appid": "",
+				"appsecret": ""
+			},
+			"apple": {
+				"bundleId": ""
+			},
+			"huawei": {
+				"clientId": "",
+				"clientSecret": ""
+			}
+		}
+	},
+	"web": {
+		"tokenExpiresIn": 7200,
+		"tokenExpiresThreshold": 3600,
+		"oauth": {
+			"weixin-h5": {
+				"appid": "",
+				"appsecret": ""
+			},
+			"weixin-web": {
+				"appid": "",
+				"appsecret": ""
+			}
+		}
+	},
+	"mp-weixin": {
+		"tokenExpiresIn": 259200,
+		"tokenExpiresThreshold": 86400,
+		"oauth": {
+			"weixin": {
+				"appid": "",
+				"appsecret": ""
+			}
+		}
+	},
+	"mp-qq": {
+		"tokenExpiresIn": 259200,
+		"tokenExpiresThreshold": 86400,
+		"oauth": {
+			"qq": {
+				"appid": "",
+				"appsecret": ""
+			}
+		}
+	},
+	"mp-alipay": {
+		"tokenExpiresIn": 259200,
+		"tokenExpiresThreshold": 86400,
+		"oauth": {
+			"alipay": {
+				"appid": "",
+				"privateKey": "",
+				"keyType": "PKCS8"
+			}
+		}
+	},
+	"mp-harmony": {
+		"oauth": {
+			"huawei": {
+				"clientId": "",
+				"clientSecret": ""
+			}
+		}
+	},
+	"service": {
+		"sms": {
+			"name": "",
+			"codeExpiresIn": 180,
+			"scene": {
+				"bind-mobile-by-sms": {
+					"templateId": "",
+					"codeExpiresIn": 240
+				}
+			}
+		},
+		"univerify": {
+			"appid": ""
+		}
+	}
+}, {
+	"dcloudAppid": "__UNI__DD32BF0",
+	"passwordStrength": "weak",
+	"passwordSecret": "billkes-exam-template-web",
+	"tokenSecret": "billkes-exam-template-web",
+	"sensitiveInfoEncryptSecret": "billkes-exam-template-web",
+	"requestAuthSecret": "billkes-exam-template-web",
+	"tokenExpiresThreshold": 3600,
+	"passwordErrorLimit": 6,
+	"passwordErrorRetryTime": 300,
+	"userRegisterDefaultRole": [],
+	"app": {
+		"tokenExpiresIn": 2592000,
+		"tokenExpiresThreshold": 864000,
+		"oauth": {
+			"weixin": {
+				"appid": "",
+				"appsecret": ""
+			},
+			"qq": {
+				"appid": "",
+				"appsecret": ""
+			},
+			"apple": {
+				"bundleId": ""
+			},
+			"huawei": {
+				"clientId": "",
+				"clientSecret": ""
+			}
+		}
+	},
+	"web": {
+		"tokenExpiresIn": 7200,
+		"tokenExpiresThreshold": 3600,
+		"oauth": {
+			"weixin-h5": {
+				"appid": "",
+				"appsecret": ""
+			},
+			"weixin-web": {
+				"appid": "",
+				"appsecret": ""
+			}
+		}
+	},
+	"mp-weixin": {
+		"tokenExpiresIn": 259200,
+		"tokenExpiresThreshold": 86400,
+		"oauth": {
+			"weixin": {
+				"appid": "",
+				"appsecret": ""
+			}
+		}
+	},
+	"mp-qq": {
+		"tokenExpiresIn": 259200,
+		"tokenExpiresThreshold": 86400,
+		"oauth": {
+			"qq": {
+				"appid": "",
+				"appsecret": ""
+			}
+		}
+	},
+	"mp-alipay": {
+		"tokenExpiresIn": 259200,
+		"tokenExpiresThreshold": 86400,
+		"oauth": {
+			"alipay": {
+				"appid": "",
+				"privateKey": "",
+				"keyType": "PKCS8"
+			}
+		}
+	},
+	"mp-harmony": {
+		"oauth": {
+			"huawei": {
+				"clientId": "",
+				"clientSecret": ""
+			}
+		}
+	},
+	"service": {
+		"sms": {
+			"name": "",
+			"codeExpiresIn": 180,
+			"scene": {
+				"bind-mobile-by-sms": {
+					"templateId": "",
+					"codeExpiresIn": 240
+				}
+			}
+		},
+		"univerify": {
+			"appid": ""
+		}
+	}
+}]

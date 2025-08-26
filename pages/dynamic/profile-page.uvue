@@ -4,14 +4,25 @@
 
 			<!-- 用户信息区域 -->
 			<view class="profile-section">
-				<view class="avatar">
-					<text class="icon">👤</text>
+				<view v-if="!isLoggedIn" class="login-section">
+					<view class="avatar">
+						<text class="icon">👤</text>
+					</view>
+					<text class="login-text">登录后查看个人信息</text>
+					<view class="login-btn" @tap="goToLogin">
+						<text class="login-btn-text">立即登录</text>
+					</view>
 				</view>
+				
+				<view v-else>
+					<view class="avatar">
+						<text class="icon">👤</text>
+					</view>
 
-				<view class="user-info" @tap="goEdit">
-					<text class="username">李明同学</text>
-					<text class="edit-icon">✏️</text>
-				</view>
+					<view class="user-info" @tap="goEdit">
+						<text class="username">李明同学</text>
+						<text class="edit-icon">✏️</text>
+					</view>
 
 				<text class="user-tagline">“专注备考100天”</text>
 
@@ -126,6 +137,7 @@
 <script setup lang="uts">
 	import { ref } from 'vue'
 
+	const isLoggedIn = ref(false)
 	const settings = ref([
 		{ text: '设置与隐私', action: () => uni.showToast({ title: '设置页', icon: 'none' }) },
 		{ text: '帮助与反馈', action: () => uni.showToast({ title: '帮助页', icon: 'none' }) },
@@ -133,6 +145,12 @@
 		{ text: '关于我们', action: () => uni.showToast({ title: '关于页', icon: 'none' }) },
 		{ text: '退出登录', logout: true, action: () => confirmLogout() }
 	])
+
+	const goToLogin = () => {
+		uni.navigateTo({
+			url: '/pages/dynamic/login-page'
+		})
+	}
 
 	const nav = (page : string) => uni.showToast({ title: `跳转到${page}`, icon: 'none' })
 	const goEdit = () => uni.showToast({ title: '编辑资料', icon: 'none' })
@@ -430,5 +448,31 @@
 	.arrow {
 		font-size: 40rpx;
 		color: #6c757d;
+	}
+
+	/* 登录区域样式 */
+	.login-section {
+		align-items: center;
+		padding: 48rpx;
+	}
+
+	.login-text {
+		font-size: 32rpx;
+		color: #6c757d;
+		margin: 32rpx 0;
+		text-align: center;
+	}
+
+	.login-btn {
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		border-radius: 40rpx;
+		padding: 24rpx 48rpx;
+		margin-top: 32rpx;
+	}
+
+	.login-btn-text {
+		color: #fff;
+		font-size: 32rpx;
+		font-weight: 500;
 	}
 </style>

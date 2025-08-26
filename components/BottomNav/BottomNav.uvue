@@ -4,7 +4,7 @@
 		<view class="nav-item" :class="{active: props.current === 'home'}"
 			@tap="switchToTarget('/pages/dynamic/index')">
 			<view class="nav-icon">
-				<text>🏠</text>
+				<text class="iconfont icon-home"></text>
 			</view>
 			<text class="nav-label">首页</text>
 		</view>
@@ -12,7 +12,7 @@
 		<view class="nav-item" :class="{active: props.current === 'study'}"
 			@tap="switchToTarget('/pages/dynamic/study-center')">
 			<view class="nav-icon">
-				<text>📖</text>
+				<text class="iconfont icon-book"></text>
 			</view>
 			<text class="nav-label">学习</text>
 		</view>
@@ -20,7 +20,7 @@
 		<view class="nav-item" :class="{active: props.current === 'statistics'}"
 			@tap="switchToTarget('/pages/dynamic/stats-page')">
 			<view class="nav-icon">
-				<text>📈</text>
+				<text class="iconfont icon-chart-line"></text>
 			</view>
 			<text class="nav-label">统计</text>
 		</view>
@@ -28,7 +28,7 @@
 		<view class="nav-item" :class="{active: props.current === 'mine'}"
 			@tap="switchToTarget('/pages/dynamic/profile-page')">
 			<view class="nav-icon">
-				<text>👤</text>
+				<text class="iconfont icon-user"></text>
 			</view>
 			<text class="nav-label">我的</text>
 		</view>
@@ -44,7 +44,8 @@
 	})
 
 	const switchToTarget = (path : string) => {
-		uni.switchTab({
+		// 使用 uni.navigateTo 替代 uni.switchTab，因为这些页面不是 tabBar 页面
+		uni.navigateTo({
 			url: path
 		})
 	}

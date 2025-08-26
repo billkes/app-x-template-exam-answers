@@ -32,7 +32,7 @@
 						<view class="action-card" hover-class="click-hover" hover-start-time="0" hover-stay-time="100"
 							@tap="navigateTo('practice')">
 							<view class="action-icon">
-								<text class="action-icon-text action-icon-play">🚩</text>
+								<text class="action-icon-text action-icon-play iconfont icon-flag"></text>
 							</view>
 							<text class="action-title">开始练习</text>
 							<text class="action-desc">随机题目测试</text>
@@ -42,7 +42,7 @@
 						<view class="action-card" hover-class="click-hover" hover-start-time="0" hover-stay-time="100"
 							@tap="navigateTo('exam')">
 							<view class="action-icon">
-								<text class="action-icon-text">📋</text>
+								<text class="action-icon-text iconfont icon-file"></text>
 							</view>
 							<view></view>
 							<text class="action-title">模拟考试</text>
@@ -53,7 +53,7 @@
 						<view class="action-card" hover-class="click-hover" hover-start-time="0" hover-stay-time="100"
 							@tap="navigateTo('materials')">
 							<view class="action-icon">
-								<text class="action-icon-text">📚</text>
+								<text class="iconfont icon-book"></text>
 							</view>
 							<text class="action-title">学习资料</text>
 							<text class="action-desc">知识点与讲义</text>
@@ -63,7 +63,7 @@
 						<view class="action-card" hover-class="click-hover" hover-start-time="0" hover-stay-time="100"
 							@tap="navigateTo('analysis')">
 							<view class="action-icon">
-								<text class="action-icon-text">📊</text>
+								<text class="iconfont icon-chart"></text>
 							</view>
 							<text class="action-title">成绩分析</text>
 							<text class="action-desc">学习报告与统计</text>
@@ -301,7 +301,7 @@
 
 	.progress-fill {
 		height: 100%;
-		width: 65%;
+		width: 130rpx;
 		background: linear-gradient(to right, #3a397a, #6a69b3);
 		border-radius: 8rpx;
 	}

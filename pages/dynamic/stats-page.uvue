@@ -38,7 +38,7 @@
 					</view>
 				</view>
 				<view class="chart-insight">
-					<text class="insight-icon iconfont icon-chart-line"></text>
+					<text class="insight-icon iconfont icon-linechart"></text>
 					<text>您的正确率呈上升趋势，最近三天表现优异！</text>
 				</view>
 			</view>
@@ -90,7 +90,7 @@
 					</view>
 				</view>
 				<view class="chart-insight">
-					<text class="insight-icon iconfont icon-time"></text>
+					<text class="insight-icon iconfont icon-time-circle"></text>
 					<text>周三至周五学习时间较长，周末可适当增加。</text>
 				</view>
 			</view>

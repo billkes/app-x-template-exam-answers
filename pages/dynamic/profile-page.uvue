@@ -82,7 +82,7 @@
 					</view>
 					<view class="grid-item grid-item-4">
 						<view class="grid-item-card" @tap="nav('history')">
-							<view class="grid-icon"><text class="iconfont icon-time"></text></view>
+							<view class="grid-icon"><text class="iconfont icon-time-circle"></text></view>
 							<text class="grid-label">做题历史</text>
 						</view>
 					</view>

@@ -35,7 +35,7 @@
 
 				<view class="course-card">
 					<view class="course-image">
-						<text class="iconfont icon-chart"></text>
+						<text class="iconfont icon-barchart"></text>
 					</view>
 					<view class="course-content">
 						<view>
@@ -88,7 +88,7 @@
 
 					<view class="course-item course-item-last" @tap="goCourse('数资突破')">
 						<view class="course-icon">
-							<text class="iconfont icon-chart-line"></text>
+							<text class="iconfont icon-linechart"></text>
 						</view>
 						<view class="course-details">
 							<text class="course-name">数资突破</text>

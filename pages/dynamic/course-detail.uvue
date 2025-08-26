@@ -6,7 +6,7 @@
 			<view class="course-header">
 				<view class="course-cover">
 					<view class="mask" />
-					<text class="course-cover-text"><text class="iconfont icon-chart"></text> 行测技巧精讲</text>
+					<text class="course-cover-text"><text class="iconfont icon-barchart"></text> 行测技巧精讲</text>
 				</view>
 
 				<text class="course-title">行测技巧精讲</text>

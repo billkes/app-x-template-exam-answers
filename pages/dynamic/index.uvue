@@ -63,7 +63,7 @@
 						<view class="action-card" hover-class="click-hover" hover-start-time="0" hover-stay-time="100"
 							@tap="navigateTo('analysis')">
 							<view class="action-icon">
-								<text class="iconfont icon-chart"></text>
+								<text class="iconfont icon-barchart"></text>
 							</view>
 							<text class="action-title">成绩分析</text>
 							<text class="action-desc">学习报告与统计</text>

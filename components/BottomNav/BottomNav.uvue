@@ -20,7 +20,7 @@
 		<view class="nav-item" :class="{active: props.current === 'statistics'}"
 			@tap="switchToTarget('/pages/dynamic/stats-page')">
 			<view class="nav-icon">
-				<text class="iconfont icon-chart-line"></text>
+				<text class="iconfont icon-linechart"></text>
 			</view>
 			<text class="nav-label">统计</text>
 		</view>

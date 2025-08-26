@@ -99,7 +99,7 @@
 							@tap="navigateToSubject(subject.name)">
 							<view class="subject-icon" hover-class="click-hover" hover-start-time="0"
 								hover-stay-time="100">
-								<text :style="`font-size: ${subject.size}rpx;`">{{subject.icon}}</text>
+								<text :class="`iconfont ${subject.icon}`" :style="`font-size: ${subject.size}rpx;`"></text>
 							</view>
 							<text class="subject-name">{{ subject.name }}</text>
 						</view>
@@ -171,11 +171,11 @@
 
 	// 学科导航数据
 	const subjects = ref([
-		{ name: '数学', icon: '∑', size: 40 },
-		{ name: '英语', icon: '🔤', size: 40 },
-		{ name: '计算机', icon: '💻', size: 40 },
-		{ name: '物理', icon: '⚛', size: 60 },
-		{ name: '化学', icon: '🧪', size: 40 }
+		{ name: '数学', icon: 'icon-math', size: 40 },
+		{ name: '英语', icon: 'icon-language', size: 40 },
+		{ name: '计算机', icon: 'icon-computer', size: 40 },
+		{ name: '物理', icon: 'icon-physics', size: 60 },
+		{ name: '化学', icon: 'icon-chemistry', size: 40 }
 	])
 
 	// 学习统计数据

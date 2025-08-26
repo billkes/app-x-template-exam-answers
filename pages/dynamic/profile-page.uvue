@@ -6,7 +6,7 @@
 			<view class="profile-section">
 				<view v-if="!isLoggedIn" class="login-section">
 					<view class="avatar">
-						<text class="icon">👤</text>
+						<text class="icon iconfont icon-user"></text>
 					</view>
 					<text class="login-text">登录后查看个人信息</text>
 					<view class="login-btn" @tap="goToLogin">
@@ -16,12 +16,12 @@
 
 				<view v-else>
 					<view class="avatar">
-						<text class="icon">👤</text>
+						<text class="icon iconfont icon-user"></text>
 					</view>
 
 					<view class="user-info" @tap="goEdit">
 						<text class="username">李明同学</text>
-						<text class="edit-icon">✏️</text>
+						<text class="edit-icon iconfont icon-edit"></text>
 					</view>
 
 					<text class="user-tagline">“专注备考100天”</text>
@@ -64,37 +64,37 @@
 				<view class="grid-nav">
 					<view class="grid-item grid-item-1">
 						<view class="grid-item-card" @tap="nav('course')">
-							<view class="grid-icon">📚</view>
+							<view class="grid-icon"><text class="iconfont icon-book"></text></view>
 							<text class="grid-label">我的课程</text>
 						</view>
 					</view>
 					<view class="grid-item grid-item-2">
 						<view class="grid-item-card" @tap="nav('wrong')">
-							<view class="grid-icon">❌</view>
+							<view class="grid-icon"><text class="iconfont icon-close"></text></view>
 							<text class="grid-label">我的错题</text>
 						</view>
 					</view>
 					<view class="grid-item grid-item-3">
 						<view class="grid-item-card" @tap="nav('star')">
-							<view class="grid-icon">⭐</view>
+							<view class="grid-icon"><text class="iconfont icon-star"></text></view>
 							<text class="grid-label">我的收藏</text>
 						</view>
 					</view>
 					<view class="grid-item grid-item-4">
 						<view class="grid-item-card" @tap="nav('history')">
-							<view class="grid-icon">🕒</view>
+							<view class="grid-icon"><text class="iconfont icon-time"></text></view>
 							<text class="grid-label">做题历史</text>
 						</view>
 					</view>
 					<view class="grid-item grid-item-5">
 						<view class="grid-item-card" @tap="nav('note')">
-							<view class="grid-icon">📝</view>
+							<view class="grid-icon"><text class="iconfont icon-edit"></text></view>
 							<text class="grid-label">我的笔记</text>
 						</view>
 					</view>
 					<view class="grid-item grid-item-6">
 						<view class="grid-item-card" @tap="nav('vip')">
-							<view class="grid-icon">👑</view>
+							<view class="grid-icon"><text class="iconfont icon-crown"></text></view>
 							<text class="grid-label">会员中心</text>
 						</view>
 					</view>
@@ -108,8 +108,8 @@
 					</view>
 					<scroll-view class="badges-scroll">
 						<view class="badges-list">
-							<view class="badge earned">🏆</view>
-							<view class="badge earned">⭐</view>
+							<view class="badge earned"><text class="iconfont icon-trophy"></text></view>
+							<view class="badge earned"><text class="iconfont icon-star"></text></view>
 							<view class="badge earned">🚀</view>
 							<view class="badge locked">🔒</view>
 							<view class="badge locked">🔒</view>
@@ -399,7 +399,7 @@
 	.badge {
 		width: 120rpx;
 		height: 120rpx;
-		border-radius: 50%;
+		border-radius: 80rpx;
 		justify-content: center;
 		align-items: center;
 		font-size: 48rpx;

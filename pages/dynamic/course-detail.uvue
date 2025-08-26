@@ -6,7 +6,7 @@
 			<view class="course-header">
 				<view class="course-cover">
 					<view class="mask" />
-					<text class="course-cover-text">📊 行测技巧精讲</text>
+					<text class="course-cover-text"><text class="iconfont icon-chart"></text> 行测技巧精讲</text>
 				</view>
 
 				<text class="course-title">行测技巧精讲</text>
@@ -379,7 +379,7 @@
 	.lesson-icon {
 		width: 60rpx;
 		height: 60rpx;
-		border-radius: 50%;
+		border-radius: 30rpx;
 		align-items: center;
 		justify-content: center;
 		margin-right: 24rpx;

@@ -203,7 +203,7 @@
 	}
 
 	.sheet-toggle.collapsed {
-		transform: rotate(180deg);
+		transform: rotate(0.5turn);
 	}
 
 	.sheet-content {

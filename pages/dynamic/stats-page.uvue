@@ -38,7 +38,7 @@
 					</view>
 				</view>
 				<view class="chart-insight">
-					<text class="insight-icon">📈</text>
+					<text class="insight-icon iconfont icon-chart-line"></text>
 					<text>您的正确率呈上升趋势，最近三天表现优异！</text>
 				</view>
 			</view>
@@ -90,7 +90,7 @@
 					</view>
 				</view>
 				<view class="chart-insight">
-					<text class="insight-icon">⏰</text>
+					<text class="insight-icon iconfont icon-time"></text>
 					<text>周三至周五学习时间较长，周末可适当增加。</text>
 				</view>
 			</view>
@@ -425,7 +425,7 @@
 	.progress-ring {
 		width: 100%;
 		height: 100%;
-		border-radius: 50%;
+		border-radius: 120rpx;
 		background: conic-gradient(#3a397a var(--progress, 0deg), #f0f2f7 0deg);
 	}
 

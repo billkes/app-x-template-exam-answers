@@ -7,7 +7,7 @@
 				<text class="welcome-title">你好，李明！正在备战2025省考</text>
 
 				<view class="progress-container">
-					<view class="progress-fill" style="width: 35%;" />
+					<view class="progress-fill" style="width: 70rpx;" />
 				</view>
 
 				<view class="progress-stats">
@@ -35,7 +35,7 @@
 
 				<view class="course-card">
 					<view class="course-image">
-						<text>📊</text>
+						<text class="iconfont icon-chart"></text>
 					</view>
 					<view class="course-content">
 						<view>
@@ -88,7 +88,7 @@
 
 					<view class="course-item course-item-last" @tap="goCourse('数资突破')">
 						<view class="course-icon">
-							<text>📈</text>
+							<text class="iconfont icon-chart-line"></text>
 						</view>
 						<view class="course-details">
 							<text class="course-name">数资突破</text>
@@ -134,7 +134,7 @@
 
 					<view class="recommended-card" @tap="goDetail('申论范文精讲')">
 						<view class="recommended-image">
-							<text>📚</text>
+							<text class="iconfont icon-book"></text>
 						</view>
 						<view class="recommended-content">
 							<text class="recommended-tag">最新上线</text>
@@ -180,21 +180,21 @@
 
 					<view class="tool-item" @tap="goTool('智能刷题')">
 						<view class="tool-icon">
-							<text>📝</text>
+							<text class="iconfont icon-edit"></text>
 						</view>
 						<text class="tool-label">智能刷题</text>
 					</view>
 
 					<view class="tool-item" @tap="goTool('我的错题')">
 						<view class="tool-icon">
-							<text>❌</text>
+							<text class="iconfont icon-close"></text>
 						</view>
 						<text class="tool-label">我的错题</text>
 					</view>
 
 					<view class="tool-item" @tap="goTool('我的收藏')">
 						<view class="tool-icon">
-							<text>⭐</text>
+							<text class="iconfont icon-star"></text>
 						</view>
 						<text class="tool-label">我的收藏</text>
 					</view>

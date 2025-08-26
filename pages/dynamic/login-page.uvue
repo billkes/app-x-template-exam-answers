@@ -1,0 +1,257 @@
+<template>
+	<scroll-view class="root">
+		<view class="container">
+			<!-- Logo 区域 -->
+			<view class="logo-container">
+				<text class="logo-text">考试答题模版</text>
+			</view>
+
+			<!-- 登录表单 -->
+			<view class="login-form">
+				<view class="form-group">
+					<text class="form-label">学号/手机号</text>
+					<view class="input-wrap">
+						<input v-model="username" class="form-input" placeholder="请输入学号或手机号" type="text" />
+						<text class="input-icon">👤</text>
+					</view>
+				</view>
+
+				<view class="form-group">
+					<text class="form-label">密码</text>
+					<view class="input-wrap">
+						<input v-model="password" class="form-input" placeholder="请输入密码" :password="!showPwd" />
+						<text class="input-icon" @tap="showPwd = !showPwd">
+							{{ showPwd ? '🙈' : '🔒' }}
+						</text>
+					</view>
+				</view>
+
+				<button class="login-button" @tap="handleLogin">
+					<text>{{ loading ? '登录中...' : '登录' }}</text>
+				</button>
+
+				<view class="register-link-forgot">
+					<view class="register-link">
+						<text>没有账号? </text>
+						<text class="link" @tap="goRegister">立即注册</text>
+					</view>
+
+					<view class="forgot">
+						<text class="forgot-password" @tap="goForget">忘记密码?</text>
+					</view>
+				</view>
+			</view>
+
+			<!-- 隐私协议 -->
+			<view class="privacy">
+				<text class="privacy-text">登录即代表您同意我们的 </text>
+				<text class="link privacy-text" @tap="goProtocol('user')">用户协议</text>
+				<text class="privacy-text"> 和 </text>
+				<text class="link privacy-text" @tap="goProtocol('privacy')">隐私政策</text>
+			</view>
+		</view>
+	</scroll-view>
+</template>
+
+<script setup lang="uts">
+	import { ref } from 'vue'
+
+	const username = ref('')
+	const password = ref('')
+	const remember = ref(false)
+	const showPwd = ref(false)
+	const loading = ref(false)
+
+	const handleLogin = () => {
+		if (!username.value || !password.value) {
+			uni.showToast({ title: '请输入账号密码', icon: 'none' })
+			return
+		}
+		loading.value = true
+		setTimeout(() => {
+			loading.value = false
+			uni.showToast({ title: '登录成功', icon: 'success' })
+			// 实际业务：调用登录接口并跳转首页
+		}, 1000)
+	}
+
+	const socialLogin = (type : string) => {
+		uni.showToast({ title: `${type}登录开发中`, icon: 'none' })
+	}
+	const goForget = () => uni.showToast({ title: '忘记密码页', icon: 'none' })
+	const goRegister = () => uni.showToast({ title: '注册页', icon: 'none' })
+	const goProtocol = (type : string) => uni.showToast({ title: `${type}协议`, icon: 'none' })
+</script>
+
+<style>
+	.root {
+		flex: 1;
+		background: linear-gradient(to bottom right, #f8f9fc, #eef0f8);
+	}
+
+	.container {
+		justify-content: center;
+		align-items: center;
+		padding: 40rpx;
+		flex: 1;
+	}
+
+	/* Logo */
+	.logo-container {
+		align-items: center;
+		margin-bottom: 80rpx;
+	}
+
+	.logo-text {
+		font-size: 56rpx;
+		font-weight: bold;
+		color: #3a397a;
+		letter-spacing: 2rpx;
+	}
+
+	/* 表单 */
+	.login-form {
+		width: 100%;
+		max-width: 800rpx;
+		background: linear-gradient(to bottom, #fff, #f8f9fc);
+		border-radius: 40rpx;
+		padding: 60rpx;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.form-group {
+		margin-bottom: 48rpx;
+	}
+
+	.form-label {
+		font-size: 32rpx;
+		color: #3a397a;
+		margin-bottom: 16rpx;
+		font-weight: bold;
+	}
+
+	.input-wrap {
+		position: relative;
+	}
+
+	.form-input {
+		width: 100%;
+		padding: 20rpx 32rpx;
+		border-radius: 24rpx;
+		border: 2rpx solid #e6e9f0;
+		background-color: #f8f9fc;
+		font-size: 32rpx;
+	}
+
+	.input-icon {
+		position: absolute;
+		right: 32rpx;
+		top: 50%;
+		transform: translateY(-50%);
+		font-size: 40rpx;
+		color: #6c757d;
+	}
+
+	.forgot {
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.remember-me {
+		flex-direction: row;
+		align-items: center;
+		font-size: 28rpx;
+		color: #6c757d;
+	}
+
+	.forgot-password {
+		font-size: 28rpx;
+		color: #3a397a;
+		font-weight: bold;
+	}
+
+	.login-button {
+		width: 100%;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		color: #fff;
+		border-radius: 24rpx;
+		font-size: 36rpx;
+		font-weight: bold;
+		border: 2rpx solid #2f2e62;
+		margin-bottom: 48rpx;
+	}
+
+	.divider {
+		flex-direction: row;
+		align-items: center;
+		margin-bottom: 48rpx;
+	}
+
+	.divider-line {
+		flex: 1;
+		height: 2rpx;
+		background-color: #e6e9f0;
+	}
+
+	.divider-text {
+		padding: 0 32rpx;
+		font-size: 28rpx;
+		color: #6c757d;
+	}
+
+	.social-login {
+		flex-direction: row;
+		justify-content: center;
+		margin-bottom: 60rpx;
+	}
+
+	.social-icon {
+		width: 100rpx;
+		height: 100rpx;
+		border-radius: 50rpx;
+		background-color: #f8f9fc;
+		border: 2rpx solid #e6e9f0;
+		justify-content: center;
+		align-items: center;
+		margin: 0 20rpx;
+	}
+
+	.icon {
+		font-size: 48rpx;
+	}
+
+	.register-link-forgot {
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.register-link {
+		flex-direction: row;
+	}
+
+	.register-link-text {
+		text-align: center;
+		font-size: 28rpx;
+		color: #6c757d;
+	}
+
+	.privacy {
+		margin-top: 40rpx;
+		flex-direction: row;
+		flex-wrap: wrap;
+		width: 80%;
+		justify-content: center;
+	}
+
+	.privacy-text {
+		font-size: 24rpx;
+		color: #6c757d;
+	}
+
+	.link {
+		color: #3a397a;
+		font-weight: bold;
+	}
+</style>

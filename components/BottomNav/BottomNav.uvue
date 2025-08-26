@@ -1,28 +1,32 @@
 <template>
 	<!-- 底部导航栏 -->
 	<view class="bottom-nav">
-		<view class="nav-item active">
+		<view class="nav-item" :class="{active: props.current === 'home'}"
+			@tap="switchToTarget('/pages/dynamic/index')">
 			<view class="nav-icon">
 				<text>🏠</text>
 			</view>
 			<text class="nav-label">首页</text>
 		</view>
 
-		<view class="nav-item">
+		<view class="nav-item" :class="{active: props.current === 'study'}"
+			@tap="switchToTarget('/pages/dynamic/study-center')">
 			<view class="nav-icon">
 				<text>📖</text>
 			</view>
 			<text class="nav-label">学习</text>
 		</view>
 
-		<view class="nav-item">
+		<view class="nav-item" :class="{active: props.current === 'statistics'}"
+			@tap="switchToTarget('/pages/dynamic/stats-page')">
 			<view class="nav-icon">
 				<text>📈</text>
 			</view>
 			<text class="nav-label">统计</text>
 		</view>
 
-		<view class="nav-item">
+		<view class="nav-item" :class="{active: props.current === 'mine'}"
+			@tap="switchToTarget('/pages/dynamic/profile-page')">
 			<view class="nav-icon">
 				<text>👤</text>
 			</view>
@@ -31,14 +35,18 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		name: "BottomNav",
-		data() {
-			return {
-
-			};
+<script setup lang="uts">
+	const props = defineProps({
+		current: {
+			type: String,
+			require: true
 		}
+	})
+
+	const switchToTarget = (path : string) => {
+		uni.switchTab({
+			url: path
+		})
 	}
 </script>
 

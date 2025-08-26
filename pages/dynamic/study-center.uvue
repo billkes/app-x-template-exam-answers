@@ -1,0 +1,581 @@
+<template>
+	<scroll-view class="root">
+		<view class="container">
+
+			<!-- 学习进度区域 -->
+			<view class="progress-section">
+				<text class="welcome-title">你好，李明！正在备战2025省考</text>
+
+				<view class="progress-container">
+					<view class="progress-fill" style="width: 35%;" />
+				</view>
+
+				<view class="progress-stats">
+					<view class="stat-item">
+						<text class="stat-value">35%</text>
+						<text class="stat-label">整体进度</text>
+					</view>
+					<view class="stat-item">
+						<text class="stat-value">8</text>
+						<text class="stat-label">已学课程</text>
+					</view>
+					<view class="stat-item">
+						<text class="stat-value">120</text>
+						<text class="stat-label">累计练习</text>
+					</view>
+				</view>
+			</view>
+
+			<!-- 继续学习区域 -->
+			<view class="continue-section">
+				<view class="section-title">
+					<text>继续学习</text>
+					<text class="view-all">查看全部</text>
+				</view>
+
+				<view class="course-card">
+					<view class="course-image">
+						<text>📊</text>
+					</view>
+					<view class="course-content">
+						<view>
+							<text class="course-title">行测技巧精讲</text>
+							<text class="course-info">当前进度：第3章-言语理解</text>
+							<view class="chapter-progress">
+								<view class="chapter-fill" style="width: 60%;" />
+							</view>
+						</view>
+						<button class="continue-button" @tap="handleContinue">继续学习</button>
+					</view>
+				</view>
+			</view>
+
+			<!-- 我的课程区域 -->
+			<view class="my-courses-section">
+				<view class="section-title">
+					<text>我的课程</text>
+					<text class="view-all">管理</text>
+				</view>
+
+				<view>
+					<view class="course-item" @tap="goCourse('行测基础')">
+						<view class="course-icon">
+							<text>🧮</text>
+						</view>
+						<view class="course-details">
+							<text class="course-name">行测基础</text>
+							<text class="course-meta">王老师 · 20课时</text>
+							<view class="course-progress">
+								<view class="course-progress-fill" style="width: 85%;" />
+							</view>
+						</view>
+						<button class="course-action" @tap="handleContinue">继续</button>
+					</view>
+
+					<view class="course-item" @tap="goCourse('申论实战')">
+						<view class="course-icon">
+							<text>✍️</text>
+						</view>
+						<view class="course-details">
+							<text class="course-name">申论实战</text>
+							<text class="course-meta">李老师 · 15课时</text>
+							<view class="course-progress">
+								<view class="course-progress-fill" style="width: 20%;" />
+							</view>
+						</view>
+						<button class="course-action" @tap="handleContinue">继续</button>
+					</view>
+
+					<view class="course-item course-item-last" @tap="goCourse('数资突破')">
+						<view class="course-icon">
+							<text>📈</text>
+						</view>
+						<view class="course-details">
+							<text class="course-name">数资突破</text>
+							<text class="course-meta">张老师 · 12课时</text>
+							<view class="course-progress">
+								<view class="course-progress-fill empty" style="width: 0%;" />
+							</view>
+						</view>
+						<button class="course-action" @tap="handleContinue">开始</button>
+					</view>
+				</view>
+			</view>
+
+			<!-- 推荐课程区域 -->
+			<view class="recommended-section">
+				<view class="section-title">
+					<text>为你推荐</text>
+					<text class="view-all">全部</text>
+				</view>
+
+				<scroll-view class="recommended-scroll">
+					<view class="recommended-card" @tap="goDetail('逻辑判断专项突破')">
+						<view class="recommended-image">
+							<text>🧠</text>
+						</view>
+						<view class="recommended-content">
+							<text class="recommended-tag">弱项推荐</text>
+							<text class="recommended-title">逻辑判断专项突破</text>
+							<text class="recommended-info">8课时 · 4.8分</text>
+						</view>
+					</view>
+
+					<view class="recommended-card" @tap="goDetail('考前冲刺30天')">
+						<view class="recommended-image">
+							<text>⏱️</text>
+						</view>
+						<view class="recommended-content">
+							<text class="recommended-tag">热门专题</text>
+							<text class="recommended-title">考前冲刺30天</text>
+							<text class="recommended-info">30课时 · 4.9分</text>
+						</view>
+					</view>
+
+					<view class="recommended-card" @tap="goDetail('申论范文精讲')">
+						<view class="recommended-image">
+							<text>📚</text>
+						</view>
+						<view class="recommended-content">
+							<text class="recommended-tag">最新上线</text>
+							<text class="recommended-title">申论范文精讲</text>
+							<text class="recommended-info">10课时 · 4.7分</text>
+						</view>
+					</view>
+				</scroll-view>
+			</view>
+
+			<!-- 每日精选区域 -->
+			<view class="daily-section">
+				<view class="section-title">
+					<text>每日精选</text>
+					<text class="view-all">更多</text>
+				</view>
+
+				<view class="daily-card" @tap="goDetail('5个常考成语辨析')">
+					<view class="daily-image">
+						<text>💎</text>
+					</view>
+					<view class="daily-content">
+						<text class="daily-title">5个常考成语辨析</text>
+						<text class="daily-desc">掌握这些高频考点，轻松应对言语理解题</text>
+						<button class="daily-button" @tap="handleDaily">立即学习</button>
+					</view>
+				</view>
+			</view>
+
+			<!-- 学习工具入口区域 -->
+			<view class="tools-section">
+				<view class="section-title">
+					<text>学习工具</text>
+				</view>
+
+				<view class="tools-grid">
+					<view class="tool-item" @tap="goTool('真题模考')">
+						<view class="tool-icon">
+							<text>📄</text>
+						</view>
+						<text class="tool-label">真题模考</text>
+					</view>
+
+					<view class="tool-item" @tap="goTool('智能刷题')">
+						<view class="tool-icon">
+							<text>📝</text>
+						</view>
+						<text class="tool-label">智能刷题</text>
+					</view>
+
+					<view class="tool-item" @tap="goTool('我的错题')">
+						<view class="tool-icon">
+							<text>❌</text>
+						</view>
+						<text class="tool-label">我的错题</text>
+					</view>
+
+					<view class="tool-item" @tap="goTool('我的收藏')">
+						<view class="tool-icon">
+							<text>⭐</text>
+						</view>
+						<text class="tool-label">我的收藏</text>
+					</view>
+				</view>
+			</view>
+
+			<BottomNav current="study" />
+
+		</view>
+	</scroll-view>
+</template>
+
+<script setup lang="uts">
+	const handleContinue = () => {
+		uni.showToast({ title: '继续学习行测技巧精讲课程', icon: 'none' })
+	}
+	const goCourse = (name : string) => {
+		uni.showToast({ title: `进入${name}课程`, icon: 'none' })
+	}
+	const goDetail = (title : string) => {
+		uni.showToast({ title: `查看${title}详情`, icon: 'none' })
+	}
+	const handleDaily = () => {
+		uni.showToast({ title: '开始学习每日精选内容', icon: 'none' })
+	}
+	const goTool = (tool : string) => {
+		uni.showToast({ title: `进入${tool}`, icon: 'none' })
+	}
+</script>
+
+<style scoped>
+	/* 全局 */
+	.root {
+		flex: 1;
+		background-color: #f8f9fc;
+	}
+
+	.container {
+		padding: 32rpx 32rpx 120rpx;
+	}
+
+	/* 通用卡片 */
+	.progress-section,
+	.continue-section,
+	.my-courses-section,
+	.recommended-section,
+	.daily-section,
+	.tools-section {
+		background: linear-gradient(to bottom, #ffffff, #f8f9fc);
+		border-radius: 40rpx;
+		padding: 40rpx;
+		margin-bottom: 32rpx;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.section-title {
+		font-size: 36rpx;
+		font-weight: 600;
+		color: #3a397a;
+		margin-bottom: 32rpx;
+		justify-content: space-between;
+		align-items: center;
+		flex-direction: row;
+	}
+
+	.view-all {
+		font-size: 24rpx;
+		color: #6c757d;
+	}
+
+	/* 学习进度 */
+	.welcome-title {
+		font-size: 36rpx;
+		font-weight: 600;
+		color: #3a397a;
+		margin-bottom: 24rpx;
+	}
+
+	.progress-container {
+		width: 100%;
+		height: 24rpx;
+		background-color: #f0f2f7;
+		border-radius: 12rpx;
+		overflow: hidden;
+		border: 2rpx solid #e6e9f0;
+		margin-bottom: 24rpx;
+	}
+
+	.progress-fill {
+		height: 100%;
+		background: linear-gradient(to right, #3a397a, #6a69b3);
+		border-radius: 12rpx;
+	}
+
+	.progress-stats {
+		justify-content: space-between;
+		flex-direction: row;
+	}
+
+	.stat-item {
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.stat-value {
+		font-size: 32rpx;
+		font-weight: 600;
+		color: #3a397a;
+	}
+
+	.stat-label {
+		font-size: 24rpx;
+		color: #6c757d;
+	}
+
+	/* 继续学习卡片 */
+	.course-card {
+		margin-bottom: 32rpx;
+		background-color: #f8f9fc;
+		border-radius: 24rpx;
+		overflow: hidden;
+		border: 2rpx solid #e6e9f0;
+		flex-direction: row;
+	}
+
+	.course-image {
+		width: 200rpx;
+		height: 200rpx;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		align-items: center;
+		justify-content: center;
+		color: #fff;
+		font-size: 48rpx;
+	}
+
+	.course-content {
+		flex: 1;
+		padding: 24rpx;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	.course-title {
+		font-size: 32rpx;
+		font-weight: 600;
+		color: #2c2c2c;
+		margin-bottom: 8rpx;
+	}
+
+	.course-info {
+		font-size: 24rpx;
+		color: #6c757d;
+		margin-bottom: 16rpx;
+	}
+
+	.chapter-progress {
+		width: 100%;
+		height: 12rpx;
+		background-color: #e6e9f0;
+		border-radius: 6rpx;
+		overflow: hidden;
+		margin-bottom: 16rpx;
+	}
+
+	.chapter-fill {
+		height: 100%;
+		background: linear-gradient(to right, #3a397a, #6a69b3);
+		border-radius: 6rpx;
+	}
+
+	.continue-button {
+		padding: 16rpx 32rpx;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		color: #fff;
+		border-radius: 16rpx;
+		font-size: 28rpx;
+		font-weight: 500;
+		border: 2rpx solid #2f2e62;
+		align-self: flex-end;
+	}
+
+	/* 我的课程列表 */
+	.course-item {
+		padding: 24rpx 0;
+		border-bottom: 2rpx solid #e6e9f0;
+		flex-direction: row;
+	}
+
+	.course-item-last {
+		border-bottom: none;
+	}
+
+	.course-icon {
+		width: 100rpx;
+		height: 100rpx;
+		border-radius: 20rpx;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		align-items: center;
+		justify-content: center;
+		color: #fff;
+		font-size: 40rpx;
+		margin-right: 24rpx;
+		flex-shrink: 0;
+	}
+
+	.course-details {
+		flex: 1;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.course-name {
+		font-size: 32rpx;
+		font-weight: 500;
+		color: #2c2c2c;
+		margin-bottom: 8rpx;
+	}
+
+	.course-meta {
+		font-size: 24rpx;
+		color: #6c757d;
+		margin-bottom: 16rpx;
+	}
+
+	.course-progress {
+		width: 100%;
+		height: 12rpx;
+		background-color: #e6e9f0;
+		border-radius: 6rpx;
+		overflow: hidden;
+		margin-bottom: 16rpx;
+	}
+
+	.course-progress-fill {
+		height: 100%;
+		border-radius: 6rpx;
+	}
+
+	.empty {
+		background-color: #e6e9f0;
+	}
+
+	.course-action {
+		padding: 12rpx 24rpx;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		color: #fff;
+		border-radius: 12rpx;
+		font-size: 24rpx;
+		font-weight: 500;
+		border: 2rpx solid #2f2e62;
+	}
+
+	/* 推荐课程横向滚动 */
+	.recommended-scroll {
+		flex-direction: row;
+		padding: 16rpx 0;
+	}
+
+	.recommended-card {
+		width: 400rpx;
+		background-color: #f8f9fc;
+		border-radius: 24rpx;
+		margin-right: 24rpx;
+		flex-shrink: 0;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.recommended-image {
+		height: 200rpx;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		align-items: center;
+		justify-content: center;
+		color: #fff;
+		font-size: 48rpx;
+	}
+
+	.recommended-content {
+		padding: 24rpx;
+	}
+
+	.recommended-tag {
+		padding: 4rpx 16rpx;
+		background: linear-gradient(to bottom right, #ff7e5f, #ff9a8b);
+		color: #fff;
+		border-radius: 20rpx;
+		font-size: 20rpx;
+		margin-bottom: 16rpx;
+		border: 2rpx solid #e25b3b;
+	}
+
+	.recommended-title {
+		font-size: 28rpx;
+		font-weight: 600;
+		color: #2c2c2c;
+		margin-bottom: 8rpx;
+	}
+
+	.recommended-info {
+		font-size: 24rpx;
+		color: #6c757d;
+	}
+
+	/* 每日精选 */
+	.daily-card {
+		background-color: #f8f9fc;
+		border-radius: 24rpx;
+		overflow: hidden;
+		border: 2rpx solid #e6e9f0;
+		flex-direction: row;
+	}
+
+	.daily-image {
+		width: 200rpx;
+		height: 200rpx;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		align-items: center;
+		justify-content: center;
+		color: #fff;
+		font-size: 48rpx;
+		flex-shrink: 0;
+	}
+
+	.daily-content {
+		flex: 1;
+		padding: 24rpx;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.daily-title {
+		font-size: 32rpx;
+		font-weight: 600;
+		color: #2c2c2c;
+		margin-bottom: 8rpx;
+	}
+
+	.daily-desc {
+		font-size: 24rpx;
+		color: #6c757d;
+		margin-bottom: 16rpx;
+	}
+
+	.daily-button {
+		padding: 12rpx 24rpx;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		color: #fff;
+		border-radius: 12rpx;
+		font-size: 24rpx;
+		font-weight: 500;
+		border: 2rpx solid #2f2e62;
+		align-self: flex-start;
+	}
+
+	/* 学习工具网格 */
+	.tools-grid {
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.tool-item {
+		width: 25%;
+		align-items: center;
+		padding: 24rpx;
+	}
+
+	.tool-icon {
+		width: 100rpx;
+		height: 100rpx;
+		border-radius: 50rpx;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		align-items: center;
+		justify-content: center;
+		color: #fff;
+		font-size: 40rpx;
+		margin-bottom: 16rpx;
+		border: 2rpx solid #2f2e62;
+	}
+
+	.tool-label {
+		font-size: 24rpx;
+		color: #2c2c2c;
+		text-align: center;
+	}
+</style>

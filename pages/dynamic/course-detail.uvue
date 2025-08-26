@@ -1,0 +1,535 @@
+<template>
+	<scroll-view class="root">
+		<view class="container">
+
+			<!-- 课程封面 & 概要 -->
+			<view class="course-header">
+				<view class="course-cover">
+					<view class="mask" />
+					<text class="course-cover-text">📊 行测技巧精讲</text>
+				</view>
+
+				<text class="course-title">行测技巧精讲</text>
+				<text class="course-instructor">由 王教授 讲授</text>
+				<text class="course-description">
+					系统掌握行测考试核心技巧，提高解题速度与正确率，助力省考高分通过。
+				</text>
+
+				<view class="course-stats">
+					<text class="stat-tag">共 20 节</text>
+					<text class="stat-tag">包含 120 道题</text>
+					<text class="stat-tag">3560 人学过</text>
+				</view>
+
+				<view class="progress-container">
+					<view class="progress-fill" :style="{ width: progress + '%' }" />
+				</view>
+				<text class="progress-text">课程完成度：{{ progress }}%</text>
+			</view>
+
+			<!-- 操作栏 -->
+			<view class="action-bar">
+				<button class="continue-button" @tap="goStudy">
+					<text>▶ 继续学习</text>
+				</button>
+				<view class="action-buttons">
+					<view class="action-button" @tap="toggleBookmark">
+						<text :class="bookmarked ? 'fas' : 'far'">🔖</text>
+					</view>
+					<view class="action-button" @tap="share">
+						<text>📤</text>
+					</view>
+				</view>
+			</view>
+
+			<!-- 课程目录 -->
+			<view class="curriculum-section">
+				<text class="section-title">课程目录</text>
+
+				<view v-for="(ch, idx) in chapters" :key="idx" class="chapter-item">
+					<view class="chapter-header" @tap="toggleChapter(idx)">
+						<text class="chapter-title">{{ ch.title }}</text>
+						<text class="chapter-progress">{{ ch.done }}/{{ ch.lessons.length }} 已完成</text>
+					</view>
+
+					<view class="lesson-list" :class="{ expanded: ch.expanded }">
+						<view v-for="(l, i) in ch.lessons" :key="i" class="lesson-item" @tap="openLesson(l)">
+							<view class="lesson-icon" :class="statusClass(l.status)">
+								<text>{{ iconMap[l.status] }}</text>
+							</view>
+							<view class="lesson-details">
+								<text class="lesson-title">{{ l.title }}</text>
+								<text class="lesson-meta">{{ l.meta }}</text>
+							</view>
+							<button v-if="l.status !== 'locked'" class="lesson-action"
+								:class="{ locked: l.status === 'locked' }" @tap.stop="openLesson(l)">
+								{{ btnText[l.status] }}
+							</button>
+						</view>
+					</view>
+				</view>
+			</view>
+
+			<!-- 配套资料 -->
+			<view class="materials-section">
+				<text class="section-title">配套资料</text>
+				<view v-for="(m, idx) in materials" :key="idx" class="material-item">
+					<view class="material-icon">📄</view>
+					<view class="material-details">
+						<text class="material-title">{{ m.name }}</text>
+						<text class="material-meta">{{ m.type }} · {{ m.size }}</text>
+					</view>
+					<button class="download-button" @tap="download(m.name)">下载</button>
+				</view>
+			</view>
+
+			<!-- 讲师介绍 -->
+			<view class="instructor-section">
+				<text class="section-title">讲师介绍</text>
+				<view class="instructor-header">
+					<view class="instructor-avatar">
+						<text>👨‍🏫</text>
+					</view>
+					<view class="instructor-info">
+						<text class="instructor-name">王教授</text>
+						<text class="instructor-title">行测教学专家 · 10年教学经验</text>
+					</view>
+				</view>
+				<text class="instructor-description">
+					王教授具有丰富的行测教学经验，曾帮助数千名学生成功通过公务员考试。教学方法深入浅出，善于将复杂问题简单化，注重实战技巧训练，深受学生喜爱。
+				</text>
+			</view>
+
+		</view>
+	</scroll-view>
+</template>
+
+<script setup lang="uts">
+	import { ref } from 'vue'
+
+	/* 课程进度 */
+	const progress = ref(15)
+	const bookmarked = ref(false)
+
+	/* 章节数据 */
+	const chapters = ref([
+		{
+			title: '第一章 基础知识',
+			done: 3,
+			expanded: true,
+			lessons: [
+				{ title: '1.1 行测考试概述', meta: '12分钟 · 视频', status: 'completed' },
+				{ title: '1.2 言语理解基础', meta: '18分钟 · 视频+练习', status: 'completed' },
+				{ title: '1.3 数量关系入门', meta: '22分钟 · 视频+练习', status: 'in-progress' },
+				{ title: '1.4 判断推理基础', meta: '15分钟 · 视频', status: 'not-started' },
+				{ title: '第一章测试', meta: '30分钟 · 测验', status: 'locked' }
+			]
+		},
+		{
+			title: '第二章 核心应用',
+			done: 0,
+			expanded: false,
+			lessons: [
+				{ title: '2.1 言语理解进阶', meta: '20分钟 · 视频+练习', status: 'locked' }
+			]
+		}
+	])
+
+	/* 资料 */
+	const materials = ref([
+		{ name: '第一章核心公式大全.pdf', type: 'PDF', size: '2.4MB' },
+		{ name: '第二章习题集.pdf', type: 'PDF', size: '3.1MB' }
+	])
+
+	/* 状态映射 */
+	const iconMap = {
+		completed: '✓',
+		'in-progress': '▶',
+		'not-started': '○',
+		locked: '🔒'
+	}
+	const btnText = {
+		completed: '复习',
+		'in-progress': '继续',
+		'not-started': '开始',
+		locked: '锁定'
+	}
+	const statusClass = (status : string) => status
+
+	/* 交互方法 */
+	const toggleChapter = (idx : number) => {
+		chapters.value[idx].expanded = !chapters.value[idx].expanded
+	}
+	const openLesson = (lesson : any) => {
+		if (lesson.status === 'locked') return
+		uni.showToast({ title: `开始学习 ${lesson.title}`, icon: 'none' })
+	}
+	const goStudy = () => uni.showToast({ title: '继续学习当前课程', icon: 'none' })
+	const toggleBookmark = () => {
+		bookmarked.value = !bookmarked.value
+	}
+	const share = () => uni.showToast({ title: '分享课程给好友', icon: 'none' })
+	const download = (name : string) => uni.showToast({ title: `下载 ${name}`, icon: 'none' })
+</script>
+
+<style>
+	.root {
+		flex: 1;
+		background: linear-gradient(to bottom right, #f8f9fc, #eef0f8);
+	}
+
+	.container {
+		padding: 32rpx 32rpx 40rpx;
+	}
+
+	/* 课程封面 */
+	.course-header {
+		background: linear-gradient(to bottom, #fff, #f8f9fc);
+		border-radius: 40rpx;
+		padding: 40rpx;
+		margin-bottom: 32rpx;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.course-cover {
+		width: 100%;
+		height: 360rpx;
+		border-radius: 24rpx;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 32rpx;
+		overflow: hidden;
+		position: relative;
+	}
+
+	.mask {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(to bottom right, rgba(58, 57, 122, .7), rgba(79, 78, 140, .7));
+	}
+
+	.course-cover-text {
+		position: relative;
+		color: #fff;
+		font-size: 48rpx;
+		z-index: 1;
+	}
+
+	.course-title {
+		font-size: 48rpx;
+		font-weight: 700;
+		color: #3a397a;
+		margin-bottom: 16rpx;
+	}
+
+	.course-instructor {
+		font-size: 32rpx;
+		color: #6c757d;
+		margin-bottom: 16rpx;
+	}
+
+	.course-description {
+		font-size: 28rpx;
+		color: #2c2c2c;
+		margin-bottom: 32rpx;
+	}
+
+	.course-stats {
+		flex-direction: row;
+		margin-bottom: 32rpx;
+	}
+
+	.stat-tag {
+		padding: 12rpx 24rpx;
+		background-color: #e6e9ff;
+		border-radius: 32rpx;
+		font-size: 24rpx;
+		color: #3a397a;
+		margin-right: 16rpx;
+		border: 2rpx solid #d9dcf7;
+	}
+
+	.progress-container {
+		width: 100%;
+		height: 24rpx;
+		background-color: #f0f2f7;
+		border-radius: 12rpx;
+		overflow: hidden;
+		margin-bottom: 16rpx;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.progress-fill {
+		height: 100%;
+		background: linear-gradient(to right, #3a397a, #6a69b3);
+		border-radius: 12rpx;
+	}
+
+	.progress-text {
+		font-size: 28rpx;
+		color: #6c757d;
+		text-align: center;
+	}
+
+	/* 操作栏 */
+	.action-bar {
+		flex-direction: row;
+		margin-bottom: 32rpx;
+	}
+
+	.continue-button {
+		flex: 1;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		color: #fff;
+		border-radius: 24rpx;
+		font-size: 32rpx;
+		font-weight: bold;
+		align-items: center;
+		justify-content: center;
+		margin-right: 16rpx;
+		border: 2rpx solid #2f2e62;
+	}
+
+	.action-buttons {
+		flex-direction: row;
+	}
+
+	.action-button {
+		width: 100rpx;
+		height: 100rpx;
+		border-radius: 24rpx;
+		background: linear-gradient(to bottom, #fff, #f8f9fc);
+		align-items: center;
+		justify-content: center;
+		color: #3a397a;
+		font-size: 40rpx;
+		margin-right: 16rpx;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.action-button:last-child {
+		margin-right: 0;
+	}
+
+	/* 课程目录 */
+	.curriculum-section,
+	.materials-section,
+	.instructor-section {
+		background: linear-gradient(to bottom, #fff, #f8f9fc);
+		border-radius: 40rpx;
+		padding: 40rpx;
+		margin-bottom: 32rpx;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.section-title {
+		font-size: 36rpx;
+		font-weight: bold;
+		color: #3a397a;
+		margin-bottom: 32rpx;
+	}
+
+	.chapter-item {
+		margin-bottom: 32rpx;
+	}
+
+	.chapter-header {
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		padding: 24rpx;
+		background-color: #f0f2f7;
+		border-radius: 24rpx;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.chapter-title {
+		font-size: 32rpx;
+		font-weight: bold;
+		color: #2c2c2c;
+	}
+
+	.chapter-progress {
+		font-size: 28rpx;
+		color: #6c757d;
+	}
+
+	.lesson-list {
+		max-height: 0;
+		overflow: hidden;
+		transition: all 0.3s;
+	}
+
+	.lesson-list.expanded {
+		max-height: 9999rpx;
+	}
+
+	.lesson-item {
+		flex-direction: row;
+		align-items: center;
+		padding: 24rpx 0;
+		border-bottom: 2rpx solid #e6e9f0;
+	}
+
+	.lesson-item:last-child {
+		border-bottom: none;
+	}
+
+	.lesson-icon {
+		width: 60rpx;
+		height: 60rpx;
+		border-radius: 50%;
+		align-items: center;
+		justify-content: center;
+		margin-right: 24rpx;
+		font-size: 28rpx;
+	}
+
+	.lesson-icon.completed {
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		color: #fff;
+		border: 2rpx solid #2f2e62;
+	}
+
+	.lesson-icon.in-progress {
+		background-color: #e6e9ff;
+		color: #3a397a;
+		border: 2rpx solid #d9dcf7;
+	}
+
+	.lesson-icon.not-started {
+		background-color: #f0f2f7;
+		color: #6c757d;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.lesson-icon.locked {
+		background-color: #f0f2f7;
+		color: #ced4da;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.lesson-details {
+		flex: 1;
+	}
+
+	.lesson-title {
+		font-size: 28rpx;
+		color: #2c2c2c;
+		margin-bottom: 8rpx;
+	}
+
+	.lesson-meta {
+		font-size: 24rpx;
+		color: #6c757d;
+	}
+
+	.lesson-action {
+		padding: 12rpx 24rpx;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		color: #fff;
+		border-radius: 16rpx;
+		font-size: 24rpx;
+		font-weight: 500;
+		border: 2rpx solid #2f2e62;
+	}
+
+	.lesson-action.locked {
+		background-color: #f0f2f7;
+		color: #ced4da;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	/* 资料 */
+	.material-item {
+		flex-direction: row;
+		align-items: center;
+		padding: 24rpx 0;
+		border-bottom: 2rpx solid #e6e9f0;
+	}
+
+	.material-item:last-child {
+		border-bottom: none;
+	}
+
+	.material-icon {
+		width: 80rpx;
+		height: 80rpx;
+		border-radius: 20rpx;
+		background-color: #e6e9ff;
+		align-items: center;
+		justify-content: center;
+		color: #3a397a;
+		font-size: 36rpx;
+		margin-right: 24rpx;
+		border: 2rpx solid #d9dcf7;
+	}
+
+	.material-details {
+		flex: 1;
+	}
+
+	.material-title {
+		font-size: 28rpx;
+		color: #2c2c2c;
+		margin-bottom: 8rpx;
+	}
+
+	.material-meta {
+		font-size: 24rpx;
+		color: #6c757d;
+	}
+
+	.download-button {
+		padding: 12rpx 24rpx;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		color: #fff;
+		border-radius: 16rpx;
+		font-size: 24rpx;
+		font-weight: 500;
+		border: 2rpx solid #2f2e62;
+	}
+
+	/* 讲师 */
+	.instructor-header {
+		flex-direction: row;
+		align-items: center;
+		margin-bottom: 32rpx;
+	}
+
+	.instructor-avatar {
+		width: 120rpx;
+		height: 120rpx;
+		border-radius: 60rpx;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		align-items: center;
+		justify-content: center;
+		color: #fff;
+		font-size: 48rpx;
+		margin-right: 32rpx;
+		border: 4rpx solid #fff;
+	}
+
+	.instructor-info {
+		flex: 1;
+	}
+
+	.instructor-name {
+		font-size: 36rpx;
+		font-weight: bold;
+		color: #3a397a;
+		margin-bottom: 8rpx;
+	}
+
+	.instructor-title {
+		font-size: 28rpx;
+		color: #6c757d;
+	}
+
+	.instructor-description {
+		font-size: 28rpx;
+		color: #2c2c2c;
+		line-height: 1.6;
+	}
+</style>

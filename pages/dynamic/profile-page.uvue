@@ -1,0 +1,434 @@
+<template>
+	<scroll-view class="root">
+		<view class="container">
+
+			<!-- 用户信息区域 -->
+			<view class="profile-section">
+				<view class="avatar">
+					<text class="icon">👤</text>
+				</view>
+
+				<view class="user-info" @tap="goEdit">
+					<text class="username">李明同学</text>
+					<text class="edit-icon">✏️</text>
+				</view>
+
+				<text class="user-tagline">“专注备考100天”</text>
+
+				<view class="stats-container">
+					<view class="stat-item">
+						<text class="stat-value">VIP</text>
+						<text class="stat-label">会员</text>
+					</view>
+					<view class="stat-item">
+						<text class="stat-value">8</text>
+						<text class="stat-label">勋章</text>
+					</view>
+					<view class="stat-item stat-item-last">
+						<text class="stat-value">100</text>
+						<text class="stat-label">学习天数</text>
+					</view>
+				</view>
+
+				<view class="vip-badge">会员特权</view>
+			</view>
+
+			<!-- 数据卡片区域 -->
+			<view class="data-cards">
+				<view class="data-card" @tap="goDetail('时长')">
+					<text class="data-value">100h</text>
+					<text class="data-label">学习时长</text>
+				</view>
+				<view class="data-card" @tap="goDetail('正确率')">
+					<text class="data-value">85%</text>
+					<text class="data-label">正确率</text>
+				</view>
+				<view class="data-card data-card-last" @tap="goDetail('排名')">
+					<text class="data-value">前10%</text>
+					<text class="data-label">排名</text>
+				</view>
+			</view>
+
+			<!-- 功能宫格导航 -->
+			<view class="grid-nav">
+				<view class="grid-item grid-item-1">
+					<view class="grid-item-card" @tap="nav('course')">
+						<view class="grid-icon">📚</view>
+						<text class="grid-label">我的课程</text>
+					</view>
+				</view>
+				<view class="grid-item grid-item-2">
+					<view class="grid-item-card" @tap="nav('wrong')">
+						<view class="grid-icon">❌</view>
+						<text class="grid-label">我的错题</text>
+					</view>
+				</view>
+				<view class="grid-item grid-item-3">
+					<view class="grid-item-card" @tap="nav('star')">
+						<view class="grid-icon">⭐</view>
+						<text class="grid-label">我的收藏</text>
+					</view>
+				</view>
+				<view class="grid-item grid-item-4">
+					<view class="grid-item-card" @tap="nav('history')">
+						<view class="grid-icon">🕒</view>
+						<text class="grid-label">做题历史</text>
+					</view>
+				</view>
+				<view class="grid-item grid-item-5">
+					<view class="grid-item-card" @tap="nav('note')">
+						<view class="grid-icon">📝</view>
+						<text class="grid-label">我的笔记</text>
+					</view>
+				</view>
+				<view class="grid-item grid-item-6">
+					<view class="grid-item-card" @tap="nav('vip')">
+						<view class="grid-icon">👑</view>
+						<text class="grid-label">会员中心</text>
+					</view>
+				</view>
+			</view>
+
+			<!-- 成就区域 -->
+			<view class="achievement-section">
+				<view class="section-title">
+					<text class="section-title-left">我的成就</text>
+					<text class="view-all" @tap="goAchieve">查看全部</text>
+				</view>
+				<scroll-view class="badges-scroll">
+					<view class="badges-list">
+						<view class="badge earned">🏆</view>
+						<view class="badge earned">⭐</view>
+						<view class="badge earned">🚀</view>
+						<view class="badge locked">🔒</view>
+						<view class="badge locked">🔒</view>
+						<view class="badge locked">🔒</view>
+					</view>
+				</scroll-view>
+			</view>
+
+			<!-- 设置区域 -->
+			<view class="settings-section">
+				<view v-for="(item, idx) in settings" :key="idx" class="settings-item"
+					:class="{'settings-item-last': idx === settings.length - 1}" @tap="item.action">
+					<text class="settings-item-text" :class="{ logout: item.logout }">{{ item.text }}</text>
+					<text class="arrow">›</text>
+				</view>
+			</view>
+
+		</view>
+
+		<BottomNav current="mine" />
+
+	</scroll-view>
+</template>
+
+<script setup lang="uts">
+	import { ref } from 'vue'
+
+	const settings = ref([
+		{ text: '设置与隐私', action: () => uni.showToast({ title: '设置页', icon: 'none' }) },
+		{ text: '帮助与反馈', action: () => uni.showToast({ title: '帮助页', icon: 'none' }) },
+		{ text: '邀请好友得会员', action: () => uni.showToast({ title: '邀请页', icon: 'none' }) },
+		{ text: '关于我们', action: () => uni.showToast({ title: '关于页', icon: 'none' }) },
+		{ text: '退出登录', logout: true, action: () => confirmLogout() }
+	])
+
+	const nav = (page : string) => uni.showToast({ title: `跳转到${page}`, icon: 'none' })
+	const goEdit = () => uni.showToast({ title: '编辑资料', icon: 'none' })
+	const goDetail = (type : string) => uni.showToast({ title: `${type}详情`, icon: 'none' })
+	const goAchieve = () => uni.showToast({ title: '全部成就', icon: 'none' })
+
+	const confirmLogout = () => {
+		uni.showModal({
+			title: '退出登录',
+			content: '确定要退出登录吗？',
+			success: (res) => {
+				if (res.confirm) uni.showToast({ title: '已退出', icon: 'success' })
+			}
+		})
+	}
+</script>
+
+<style>
+	.root {
+		flex: 1;
+		background: linear-gradient(to bottom right, #f8f9fc, #eef0f8);
+	}
+
+	.container {
+		padding: 32rpx 32rpx 120rpx;
+	}
+
+	/* 用户信息 */
+	.profile-section {
+		background: linear-gradient(to bottom, #fff, #f8f9fc);
+		border-radius: 40rpx;
+		padding: 48rpx;
+		align-items: center;
+		margin-bottom: 32rpx;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.avatar {
+		width: 160rpx;
+		height: 160rpx;
+		border-radius: 80rpx;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		justify-content: center;
+		align-items: center;
+		margin-bottom: 32rpx;
+		border: 6rpx solid #fff;
+	}
+
+	.icon {
+		font-size: 64rpx;
+		color: #fff;
+	}
+
+	.user-info {
+		flex-direction: row;
+		align-items: center;
+		margin-bottom: 16rpx;
+	}
+
+	.username {
+		font-size: 40rpx;
+		font-weight: 600;
+		color: #2c2c2c;
+		margin-right: 16rpx;
+	}
+
+	.edit-icon {
+		font-size: 32rpx;
+		color: #3a397a;
+	}
+
+	.user-tagline {
+		font-size: 28rpx;
+		color: #6c757d;
+		margin-bottom: 32rpx;
+	}
+
+	.stats-container {
+		flex-direction: row;
+	}
+
+	.stat-item {
+		flex: 1;
+		align-items: center;
+		padding: 0 32rpx;
+		border-right: 2rpx solid #e6e9f0;
+	}
+
+	.stat-item-last {
+		border-right: none;
+	}
+
+	.stat-value {
+		font-size: 32rpx;
+		font-weight: 600;
+		color: #3a397a;
+	}
+
+	.stat-label {
+		font-size: 24rpx;
+		color: #6c757d;
+	}
+
+	.vip-badge {
+		background: linear-gradient(to bottom right, #ff7e5f, #ff9a8b);
+		color: #fff;
+		padding: 8rpx 24rpx;
+		border-radius: 40rpx;
+		font-size: 24rpx;
+		font-weight: 500;
+		margin-top: 16rpx;
+	}
+
+	/* 数据卡片 */
+	.data-cards {
+		flex-direction: row;
+		margin-bottom: 32rpx;
+	}
+
+	.data-card {
+		flex: 1;
+		background: linear-gradient(to bottom, #fff, #f8f9fc);
+		border-radius: 24rpx;
+		padding: 32rpx;
+		align-items: center;
+		margin-right: 16rpx;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.data-card-last {
+		margin-right: 0;
+	}
+
+	.data-value {
+		font-size: 40rpx;
+		font-weight: 600;
+		color: #3a397a;
+		margin-bottom: 8rpx;
+	}
+
+	.data-label {
+		font-size: 24rpx;
+		color: #6c757d;
+	}
+
+	/* 宫格导航 */
+	.grid-nav {
+		flex-direction: row;
+		flex-wrap: wrap;
+		margin-bottom: 32rpx;
+	}
+
+	.grid-item {
+		width: 33%;
+	}
+
+	.grid-item-1,
+	.grid-item-2,
+	.grid-item-3 {
+		padding-bottom: 8rpx;
+	}
+
+	.grid-item-4,
+	.grid-item-5,
+	.grid-item-6 {
+		padding-top: 8rpx;
+	}
+
+	.grid-item-1,
+	.grid-item-4 {
+		padding-right: 8rpx;
+	}
+
+	.grid-item-2,
+	.grid-item-5 {
+		padding-left: 8rpx;
+		padding-right: 8rpx;
+	}
+
+	.grid-item-3,
+	.grid-item-6 {
+		padding-left: 8rpx;
+	}
+
+	.grid-item-card {
+		align-items: center;
+		padding: 32rpx;
+		border-radius: 24rpx;
+		background: linear-gradient(to bottom, #fff, #f8f9fc);
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.grid-icon {
+		width: 80rpx;
+		height: 80rpx;
+		border-radius: 40rpx;
+		background-color: #e6e9ff;
+		justify-content: center;
+		align-items: center;
+		color: #3a397a;
+		font-size: 36rpx;
+		margin-bottom: 16rpx;
+	}
+
+	.grid-label {
+		font-size: 24rpx;
+		color: #2c2c2c;
+	}
+
+	/* 成就区域 */
+	.achievement-section {
+		background: linear-gradient(to bottom, #fff, #f8f9fc);
+		border-radius: 40rpx;
+		padding: 40rpx;
+		margin-bottom: 32rpx;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.section-title {
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 32rpx;
+	}
+
+	.section-title-left {
+		font-size: 36rpx;
+		font-weight: 600;
+		color: #3a397a;
+	}
+
+	.view-all {
+		font-size: 24rpx;
+		color: #6c757d;
+	}
+
+	.badges-scroll {
+		flex-direction: row;
+	}
+
+	.badges-list {
+		flex-direction: row;
+	}
+
+	.badge {
+		width: 120rpx;
+		height: 120rpx;
+		border-radius: 50%;
+		justify-content: center;
+		align-items: center;
+		font-size: 48rpx;
+		margin-right: 24rpx;
+	}
+
+	.badge.earned {
+		background: linear-gradient(to bottom, #e6e9ff, #d9dcf7);
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.badge.locked {
+		background: linear-gradient(to bottom, #f0f2f7, #e6e9f0);
+		color: #ced4da;
+	}
+
+	/* 设置列表 */
+	.settings-section {
+		background: linear-gradient(to bottom, #fff, #f8f9fc);
+		border-radius: 40rpx;
+		border: 2rpx solid #e6e9f0;
+		margin-bottom: 40rpx;
+	}
+
+	.settings-item {
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		padding: 32rpx 40rpx;
+		border-bottom: 2rpx solid #e6e9f0;
+	}
+
+	.settings-item-last {
+		border-bottom: none;
+	}
+
+	.settings-item-text {
+		font-size: 32rpx;
+		color: #2c2c2c;
+	}
+
+	.settings-item-text.logout {
+		font-size: 32rpx;
+		color: #ff7e5f;
+	}
+
+	.arrow {
+		font-size: 40rpx;
+		color: #6c757d;
+	}
+</style>

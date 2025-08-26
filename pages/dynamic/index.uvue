@@ -137,7 +137,7 @@
 				</view>
 			</view>
 		</scroll-view>
-		<BottomNav />
+		<BottomNav current="home" />
 	</view>
 </template>
 

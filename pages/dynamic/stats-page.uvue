@@ -1,0 +1,486 @@
+<template>
+	<scroll-view class="root">
+		<view class="container">
+
+			<!-- 时间筛选 & 概览 -->
+			<view class="filter-section">
+				<view class="time-filter">
+					<text v-for="(item, idx) in timeTabs" :key="idx" class="filter-option"
+						:class="{ active: idx === activeTime }" @tap="activeTime = idx">
+						{{ item }}
+					</text>
+				</view>
+
+				<view class="overview-cards">
+					<view class="overview-card">
+						<text class="overview-value">{{ overview.hours }}h</text>
+						<text class="overview-label">学习时长</text>
+					</view>
+					<view class="overview-card">
+						<text class="overview-value">{{ overview.total }}</text>
+						<text class="overview-label">做题总量</text>
+					</view>
+					<view class="overview-card overview-card-last">
+						<text class="overview-value">{{ overview.rate }}%</text>
+						<text class="overview-label">平均正确率</text>
+					</view>
+				</view>
+			</view>
+
+			<!-- 正确率趋势图 -->
+			<view class="chart-section">
+				<text class="section-title">正确率趋势</text>
+				<view class="chart-container">
+					<view v-for="(bar, idx) in trend" :key="idx" class="chart-bar" :style="{ height: bar.height }"
+						@tap="showDetail(bar)">
+						<text class="chart-value">{{ bar.rate }}%</text>
+						<text class="chart-bar-label">{{ bar.day }}</text>
+					</view>
+				</view>
+				<view class="chart-insight">
+					<text class="insight-icon">📈</text>
+					<text>您的正确率呈上升趋势，最近三天表现优异！</text>
+				</view>
+			</view>
+
+			<!-- 学科能力分析 -->
+			<view class="subject-section">
+				<text class="section-title">学科能力分析</text>
+				<view v-for="(s, idx) in subjects" :key="idx" class="subject-item"
+					:class="{'subject-item-last': idx === subjects.length - 1}">
+					<text class="subject-name">{{ s.name }}</text>
+					<view class="progress-container">
+						<view class="progress-bar" :style="{ width: s.rate + '%' }" />
+					</view>
+					<text class="subject-score">{{ s.rate }}%</text>
+					<button class="practice-button" @tap="goPractice(s.name)">练习</button>
+				</view>
+			</view>
+
+			<!-- 知识点掌握 -->
+			<view class="knowledge-section">
+				<text class="section-title">知识点掌握分析</text>
+				<scroll-view class="subject-selector">
+					<text v-for="(tab, idx) in knowledgeTabs" :key="idx" class="subject-tab"
+						:class="{ active: idx === activeKnowledge }" @tap="activeKnowledge = idx">
+						{{ tab }}
+					</text>
+				</scroll-view>
+
+				<view>
+					<view v-for="(k, idx) in currentKnowledge" :key="idx" class="knowledge-item">
+						<text class="knowledge-name">{{ k.name }}</text>
+						<view class="knowledge-progress">
+							<view class="progress-ring" :data-rate="k.rate">
+								<text class="progress-text">{{ k.rate }}%</text>
+							</view>
+						</view>
+						<button class="consolidate-button" @tap="goConsolidate(k.name)">去巩固</button>
+					</view>
+				</view>
+			</view>
+
+			<!-- 学习时间分布 -->
+			<view class="time-section">
+				<text class="section-title">学习时间分布</text>
+				<view class="time-chart">
+					<view v-for="(bar, idx) in timeDist" :key="idx" class="time-bar" :style="{ height: bar.height }">
+						<text class="time-value">{{ bar.hours }}h</text>
+						<text class="time-label">{{ bar.day }}</text>
+					</view>
+				</view>
+				<view class="chart-insight">
+					<text class="insight-icon">⏰</text>
+					<text>周三至周五学习时间较长，周末可适当增加。</text>
+				</view>
+			</view>
+
+			<!-- 学习报告与建议 -->
+			<view class="report-section">
+				<text class="section-title">学习报告与建议</text>
+				<view class="report-content">
+					过去一周您共学习了28小时，正确率稳步提升！数学是优势科目，但英语需加强，特别是阅读理解。建议每天增加30分钟英语专项练习。
+				</view>
+				<button class="report-button" @tap="handleReport">
+					<text>{{ generating ? '生成中...' : '生成完整学习报告' }}</text>
+					<text class="icon">📥</text>
+				</button>
+			</view>
+
+			<BottomNav current="statistics" />
+		</view>
+	</scroll-view>
+</template>
+
+<script setup lang="uts">
+	import { ref, computed } from 'vue'
+
+	/* 时间筛选 */
+	const timeTabs = ['本日', '本周', '本月', '全部']
+	const activeTime = ref(1)
+
+	/* 概览数据 */
+	const overview = ref({
+		hours: 28,
+		total: 500,
+		rate: 75
+	})
+
+	/* 正确率趋势 */
+	const trend = ref([
+		{ day: '周一', rate: 70, height: '70%' },
+		{ day: '周二', rate: 65, height: '65%' },
+		{ day: '周三', rate: 80, height: '80%' },
+		{ day: '周四', rate: 75, height: '75%' },
+		{ day: '周五', rate: 85, height: '85%' },
+		{ day: '周六', rate: 90, height: '90%' },
+		{ day: '周日', rate: 78, height: '78%' }
+	])
+
+	/* 学科能力 */
+	const subjects = ref([
+		{ name: '数学', rate: 85 },
+		{ name: '英语', rate: 65 },
+		{ name: '语文', rate: 90 }
+	])
+
+	/* 知识点 */
+	const knowledgeTabs = ['数学', '英语', '语文', '物理', '化学']
+	const activeKnowledge = ref(0)
+
+	const knowledgeData = ref({
+		数学: [
+			{ name: '函数专题', rate: 45 },
+			{ name: '几何证明', rate: 70 },
+			{ name: '代数运算', rate: 85 }
+		],
+		英语: [
+			{ name: '阅读理解', rate: 60 },
+			{ name: '完形填空', rate: 75 },
+			{ name: '写作', rate: 80 }
+		]
+	})
+
+	const currentKnowledge = computed(() => knowledgeData.value[knowledgeTabs[activeKnowledge.value]] || [])
+
+	/* 学习时间分布 */
+	const timeDist = ref([
+		{ day: '周一', hours: 2, height: '40%' },
+		{ day: '周二', hours: 3, height: '60%' },
+		{ day: '周三', hours: 4, height: '80%' },
+		{ day: '周四', hours: 3.5, height: '70%' },
+		{ day: '周五', hours: 4.5, height: '90%' },
+		{ day: '周六', hours: 2.5, height: '50%' },
+		{ day: '周日', hours: 1.5, height: '30%' }
+	])
+
+	/* 报告生成 */
+	const generating = ref(false)
+	const handleReport = () => {
+		generating.value = true
+		setTimeout(() => {
+			generating.value = false
+			uni.showToast({ title: '报告已生成', icon: 'success' })
+		}, 1500)
+	}
+
+	/* 跳转 */
+	const goPractice = (subject : string) => uni.showToast({ title: `练习${subject}`, icon: 'none' })
+	const goConsolidate = (point : string) => uni.showToast({ title: `巩固${point}`, icon: 'none' })
+	const showDetail = (bar : any) => uni.showToast({ title: `${bar.day} ${bar.rate}%`, icon: 'none' })
+</script>
+
+<style>
+	.root {
+		flex: 1;
+		background: linear-gradient(to bottom right, #f8f9fc, #eef0f8);
+	}
+
+	.container {
+		padding: 32rpx 32rpx 120rpx;
+	}
+
+	/* 通用卡片 */
+	.filter-section,
+	.chart-section,
+	.subject-section,
+	.knowledge-section,
+	.time-section,
+	.report-section {
+		background: linear-gradient(to bottom, #fff, #f8f9fc);
+		border-radius: 40rpx;
+		padding: 40rpx;
+		margin-bottom: 32rpx;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.section-title {
+		font-size: 36rpx;
+		font-weight: bold;
+		color: #3a397a;
+		margin-bottom: 32rpx;
+	}
+
+	/* 时间筛选 */
+	.time-filter {
+		flex-direction: row;
+		justify-content: space-between;
+		margin-bottom: 40rpx;
+	}
+
+	.filter-option {
+		padding: 16rpx 32rpx;
+		border-radius: 40rpx;
+		font-size: 28rpx;
+		background-color: #f0f2f7;
+		color: #6c757d;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.filter-option.active {
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		color: #fff;
+		border-color: #2f2e62;
+	}
+
+	/* 概览卡片 */
+	.overview-cards {
+		flex-direction: row;
+	}
+
+	.overview-card {
+		flex: 1;
+		align-items: center;
+		padding: 24rpx;
+		background-color: #f8f9fc;
+		border-radius: 32rpx;
+		margin-right: 16rpx;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.overview-card-last {
+		margin-right: 0;
+	}
+
+	.overview-value {
+		font-size: 40rpx;
+		font-weight: bold;
+		color: #3a397a;
+		margin-bottom: 8rpx;
+	}
+
+	.overview-label {
+		font-size: 24rpx;
+		color: #6c757d;
+	}
+
+	/* 图表容器 */
+	.chart-container,
+	.time-chart {
+		flex-direction: row;
+		align-items: flex-end;
+		justify-content: space-around;
+		height: 400rpx;
+		padding: 40rpx 0;
+		border-bottom: 2rpx solid #e6e9f0;
+		margin-bottom: 32rpx;
+	}
+
+	.chart-bar,
+	.time-bar {
+		width: 60rpx;
+		background: linear-gradient(to top, #3a397a, #6a69b3);
+		border-radius: 12rpx 12rpx 0 0;
+		position: relative;
+	}
+
+	.chart-value,
+	.time-value {
+		position: absolute;
+		top: -40rpx;
+		left: 0;
+		right: 0;
+		text-align: center;
+		font-size: 24rpx;
+		font-weight: bold;
+		color: #3a397a;
+	}
+
+	.chart-bar-label,
+	.time-label {
+		position: absolute;
+		bottom: -40rpx;
+		left: 0;
+		right: 0;
+		text-align: center;
+		font-size: 24rpx;
+		color: #6c757d;
+	}
+
+	.chart-insight {
+		flex-direction: row;
+		align-items: center;
+		background-color: #f0f2f7;
+		padding: 24rpx;
+		border-radius: 24rpx;
+		font-size: 28rpx;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.insight-icon {
+		margin-right: 16rpx;
+	}
+
+	/* 学科能力 */
+	.subject-item {
+		flex-direction: row;
+		align-items: center;
+		margin-bottom: 32rpx;
+	}
+
+	.subject-item-last {
+		margin-bottom: 0;
+	}
+
+	.subject-name {
+		width: 120rpx;
+		font-size: 28rpx;
+		font-weight: bold;
+		color: #2c2c2c;
+	}
+
+	.progress-container {
+		flex: 1;
+		height: 24rpx;
+		background-color: #f0f2f7;
+		border-radius: 12rpx;
+		overflow: hidden;
+		margin: 0 24rpx;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.progress-bar {
+		height: 100%;
+		background: linear-gradient(to right, #3a397a, #6a69b3);
+		border-radius: 12rpx;
+	}
+
+	.subject-score {
+		width: 80rpx;
+		text-align: right;
+		font-size: 28rpx;
+		font-weight: bold;
+		color: #3a397a;
+	}
+
+	/* 知识点 */
+	.subject-selector {
+		flex-direction: row;
+		margin-bottom: 32rpx;
+	}
+
+	.subject-tab {
+		padding: 16rpx 32rpx;
+		border-radius: 40rpx;
+		font-size: 28rpx;
+		background-color: #f0f2f7;
+		color: #6c757d;
+		margin-right: 16rpx;
+		white-space: nowrap;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.subject-tab.active {
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		color: #fff;
+		border-color: #2f2e62;
+	}
+
+	.knowledge-item {
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 24rpx 0;
+		border-bottom: 2rpx solid #e6e9f0;
+	}
+
+	.knowledge-item:last-child {
+		border-bottom: none;
+	}
+
+	.knowledge-name {
+		font-size: 28rpx;
+		color: #2c2c2c;
+		flex: 1;
+	}
+
+	.knowledge-progress {
+		width: 120rpx;
+		height: 120rpx;
+		position: relative;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.progress-ring {
+		width: 100%;
+		height: 100%;
+		border-radius: 50%;
+		background: conic-gradient(#3a397a var(--progress, 0deg), #f0f2f7 0deg);
+	}
+
+	.progress-text {
+		position: absolute;
+		font-size: 24rpx;
+		font-weight: bold;
+		color: #3a397a;
+	}
+
+	/* 按钮 */
+	.practice-button,
+	.consolidate-button {
+		padding: 12rpx 24rpx;
+		border-radius: 16rpx;
+		font-size: 24rpx;
+		font-weight: bold;
+		border: 2rpx solid transparent;
+	}
+
+	.practice-button {
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		color: #fff;
+		border-color: #2f2e62;
+	}
+
+	.consolidate-button {
+		background: linear-gradient(to bottom right, #ff7e5f, #ff9a8b);
+		color: #fff;
+		border-color: #e25b3b;
+	}
+
+	/* 报告区域 */
+	.report-content {
+		background-color: #f0f2f7;
+		padding: 32rpx;
+		border-radius: 24rpx;
+		margin-bottom: 32rpx;
+		font-size: 28rpx;
+		line-height: 1.5;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.report-button {
+		width: 100%;
+		padding: 32rpx;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		color: #fff;
+		border-radius: 24rpx;
+		font-size: 32rpx;
+		font-weight: bold;
+		border: 2rpx solid #2f2e62;
+	}
+
+	.report-button .icon {
+		margin-left: 8rpx;
+	}
+</style>

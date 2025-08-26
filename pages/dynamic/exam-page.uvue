@@ -1,0 +1,374 @@
+<template>
+	<scroll-view class="root">
+		<view class="container">
+			<!-- 顶部信息栏 -->
+			<view class="exam-header">
+				<text class="exam-title">高等数学 - 期中考试</text>
+				<view class="exam-meta">
+					<text>剩余时间: {{ minutes }}:{{ seconds }}</text>
+					<text>题目: {{ current + 1 }}/{{ total }}</text>
+				</view>
+				<view class="progress-container">
+					<view class="progress-bar" :style="{ width: progress + '%' }" />
+				</view>
+			</view>
+
+			<!-- 答题卡 -->
+			<view class="answer-sheet">
+				<view class="sheet-header" @tap="toggleSheet">
+					<text class="sheet-title">答题卡</text>
+					<text class="sheet-toggle" :class="{ collapsed: sheetCollapsed }">▼</text>
+				</view>
+				<view class="sheet-content" :class="{ collapsed: sheetCollapsed }">
+					<view class="questions-grid">
+						<view v-for="(_, i) in total" :key="i" class="question-number" :class="{
+		          current: i === current,
+		          answered: answered.includes(i)
+		        }" @tap="navigateToQuestion(i)">
+							<text>{{ i + 1 }}</text>
+						</view>
+					</view>
+				</view>
+			</view>
+
+			<!-- 题目区域 -->
+			<view class="question-card">
+				<view class="question-header">
+					<text class="question-title">题目 {{ current + 1 }}</text>
+					<text class="question-meta">单选题 (2分)</text>
+				</view>
+				<text class="question-text">{{ questionText }}</text>
+
+				<view class="options-list">
+					<view v-for="(opt, idx) in options" :key="idx" class="option-item"
+						:class="{ selected: selected === idx }" @tap="selectOption(idx)">
+						<view class="option-marker">
+							<text>{{ opt.label }}</text>
+						</view>
+						<text class="option-text">{{ opt.text }}</text>
+					</view>
+				</view>
+			</view>
+
+			<!-- 底部导航 -->
+			<view class="exam-footer">
+				<button class="nav-button-prev" v-if="current !== 0" @tap="navigateToQuestion(current - 1)">
+					<text>◀ 上一题</text>
+				</button>
+
+				<button class="submit-button" @tap="submitPaper">
+					<text>提交答案</text>
+				</button>
+
+				<button class="nav-button-next" v-if="current !== total - 1"
+					@tap="navigateToQuestion(current + 1)">
+					<text>下一题 ▶</text>
+				</button>
+			</view>
+		</view>
+	</scroll-view>
+</template>
+
+<script setup lang="uts">
+	import { ref, computed, onMounted } from 'vue'
+
+	const total = 30
+	const current = ref(14)
+	const answered = ref<number[]>([...Array(15).keys()]) // 0-14 已答
+	const selected = ref<number | null>(1) // 默认选中 B
+	const sheetCollapsed = ref(false)
+
+	// 倒计时
+	const remain = ref(45 * 60 + 22) // 45:22
+	const minutes = computed(() => String(Math.floor(remain.value / 60)).padStart(2, '0'))
+	const seconds = computed(() => String(remain.value % 60).padStart(2, '0'))
+	let timer : ReturnType<typeof setInterval>
+	onMounted(() => {
+		timer = setInterval(() => {
+			if (remain.value > 0) remain.value--
+		}, 1000)
+	})
+
+	// 进度
+	const progress = computed(() => ((current.value + 1) / total) * 100)
+
+	// 题目数据（示例）
+	const questionText = '设函数 f(x) = x³ - 3x² + 2x，则下列哪个点是函数的拐点？'
+	const options = [
+		{ label: 'A', text: '(0, 0)' },
+		{ label: 'B', text: '(1, 0)' },
+		{ label: 'C', text: '(2, 0)' },
+		{ label: 'D', text: '(1, 1)' }
+	]
+
+	// 方法
+	const toggleSheet = () => {
+		sheetCollapsed.value = !sheetCollapsed.value
+	}
+	const navigateToQuestion = (index : number) => {
+		if (index < 0 || index >= total) return
+		current.value = index
+	}
+	const selectOption = (index : number) => {
+		selected.value = index
+		if (!answered.value.includes(current.value)) {
+			answered.value.push(current.value)
+		}
+	}
+	const submitPaper = () => {
+		uni.showModal({
+			title: '确认提交',
+			content: '确定提交试卷吗？',
+			success: (res) => {
+				if (res.confirm) uni.showToast({ title: '已提交', icon: 'success' })
+			}
+		})
+	}
+</script>
+
+<style scoped>
+	.root {
+		flex: 1;
+	}
+
+	.container {
+		background: linear-gradient(to bottom, #f8f9fc, #eef0f8);
+		padding-bottom: 120rpx;
+	}
+
+	/* 顶部栏 */
+	.exam-header {
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		color: #fff;
+		border-radius: 24rpx;
+		padding: 32rpx;
+		margin: 32rpx 32rpx 0;
+		border: 2rpx solid #2f2e62;
+	}
+
+	.exam-title {
+		font-size: 40rpx;
+		font-weight: bold;
+		margin-bottom: 16rpx;
+	}
+
+	.exam-meta {
+		display: flex;
+		justify-content: space-between;
+		font-size: 28rpx;
+		opacity: 0.9;
+		margin-bottom: 24rpx;
+		flex-direction: row;
+	}
+
+	.progress-container {
+		background: rgba(255, 255, 255, 0.2);
+		border-radius: 8rpx;
+		height: 12rpx;
+		overflow: hidden;
+	}
+
+	.progress-bar {
+		height: 100%;
+		background: linear-gradient(to right, #fff, #e6e9ff);
+		border-radius: 8rpx;
+	}
+
+	/* 答题卡 */
+	.answer-sheet {
+		background: linear-gradient(to bottom, #fff, #f8f9fc);
+		border-radius: 24rpx;
+		margin: 32rpx;
+		overflow: hidden;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.sheet-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 32rpx;
+		border-bottom: 2rpx solid #eef0f5;
+		flex-direction: row;
+	}
+
+	.sheet-title {
+		font-size: 32rpx;
+		font-weight: bold;
+		color: #3a397a;
+	}
+
+	.sheet-toggle {
+		transition: all 0.3s;
+	}
+
+	.sheet-toggle.collapsed {
+		transform: rotate(180deg);
+	}
+
+	.sheet-content {
+		max-height: 500rpx;
+		overflow: hidden;
+		transition: all 0.3s;
+	}
+
+	.sheet-content.collapsed {
+		max-height: 0;
+	}
+
+	.questions-grid {
+		flex-direction: row;
+		flex-wrap: wrap;
+		padding: 16rpx;
+	}
+
+	.question-number {
+		width: 80rpx;
+		height: 80rpx;
+		margin: 8rpx;
+		border-radius: 16rpx;
+		background-color: #f0f2f7;
+		color: #6c757d;
+		font-weight: 500;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.question-number.current {
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		color: #fff;
+		transform: scale(1.1);
+		border-color: #2f2e62;
+	}
+
+	.question-number.answered {
+		background: linear-gradient(to bottom, #e6e9ff, #d9dcf7);
+		color: #3a397a;
+		border-color: #3a397a;
+	}
+
+	/* 题目卡片 */
+	.question-card {
+		background: linear-gradient(to bottom, #fff, #f8f9fc);
+		border-radius: 24rpx;
+		padding: 40rpx;
+		margin: 0 32rpx 32rpx;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.question-header {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 32rpx;
+		flex-direction: row;
+	}
+
+	.question-title {
+		font-size: 36rpx;
+		font-weight: bold;
+		color: #3a397a;
+	}
+
+	.question-meta {
+		font-size: 28rpx;
+		color: #6c757d;
+	}
+
+	.question-text {
+		font-size: 32rpx;
+		line-height: 1.5;
+		margin-bottom: 40rpx;
+	}
+
+	/* 选项列表 */
+	.options-list {
+		flex-direction: column;
+	}
+
+	.option-item {
+		flex-direction: row;
+		align-items: center;
+		padding: 32rpx;
+		border-radius: 16rpx;
+		margin-bottom: 16rpx;
+		background-color: #f8f9fc;
+		border: 2rpx solid #eef0f5;
+	}
+
+	.option-item.selected {
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		color: #fff;
+		border-color: #2f2e62;
+	}
+
+	.option-marker {
+		width: 48rpx;
+		height: 48rpx;
+		border-radius: 24rpx;
+		border: 2rpx solid #ced4da;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-right: 24rpx;
+		flex-shrink: 0;
+	}
+
+	.option-item.selected .option-marker {
+		background-color: #fff;
+		color: #3a397a;
+		border-color: #fff;
+	}
+
+	.option-text {
+		flex: 1;
+	}
+
+	/* 底部导航 */
+	.exam-footer {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #f8f9fc;
+		border-top: 2rpx solid #e6e9f0;
+		padding: 32rpx;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-direction: row;
+	}
+
+	.nav-button-prev {
+		padding: 24rpx 40rpx;
+		border-radius: 16rpx;
+		font-weight: bold;
+		display: flex;
+		align-items: center;
+		background: linear-gradient(to bottom, #fff, #f8f9fc);
+		color: #3a397a;
+		border: 2rpx solid #e6e9f0;
+	}
+
+	.nav-button-next {
+		padding: 24rpx 40rpx;
+		border-radius: 16rpx;
+		font-weight: bold;
+		display: flex;
+		align-items: center;
+		background: linear-gradient(to bottom right, #3a397a, #4f4e8c);
+		color: #fff;
+		border: 2rpx solid #2f2e62;
+	}
+
+	.submit-button {
+		padding: 24rpx 40rpx;
+		border-radius: 16rpx;
+		background: linear-gradient(to bottom right, #ff7e5f, #ff9a8b);
+		font-weight: bold;
+		display: flex;
+		color: #fff;
+		border: 2rpx solid #e25b3b;
+	}
+</style>

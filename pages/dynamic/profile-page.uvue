@@ -43,91 +43,93 @@
 
 					<view class="vip-badge">会员特权</view>
 				</view>
-
-				<!-- 数据卡片区域 -->
-				<view class="data-cards">
-					<view class="data-card" @tap="goDetail('时长')">
-						<text class="data-value">100h</text>
-						<text class="data-label">学习时长</text>
-					</view>
-					<view class="data-card" @tap="goDetail('正确率')">
-						<text class="data-value">85%</text>
-						<text class="data-label">正确率</text>
-					</view>
-					<view class="data-card data-card-last" @tap="goDetail('排名')">
-						<text class="data-value">前10%</text>
-						<text class="data-label">排名</text>
-					</view>
-				</view>
-
-				<!-- 功能宫格导航 -->
-				<view class="grid-nav">
-					<view class="grid-item grid-item-1">
-						<view class="grid-item-card" @tap="nav('course')">
-							<view class="grid-icon"><text class="iconfont icon-book"></text></view>
-							<text class="grid-label">我的课程</text>
-						</view>
-					</view>
-					<view class="grid-item grid-item-2">
-						<view class="grid-item-card" @tap="nav('wrong')">
-							<view class="grid-icon"><text class="iconfont icon-close"></text></view>
-							<text class="grid-label">我的错题</text>
-						</view>
-					</view>
-					<view class="grid-item grid-item-3">
-						<view class="grid-item-card" @tap="nav('star')">
-							<view class="grid-icon"><text class="iconfont icon-star"></text></view>
-							<text class="grid-label">我的收藏</text>
-						</view>
-					</view>
-					<view class="grid-item grid-item-4">
-						<view class="grid-item-card" @tap="nav('history')">
-							<view class="grid-icon"><text class="iconfont icon-time-circle"></text></view>
-							<text class="grid-label">做题历史</text>
-						</view>
-					</view>
-					<view class="grid-item grid-item-5">
-						<view class="grid-item-card" @tap="nav('note')">
-							<view class="grid-icon"><text class="iconfont icon-edit"></text></view>
-							<text class="grid-label">我的笔记</text>
-						</view>
-					</view>
-					<view class="grid-item grid-item-6">
-						<view class="grid-item-card" @tap="nav('vip')">
-							<view class="grid-icon"><text class="iconfont icon-crown"></text></view>
-							<text class="grid-label">会员中心</text>
-						</view>
-					</view>
-				</view>
-
-				<!-- 成就区域 -->
-				<view class="achievement-section">
-					<view class="section-title">
-						<text class="section-title-left">我的成就</text>
-						<text class="view-all" @tap="goAchieve">查看全部</text>
-					</view>
-					<scroll-view class="badges-scroll">
-						<view class="badges-list">
-							<view class="badge earned"><text class="iconfont icon-trophy"></text></view>
-							<view class="badge earned"><text class="iconfont icon-star"></text></view>
-							<view class="badge earned">🚀</view>
-							<view class="badge locked">🔒</view>
-							<view class="badge locked">🔒</view>
-							<view class="badge locked">🔒</view>
-						</view>
-					</scroll-view>
-				</view>
-
-				<!-- 设置区域 -->
-				<view class="settings-section">
-					<view v-for="(item, idx) in settings" :key="idx" class="settings-item"
-						:class="{'settings-item-last': idx === settings.length - 1}" @tap="item.action">
-						<text class="settings-item-text" :class="{ logout: item.logout }">{{ item.text }}</text>
-						<text class="arrow">›</text>
-					</view>
-				</view>
-
 			</view>
+			
+			<!-- 数据卡片区域 -->
+			<view class="data-cards">
+				<view class="data-card" @tap="goDetail('时长')">
+					<text class="data-value">100h</text>
+					<text class="data-label">学习时长</text>
+				</view>
+				<view class="data-card" @tap="goDetail('正确率')">
+					<text class="data-value">85%</text>
+					<text class="data-label">正确率</text>
+				</view>
+				<view class="data-card data-card-last" @tap="goDetail('排名')">
+					<text class="data-value">前10%</text>
+					<text class="data-label">排名</text>
+				</view>
+			</view>
+
+			<!-- 功能宫格导航 -->
+			<view class="grid-nav">
+				<view class="grid-item grid-item-1">
+					<view class="grid-item-card" @tap="nav('course')">
+						<view class="grid-icon"><text class="iconfont icon-book"></text></view>
+						<text class="grid-label">我的课程</text>
+					</view>
+				</view>
+				<view class="grid-item grid-item-2">
+					<view class="grid-item-card" @tap="nav('wrong')">
+						<view class="grid-icon"><text class="iconfont icon-close"></text></view>
+						<text class="grid-label">我的错题</text>
+					</view>
+				</view>
+				<view class="grid-item grid-item-3">
+					<view class="grid-item-card" @tap="nav('star')">
+						<view class="grid-icon"><text class="iconfont icon-star"></text></view>
+						<text class="grid-label">我的收藏</text>
+					</view>
+				</view>
+				<view class="grid-item grid-item-4">
+					<view class="grid-item-card" @tap="nav('history')">
+						<view class="grid-icon"><text class="iconfont icon-time-circle"></text></view>
+						<text class="grid-label">做题历史</text>
+					</view>
+				</view>
+				<view class="grid-item grid-item-5">
+					<view class="grid-item-card" @tap="nav('note')">
+						<view class="grid-icon"><text class="iconfont icon-edit"></text></view>
+						<text class="grid-label">我的笔记</text>
+					</view>
+				</view>
+				<view class="grid-item grid-item-6">
+					<view class="grid-item-card" @tap="nav('vip')">
+						<view class="grid-icon"><text class="iconfont icon-crown"></text></view>
+						<text class="grid-label">会员中心</text>
+					</view>
+				</view>
+			</view>
+
+			<!-- 成就区域 -->
+			<view class="achievement-section">
+				<view class="section-title">
+					<text class="section-title-left">我的成就</text>
+					<text class="view-all" @tap="goAchieve">查看全部</text>
+				</view>
+				<view class="badges-list">
+					<view class="badge">
+						<view class="card">
+							<text class="iconfont icon-trophy"></text>
+						</view>
+					</view>
+					<view class="badge">
+						<view class="card">
+							<text class="iconfont icon-star"></text>
+						</view>
+					</view>
+				</view>
+			</view>
+
+			<!-- 设置区域 -->
+			<view class="settings-section">
+				<view v-for="(item, idx) in settings" :key="idx" class="settings-item"
+					:class="{'settings-item-last': idx === settings.length - 1}" @tap="item.action">
+					<text class="settings-item-text" :class="{ logout: item.logout }">{{ item.text }}</text>
+					<text class="arrow">›</text>
+				</view>
+			</view>
+
 		</view>
 
 		<BottomNav current="mine" />
@@ -366,6 +368,7 @@
 		background: linear-gradient(to bottom, #fff, #f8f9fc);
 		border-radius: 40rpx;
 		padding: 40rpx;
+		width: 100%;
 		margin-bottom: 32rpx;
 		border: 2rpx solid #e6e9f0;
 	}
@@ -388,32 +391,29 @@
 		color: #6c757d;
 	}
 
-	.badges-scroll {
-		flex-direction: row;
-	}
-
 	.badges-list {
 		flex-direction: row;
+		flex-wrap: wrap;
 	}
 
 	.badge {
-		width: 120rpx;
-		height: 120rpx;
-		border-radius: 80rpx;
-		justify-content: center;
+		width: 25%;
 		align-items: center;
-		font-size: 48rpx;
-		margin-right: 24rpx;
+		justify-content: center;
 	}
 
-	.badge.earned {
+	.badge .card {
+		width: 100rpx;
+		height: 100rpx;
+		border-radius: 50rpx;
+		justify-content: center;
+		align-items: center;
 		background: linear-gradient(to bottom, #e6e9ff, #d9dcf7);
 		border: 2rpx solid #e6e9f0;
 	}
 
-	.badge.locked {
-		background: linear-gradient(to bottom, #f0f2f7, #e6e9f0);
-		color: #ced4da;
+	.badge .iconfont {
+		font-size: 48rpx;
 	}
 
 	/* 设置列表 */
@@ -422,6 +422,7 @@
 		border-radius: 40rpx;
 		border: 2rpx solid #e6e9f0;
 		margin-bottom: 40rpx;
+		width: 100%;
 	}
 
 	.settings-item {

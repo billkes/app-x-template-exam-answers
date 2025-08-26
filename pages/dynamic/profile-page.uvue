@@ -13,7 +13,7 @@
 						<text class="login-btn-text">立即登录</text>
 					</view>
 				</view>
-				
+
 				<view v-else>
 					<view class="avatar">
 						<text class="icon">👤</text>
@@ -24,109 +24,110 @@
 						<text class="edit-icon">✏️</text>
 					</view>
 
-				<text class="user-tagline">“专注备考100天”</text>
+					<text class="user-tagline">“专注备考100天”</text>
 
-				<view class="stats-container">
-					<view class="stat-item">
-						<text class="stat-value">VIP</text>
-						<text class="stat-label">会员</text>
+					<view class="stats-container">
+						<view class="stat-item">
+							<text class="stat-value">VIP</text>
+							<text class="stat-label">会员</text>
+						</view>
+						<view class="stat-item">
+							<text class="stat-value">8</text>
+							<text class="stat-label">勋章</text>
+						</view>
+						<view class="stat-item stat-item-last">
+							<text class="stat-value">100</text>
+							<text class="stat-label">学习天数</text>
+						</view>
 					</view>
-					<view class="stat-item">
-						<text class="stat-value">8</text>
-						<text class="stat-label">勋章</text>
+
+					<view class="vip-badge">会员特权</view>
+				</view>
+
+				<!-- 数据卡片区域 -->
+				<view class="data-cards">
+					<view class="data-card" @tap="goDetail('时长')">
+						<text class="data-value">100h</text>
+						<text class="data-label">学习时长</text>
 					</view>
-					<view class="stat-item stat-item-last">
-						<text class="stat-value">100</text>
-						<text class="stat-label">学习天数</text>
+					<view class="data-card" @tap="goDetail('正确率')">
+						<text class="data-value">85%</text>
+						<text class="data-label">正确率</text>
+					</view>
+					<view class="data-card data-card-last" @tap="goDetail('排名')">
+						<text class="data-value">前10%</text>
+						<text class="data-label">排名</text>
 					</view>
 				</view>
 
-				<view class="vip-badge">会员特权</view>
+				<!-- 功能宫格导航 -->
+				<view class="grid-nav">
+					<view class="grid-item grid-item-1">
+						<view class="grid-item-card" @tap="nav('course')">
+							<view class="grid-icon">📚</view>
+							<text class="grid-label">我的课程</text>
+						</view>
+					</view>
+					<view class="grid-item grid-item-2">
+						<view class="grid-item-card" @tap="nav('wrong')">
+							<view class="grid-icon">❌</view>
+							<text class="grid-label">我的错题</text>
+						</view>
+					</view>
+					<view class="grid-item grid-item-3">
+						<view class="grid-item-card" @tap="nav('star')">
+							<view class="grid-icon">⭐</view>
+							<text class="grid-label">我的收藏</text>
+						</view>
+					</view>
+					<view class="grid-item grid-item-4">
+						<view class="grid-item-card" @tap="nav('history')">
+							<view class="grid-icon">🕒</view>
+							<text class="grid-label">做题历史</text>
+						</view>
+					</view>
+					<view class="grid-item grid-item-5">
+						<view class="grid-item-card" @tap="nav('note')">
+							<view class="grid-icon">📝</view>
+							<text class="grid-label">我的笔记</text>
+						</view>
+					</view>
+					<view class="grid-item grid-item-6">
+						<view class="grid-item-card" @tap="nav('vip')">
+							<view class="grid-icon">👑</view>
+							<text class="grid-label">会员中心</text>
+						</view>
+					</view>
+				</view>
+
+				<!-- 成就区域 -->
+				<view class="achievement-section">
+					<view class="section-title">
+						<text class="section-title-left">我的成就</text>
+						<text class="view-all" @tap="goAchieve">查看全部</text>
+					</view>
+					<scroll-view class="badges-scroll">
+						<view class="badges-list">
+							<view class="badge earned">🏆</view>
+							<view class="badge earned">⭐</view>
+							<view class="badge earned">🚀</view>
+							<view class="badge locked">🔒</view>
+							<view class="badge locked">🔒</view>
+							<view class="badge locked">🔒</view>
+						</view>
+					</scroll-view>
+				</view>
+
+				<!-- 设置区域 -->
+				<view class="settings-section">
+					<view v-for="(item, idx) in settings" :key="idx" class="settings-item"
+						:class="{'settings-item-last': idx === settings.length - 1}" @tap="item.action">
+						<text class="settings-item-text" :class="{ logout: item.logout }">{{ item.text }}</text>
+						<text class="arrow">›</text>
+					</view>
+				</view>
+
 			</view>
-
-			<!-- 数据卡片区域 -->
-			<view class="data-cards">
-				<view class="data-card" @tap="goDetail('时长')">
-					<text class="data-value">100h</text>
-					<text class="data-label">学习时长</text>
-				</view>
-				<view class="data-card" @tap="goDetail('正确率')">
-					<text class="data-value">85%</text>
-					<text class="data-label">正确率</text>
-				</view>
-				<view class="data-card data-card-last" @tap="goDetail('排名')">
-					<text class="data-value">前10%</text>
-					<text class="data-label">排名</text>
-				</view>
-			</view>
-
-			<!-- 功能宫格导航 -->
-			<view class="grid-nav">
-				<view class="grid-item grid-item-1">
-					<view class="grid-item-card" @tap="nav('course')">
-						<view class="grid-icon">📚</view>
-						<text class="grid-label">我的课程</text>
-					</view>
-				</view>
-				<view class="grid-item grid-item-2">
-					<view class="grid-item-card" @tap="nav('wrong')">
-						<view class="grid-icon">❌</view>
-						<text class="grid-label">我的错题</text>
-					</view>
-				</view>
-				<view class="grid-item grid-item-3">
-					<view class="grid-item-card" @tap="nav('star')">
-						<view class="grid-icon">⭐</view>
-						<text class="grid-label">我的收藏</text>
-					</view>
-				</view>
-				<view class="grid-item grid-item-4">
-					<view class="grid-item-card" @tap="nav('history')">
-						<view class="grid-icon">🕒</view>
-						<text class="grid-label">做题历史</text>
-					</view>
-				</view>
-				<view class="grid-item grid-item-5">
-					<view class="grid-item-card" @tap="nav('note')">
-						<view class="grid-icon">📝</view>
-						<text class="grid-label">我的笔记</text>
-					</view>
-				</view>
-				<view class="grid-item grid-item-6">
-					<view class="grid-item-card" @tap="nav('vip')">
-						<view class="grid-icon">👑</view>
-						<text class="grid-label">会员中心</text>
-					</view>
-				</view>
-			</view>
-
-			<!-- 成就区域 -->
-			<view class="achievement-section">
-				<view class="section-title">
-					<text class="section-title-left">我的成就</text>
-					<text class="view-all" @tap="goAchieve">查看全部</text>
-				</view>
-				<scroll-view class="badges-scroll">
-					<view class="badges-list">
-						<view class="badge earned">🏆</view>
-						<view class="badge earned">⭐</view>
-						<view class="badge earned">🚀</view>
-						<view class="badge locked">🔒</view>
-						<view class="badge locked">🔒</view>
-						<view class="badge locked">🔒</view>
-					</view>
-				</scroll-view>
-			</view>
-
-			<!-- 设置区域 -->
-			<view class="settings-section">
-				<view v-for="(item, idx) in settings" :key="idx" class="settings-item"
-					:class="{'settings-item-last': idx === settings.length - 1}" @tap="item.action">
-					<text class="settings-item-text" :class="{ logout: item.logout }">{{ item.text }}</text>
-					<text class="arrow">›</text>
-				</view>
-			</view>
-
 		</view>
 
 		<BottomNav current="mine" />

@@ -35,12 +35,5 @@
 </script>
 
 <style>
-	/*每个页面公共css */
-	.uni-row {
-		flex-direction: row;
-	}
-
-	.uni-column {
-		flex-direction: column;
-	}
+	@import url(/static/iconfont.css);
 </style>

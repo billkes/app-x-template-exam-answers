@@ -44,9 +44,9 @@
 					<view class="vip-badge">会员特权</view>
 				</view>
 			</view>
-			
+
 			<!-- 数据卡片区域 -->
-			<view class="data-cards">
+			<view class="data-cards" v-if="isLoggedIn">
 				<view class="data-card" @tap="goDetail('时长')">
 					<text class="data-value">100h</text>
 					<text class="data-label">学习时长</text>
@@ -62,7 +62,7 @@
 			</view>
 
 			<!-- 功能宫格导航 -->
-			<view class="grid-nav">
+			<view class="grid-nav" v-if="isLoggedIn">
 				<view class="grid-item grid-item-1">
 					<view class="grid-item-card" @tap="nav('course')">
 						<view class="grid-icon"><text class="iconfont icon-book"></text></view>
@@ -102,7 +102,7 @@
 			</view>
 
 			<!-- 成就区域 -->
-			<view class="achievement-section">
+			<view class="achievement-section" v-if="isLoggedIn">
 				<view class="section-title">
 					<text class="section-title-left">我的成就</text>
 					<text class="view-all" @tap="goAchieve">查看全部</text>
@@ -123,9 +123,10 @@
 
 			<!-- 设置区域 -->
 			<view class="settings-section">
-				<view v-for="(item, idx) in settings" :key="idx" class="settings-item"
-					:class="{'settings-item-last': idx === settings.length - 1}" @tap="item.action">
-					<text class="settings-item-text" :class="{ logout: item.logout }">{{ item.text }}</text>
+				<view v-for="(item, idx) in settings.filter(o=>!(o.hide !== null && o.hide === true))" :key="idx"
+					class="settings-item" :class="{'settings-item-last': idx === settings.length - 1}"
+					@tap="item.action">
+					<text class="settings-item-text" :class="item.className">{{ item.text }}</text>
 					<text class="arrow">›</text>
 				</view>
 			</view>
@@ -139,14 +140,15 @@
 
 <script setup lang="uts">
 	import { ref } from 'vue'
+	import { SettingsType } from '@/assets/type/profile-page.type.uts'
 
 	const isLoggedIn = ref(false)
-	const settings = ref([
+	const settings = ref<SettingsType[]>([
 		{ text: '设置与隐私', action: () => uni.showToast({ title: '设置页', icon: 'none' }) },
 		{ text: '帮助与反馈', action: () => uni.showToast({ title: '帮助页', icon: 'none' }) },
-		{ text: '邀请好友得会员', action: () => uni.showToast({ title: '邀请页', icon: 'none' }) },
+		{ text: '邀请好友得会员', action: () => uni.showToast({ title: '邀请页', icon: 'none' }), hide: true },
 		{ text: '关于我们', action: () => uni.showToast({ title: '关于页', icon: 'none' }) },
-		{ text: '退出登录', logout: true, action: () => confirmLogout() }
+		{ text: '退出登录', className: 'logout', action: () => confirmLogout(), hide: true }
 	])
 
 	const goToLogin = () => {
@@ -165,7 +167,28 @@
 			title: '退出登录',
 			content: '确定要退出登录吗？',
 			success: (res) => {
-				if (res.confirm) uni.showToast({ title: '已退出', icon: 'success' })
+				if (res.confirm) {
+					// 清除用户信息
+					try {
+						uni.removeStorageSync('userInfo')
+						uni.removeStorageSync('token')
+						isLoggedIn.value = false
+					} catch (e) {
+						console.error('清除用户信息失败:', e)
+					}
+
+					uni.showToast({
+						title: '退出成功',
+						icon: 'success'
+					})
+
+					// // 跳转到登录页
+					// setTimeout(() => {
+					// 	uni.redirectTo({
+					// 		url: '/pages/dynamic/login-page'
+					// 	})
+					// }, 1500)
+				}
 			}
 		})
 	}

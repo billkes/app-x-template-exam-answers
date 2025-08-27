@@ -1,6 +1,11 @@
 <template>
 	<scroll-view class="root">
 		<view class="container">
+			<!-- 返回按钮 -->
+			<view class="back-button" @tap="goBack">
+				<text class="iconfont icon-left"></text>
+			</view>
+			
 			<!-- Logo 区域 -->
 			<view class="logo-container">
 				<text class="logo-text">学习考试答题模版</text>
@@ -115,6 +120,7 @@
 
 <script setup lang="uts">
 	import { ref } from 'vue'
+	import { HomePath } from '@/app.config.uts'
 
 	const popupCaptcha = ref<UniPopupCaptchaComponentPublicInstance | null>(null)
 
@@ -187,9 +193,17 @@
 				uni.showToast({ title: '登录成功', icon: 'success' })
 				// 登录成功后的处理，比如跳转到首页
 				setTimeout(() => {
-					uni.redirectTo({
-						url: '/pages/dynamic/index'
-					})
+					// 获取当前页面栈
+					const pages = getCurrentPages()
+					if (pages.length > 1) {
+						// 如果页面栈中有多个页面，返回上一页
+						uni.navigateBack()
+					} else {
+						// 如果页面栈中只有登录页，跳转到首页
+						uni.redirectTo({
+							url: HomePath
+						})
+					}
 				}, 1500)
 			})
 			.catch((err : any | null) => {
@@ -299,11 +313,17 @@
 					icon: 'success'
 				})
 				// 注册成功后自动登录，跳转到首页
-				setTimeout(() => {
+				// 获取当前页面栈
+				const pages = getCurrentPages()
+				if (pages.length > 1) {
+					// 如果页面栈中有多个页面，返回上一页
+					uni.navigateBack()
+				} else {
+					// 如果页面栈中只有登录页，跳转到首页
 					uni.redirectTo({
-						url: '/pages/dynamic/index'
+						url: HomePath
 					})
-				}, 1500)
+				}
 			})
 			.catch((err : any | null) => {
 				const error = err as UniCloudError
@@ -327,7 +347,33 @@
 		isRegister.value = true
 	}
 	const goProtocol = (type : string) => {
-		uni.showToast({ title: `${type}协议`, icon: 'none' })
+		let title = ''
+		let url = ''
+
+		if (type === 'user') {
+			title = '用户协议'
+			url = 'https://example.com/user-agreement'
+		} else if (type === 'privacy') {
+			title = '隐私政策'
+			url = 'https://example.com/privacy-policy'
+		}
+
+		uni.navigateTo({
+			url: `/uni_modules/uni-id-pages-x/pages/common/webview/webview?title=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`
+		})
+	}
+	
+	const goBack = () => {
+		const pages = getCurrentPages()
+		if (pages.length > 1) {
+			// 如果页面栈中有多个页面，返回上一页
+			uni.navigateBack()
+		} else {
+			// 如果页面栈中只有登录页，跳转到首页
+			uni.redirectTo({
+				url: HomePath
+			})
+		}
 	}
 </script>
 
@@ -343,11 +389,31 @@
 		padding: 40rpx;
 		flex: 1;
 	}
+	
+	/* 返回按钮 */
+	.back-button {
+		position: absolute;
+		top: 40rpx;
+		left: 40rpx;
+		width: 60rpx;
+		height: 60rpx;
+		border-radius: 50%;
+		background-color: rgba(58, 57, 122, 0.1);
+		justify-content: center;
+		align-items: center;
+		z-index: 999;
+	}
+
+	.back-button .iconfont {
+		font-size: 36rpx;
+		color: #3a397a;
+	}
 
 	/* Logo */
 	.logo-container {
 		align-items: center;
 		margin-bottom: 80rpx;
+		margin-top: 100rpx; /* 为返回按钮留出空间 */
 	}
 
 	.logo-text {

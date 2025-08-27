@@ -1,47 +1,47 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/dynamic/index",
+			"path": "pages/dynamic/index/index",
 			"style": {
-				"navigationBarTitleText": "接入后台管理-首页",
+				"navigationBarTitleText": "首页",
 				"navigationStyle": "custom"
 			}
 		}, {
-			"path": "pages/dynamic/login-page",
+			"path": "pages/dynamic/login/login",
 			"style": {
-				"navigationBarTitleText": "接入后台管理-登录页",
+				"navigationBarTitleText": "登录",
 				"navigationStyle": "custom"
 			}
 		},  {
-			"path": "pages/dynamic/profile-page",
+			"path": "pages/dynamic/profile/profile",
 			"style": {
-				"navigationBarTitleText": "接入后台管理-我的页",
+				"navigationBarTitleText": "我的页",
 				"navigationStyle": "custom"
 			}
 		}, {
-			"path": "pages/dynamic/stats-page",
+			"path": "pages/dynamic/stats/stats",
 			"style": {
-				"navigationBarTitleText": "接入后台管理-统计页",
+				"navigationBarTitleText": "统计页",
 				"navigationStyle": "custom"
 			}
 		}, {
-			"path": "pages/dynamic/course-detail",
+			"path": "pages/dynamic/course-detail/course-detail",
 			"style": {
-				"navigationBarTitleText": "接入后台管理-系统学习页",
+				"navigationBarTitleText": "系统学习页",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/dynamic/study-center",
+			"path": "pages/dynamic/study-center/study-center",
 			"style": {
-				"navigationBarTitleText": "接入后台管理-学习页",
+				"navigationBarTitleText": "学习页",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/dynamic/exam-page",
+			"path": "pages/dynamic/exam/exam",
 			"style": {
-				"navigationBarTitleText": "接入后台管理-答题",
+				"navigationBarTitleText": "答题",
 				"navigationStyle": "custom"
 			}
 		},

@@ -1,0 +1,418 @@
+{
+  "table_of_contents": {
+    "overview": "概述和快速开始",
+    "getting_started": "开发环境搭建",
+    "basics": "基础概念",
+    "apis": "API参考",
+    "components": "组件参考",
+    "styling": "样式系统",
+    "platforms": "平台特性",
+    "advanced": "高级特性",
+    "deployment": "部署发布",
+    "appendix": "附录"
+  },
+  "quick_access": {
+    "most_used_apis": [
+      {
+        "name": "addinterceptor",
+        "description": "Release Note Alpha",
+        "platforms": [
+          "Android",
+          "iOS",
+          "Harmony",
+          "Web",
+          "小程序"
+        ]
+      },
+      {
+        "name": "addinterceptor拦截",
+        "description": "Release Note Alpha",
+        "platforms": [
+          "Android",
+          "iOS",
+          "Harmony",
+          "Web",
+          "小程序"
+        ]
+      },
+      {
+        "name": "addphonecontact",
+        "description": "Add Phone Contact",
+        "platforms": []
+      },
+      {
+        "name": "app",
+        "description": "源码和示例",
+        "platforms": [
+          "Android",
+          "iOS",
+          "Harmony"
+        ]
+      },
+      {
+        "name": "arraybuffertobase64",
+        "description": "Release Note Alpha",
+        "platforms": [
+          "Android",
+          "iOS",
+          "Harmony",
+          "Web",
+          "小程序"
+        ]
+      },
+      {
+        "name": "async",
+        "description": "国际化",
+        "platforms": [
+          "Android",
+          "iOS",
+          "Web",
+          "小程序"
+        ]
+      },
+      {
+        "name": "base64toarraybuffer",
+        "description": "Release Note Alpha",
+        "platforms": [
+          "Android",
+          "iOS",
+          "Harmony",
+          "Web",
+          "小程序"
+        ]
+      },
+      {
+        "name": "canvastotempfilepath",
+        "description": "Canvas To Temp File Path",
+        "platforms": []
+      },
+      {
+        "name": "checkissoterenrolledindevice",
+        "description": "Bio Auth",
+        "platforms": []
+      },
+      {
+        "name": "checkissupportsoterauthentication",
+        "description": "Bio Auth",
+        "platforms": []
+      }
+    ],
+    "most_used_components": [
+      {
+        "name": "--",
+        "description": "内置内容",
+        "platforms": [
+          "Android",
+          "Web",
+          "小程序"
+        ]
+      },
+      {
+        "name": "a",
+        "description": "Uts For Android",
+        "platforms": [
+          "Android",
+          "Web"
+        ]
+      },
+      {
+        "name": "activity",
+        "description": "Uts For Android",
+        "platforms": [
+          "Android",
+          "Web"
+        ]
+      },
+      {
+        "name": "ad",
+        "description": "Ad",
+        "platforms": []
+      },
+      {
+        "name": "angle",
+        "description": "Transform",
+        "platforms": [
+          "iOS",
+          "Web"
+        ]
+      },
+      {
+        "name": "any",
+        "description": "uni-app x 开发注意",
+        "platforms": [
+          "iOS",
+          "Web"
+        ]
+      },
+      {
+        "name": "anyhashable",
+        "description": "UTS插件介绍",
+        "platforms": [
+          "Android",
+          "iOS",
+          "Harmony",
+          "Web",
+          "小程序",
+          "MP-WEIXIN"
+        ]
+      },
+      {
+        "name": "appcompatedittext",
+        "description": "Input",
+        "platforms": [
+          "Android",
+          "iOS",
+          "Harmony",
+          "Web",
+          "小程序"
+        ]
+      },
+      {
+        "name": "application",
+        "description": "安卓App配置",
+        "platforms": [
+          "Android",
+          "iOS",
+          "Web"
+        ]
+      },
+      {
+        "name": "array",
+        "description": "uni-app x 开发注意",
+        "platforms": [
+          "iOS",
+          "Web"
+        ]
+      }
+    ],
+    "most_used_css": [
+      {
+        "name": "-",
+        "description": "uvue概述",
+        "platforms": [
+          "Android",
+          "iOS",
+          "Web",
+          "小程序"
+        ]
+      },
+      {
+        "name": "-data",
+        "description": "Native Covert Uts",
+        "platforms": [
+          "Android",
+          "Web"
+        ]
+      },
+      {
+        "name": "-resultcode",
+        "description": "Native Covert Uts",
+        "platforms": [
+          "Android",
+          "Web"
+        ]
+      },
+      {
+        "name": "a",
+        "description": "web开发者使用uni-app x注意",
+        "platforms": [
+          "Web"
+        ]
+      },
+      {
+        "name": "aa",
+        "description": "uni-app x 开发注意",
+        "platforms": [
+          "iOS",
+          "Web"
+        ]
+      },
+      {
+        "name": "ab",
+        "description": "uni-app x 开发注意",
+        "platforms": [
+          "iOS",
+          "Web"
+        ]
+      },
+      {
+        "name": "abc",
+        "description": "Uts Diff Ts",
+        "platforms": [
+          "Android"
+        ]
+      },
+      {
+        "name": "accesssync",
+        "description": "Get File System Manager",
+        "platforms": [
+          "Android",
+          "iOS",
+          "Harmony",
+          "小程序"
+        ]
+      },
+      {
+        "name": "action",
+        "description": "Uts For Ios",
+        "platforms": [
+          "iOS"
+        ]
+      },
+      {
+        "name": "activity",
+        "description": "Android平台内存泄漏排查教程",
+        "platforms": [
+          "Android",
+          "Web"
+        ]
+      }
+    ],
+    "platform_specific": {
+      "android": {
+        "unique_apis": [
+          "chooseFile",
+          "chooseImage",
+          "chooseImage在",
+          "chooseLocation",
+          "chooseMedia"
+        ],
+        "unique_components": [
+          "AppCompatEditText",
+          "Badge",
+          "T"
+        ],
+        "unique_css": [
+          "app-android",
+          "app-ios",
+          "color",
+          "color:red",
+          "flex"
+        ]
+      },
+      "ios": {
+        "unique_apis": [
+          "chooseImage",
+          "chooseImage在",
+          "chooseLocation",
+          "chooseMedia",
+          "chooseMedia拍摄或选择的相册文件"
+        ],
+        "unique_components": [
+          "AppCompatEditText",
+          "ViewGroup",
+          "WebView"
+        ],
+        "unique_css": [
+          "app-android",
+          "app-ios",
+          "background-color",
+          "color",
+          "color:red"
+        ]
+      },
+      "harmony": {
+        "unique_apis": [
+          "closeDialogPage",
+          "compressImage",
+          "createCanvasContextAsync",
+          "createInnerAudioContext",
+          "createInnerAudioContext()"
+        ],
+        "unique_components": [
+          "AppCompatEditText",
+          "WebView",
+          "native-view"
+        ],
+        "unique_css": [
+          "app-android",
+          "app-ios",
+          "font-family",
+          "http",
+          "https"
+        ]
+      },
+      "web": {
+        "unique_apis": [
+          "chooseImage",
+          "chooseImage在",
+          "chooseLocation",
+          "chooseLocation时传递",
+          "chooseMedia"
+        ],
+        "unique_components": [
+          "AppCompatEditText",
+          "Badge",
+          "T"
+        ],
+        "unique_css": [
+          "app-android",
+          "app-ios",
+          "background-color",
+          "color",
+          "color:red"
+        ]
+      },
+      "小程序": {
+        "unique_apis": [
+          "addInterceptor",
+          "chooseImage",
+          "chooseLocation",
+          "chooseMedia",
+          "chooseMedia拍摄或选择的相册文件"
+        ],
+        "unique_components": [
+          "AppCompatEditText",
+          "ViewGroup",
+          "WebView"
+        ],
+        "unique_css": [
+          "color",
+          "color:red",
+          "flex",
+          "flex-direction",
+          "flex-direction:column"
+        ]
+      }
+    }
+  },
+  "learning_path": {
+    "beginner": [
+      "了解uni-app-x基本概念",
+      "搭建开发环境",
+      "创建第一个应用",
+      "学习基础组件",
+      "掌握基本API"
+    ],
+    "intermediate": [
+      "深入学习UTS语言",
+      "掌握UVUE渲染引擎",
+      "学习状态管理",
+      "理解平台差异",
+      "性能优化技巧"
+    ],
+    "advanced": [
+      "原生插件开发",
+      "自定义组件开发",
+      "跨平台最佳实践",
+      "高级性能优化",
+      "企业级应用架构"
+    ]
+  },
+  "troubleshooting": {
+    "common_issues": [
+      "编译错误处理",
+      "平台兼容性问题",
+      "性能问题诊断",
+      "样式调试技巧",
+      "API调用失败处理"
+    ],
+    "solutions": {
+      "编译错误": "检查UTS语法和类型定义",
+      "平台兼容性": "使用条件编译处理平台差异",
+      "性能问题": "优化组件结构和样式选择器",
+      "样式调试": "使用开发者工具检查样式应用",
+      "API调用失败": "检查网络连接和参数配置"
+    }
+  }
+}

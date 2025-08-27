@@ -5,7 +5,7 @@
 			<view class="back-button" @tap="goBack">
 				<text class="iconfont icon-left"></text>
 			</view>
-			
+
 			<!-- Logo 区域 -->
 			<view class="logo-container">
 				<text class="logo-text">学习考试答题模版</text>
@@ -22,10 +22,11 @@
 				<!-- 登录表单 -->
 				<view v-if="!isRegister">
 					<view class="form-group">
-						<text class="form-label">学号/手机号</text>
+						<text class="form-label">用户名</text>
 						<view class="input-wrap">
 							<text class="input-icon iconfont icon-user"></text>
-							<input v-model="username" class="form-input" placeholder="请输入学号或手机号" type="text" />
+							<input v-model="username" id="username" class="form-input" placeholder="请输入用户名"
+								type="text" />
 						</view>
 					</view>
 
@@ -34,19 +35,14 @@
 						<view class="input-wrap">
 							<text class="input-icon iconfont" :class="showPwd ? 'icon-eye' : 'icon-eye-close'"
 								@tap="showPwd = !showPwd"></text>
-							<input v-model="password" class="form-input" placeholder="请输入密码" :password="!showPwd" />
+							<input v-model="password" id="password" class="form-input" placeholder="请输入密码"
+								:password="!showPwd" />
 						</view>
 					</view>
 
 					<button class="login-button" @tap="handleLogin">
 						<text>{{ loading ? '登录中...' : '登录' }}</text>
 					</button>
-
-					<!-- <view class="register-link-forgot">
-						<view class="forgot">
-							<text class="forgot-password" @tap="goForget">忘记密码?</text>
-						</view>
-					</view> -->
 				</view>
 
 				<!-- 注册表单 -->
@@ -121,6 +117,7 @@
 <script setup lang="uts">
 	import { ref } from 'vue'
 	import { HomePath } from '@/app.config.uts'
+	import { goToWebview } from '@/untils/navigate.uts'
 
 	const popupCaptcha = ref<UniPopupCaptchaComponentPublicInstance | null>(null)
 
@@ -338,11 +335,7 @@
 	const socialLogin = (type : string) => {
 		uni.showToast({ title: `${type}登录开发中`, icon: 'none' })
 	}
-	// const goForget = () => {
-	// 	uni.navigateTo({
-	// 		url: "/uni_modules/uni-id-pages-x/pages/retrieve/retrieve"
-	// 	})
-	// }
+
 	const goRegister = () => {
 		isRegister.value = true
 	}
@@ -358,11 +351,9 @@
 			url = 'https://example.com/privacy-policy'
 		}
 
-		uni.navigateTo({
-			url: `/uni_modules/uni-id-pages-x/pages/common/webview/webview?title=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`
-		})
+		goToWebview(title, url)
 	}
-	
+
 	const goBack = () => {
 		const pages = getCurrentPages()
 		if (pages.length > 1) {
@@ -375,6 +366,12 @@
 			})
 		}
 	}
+
+	defineExpose({
+		loading: loading.value,
+		needCaptcha: needCaptcha.value,
+		loginCaptcha: loginCaptcha.value
+	})
 </script>
 
 <style scoped>
@@ -389,7 +386,7 @@
 		padding: 40rpx;
 		flex: 1;
 	}
-	
+
 	/* 返回按钮 */
 	.back-button {
 		position: absolute;
@@ -413,7 +410,8 @@
 	.logo-container {
 		align-items: center;
 		margin-bottom: 80rpx;
-		margin-top: 100rpx; /* 为返回按钮留出空间 */
+		margin-top: 100rpx;
+		/* 为返回按钮留出空间 */
 	}
 
 	.logo-text {

@@ -2,7 +2,7 @@
 	<!-- 底部导航栏 -->
 	<view class="bottom-nav">
 		<view class="nav-item" :class="{active: props.current === 'home'}"
-			@tap="switchToTarget('/pages/dynamic/index')">
+			@tap="switchToTarget('/pages/dynamic/index/index')">
 			<view class="nav-icon">
 				<text class="iconfont icon-home"></text>
 			</view>
@@ -10,7 +10,7 @@
 		</view>
 
 		<view class="nav-item" :class="{active: props.current === 'study'}"
-			@tap="switchToTarget('/pages/dynamic/study-center')">
+			@tap="switchToTarget('/pages/dynamic/study-center/study-center')">
 			<view class="nav-icon">
 				<text class="iconfont icon-book"></text>
 			</view>
@@ -18,7 +18,7 @@
 		</view>
 
 		<view class="nav-item" :class="{active: props.current === 'statistics'}"
-			@tap="switchToTarget('/pages/dynamic/stats-page')">
+			@tap="switchToTarget('/pages/dynamic/stats/stats')">
 			<view class="nav-icon">
 				<text class="iconfont icon-linechart"></text>
 			</view>
@@ -26,7 +26,7 @@
 		</view>
 
 		<view class="nav-item" :class="{active: props.current === 'mine'}"
-			@tap="switchToTarget('/pages/dynamic/profile-page')">
+			@tap="switchToTarget('/pages/dynamic/profile/profile')">
 			<view class="nav-icon">
 				<text class="iconfont icon-user"></text>
 			</view>
@@ -68,21 +68,36 @@
 
 	.nav-item {
 		align-items: center;
-		color: #6c757d;
-		font-size: 24rpx;
-	}
-
-	.nav-item.active {
-		color: #333;
+		font-weight: bold;
+		justify-content: center;
 	}
 
 	.nav-icon {
 		width: 40rpx;
 		height: 40rpx;
 		margin-bottom: 8rpx;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.iconfont {
+		color: #6c757d;
+		font-weight: normal;
 	}
 
 	.nav-label {
+		color: #6c757d;
 		font-size: 24rpx;
+		font-weight: normal;
+	}
+
+	.active .nav-label {
+		color: #333;
+		font-weight: bold;
+	}
+
+	.active .iconfont {
+		color: #333;
+		font-weight: bold;
 	}
 </style>

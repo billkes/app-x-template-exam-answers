@@ -141,6 +141,7 @@
 <script setup lang="uts">
 	import { ref } from 'vue'
 	import { SettingsType } from '@/assets/type/profile-page.type.uts'
+	import { goToLogin } from '@/untils/navigate.uts'
 
 	const isLoggedIn = ref(false)
 	const settings = ref<SettingsType[]>([
@@ -150,12 +151,6 @@
 		{ text: '关于我们', action: () => uni.showToast({ title: '关于页', icon: 'none' }) },
 		{ text: '退出登录', className: 'logout', action: () => confirmLogout(), hide: true }
 	])
-
-	const goToLogin = () => {
-		uni.navigateTo({
-			url: '/pages/dynamic/login-page'
-		})
-	}
 
 	const nav = (page : string) => uni.showToast({ title: `跳转到${page}`, icon: 'none' })
 	const goEdit = () => uni.showToast({ title: '编辑资料', icon: 'none' })

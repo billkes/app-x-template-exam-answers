@@ -1,0 +1,11 @@
+export const goToLogin = () => {
+	uni.navigateTo({
+		url: '/pages/dynamic/login/login'
+	})
+}
+
+export const goToWebview = (title : string, url : string) => {
+	uni.navigateTo({
+		url: `/uni_modules/uni-id-pages-x/pages/common/webview/webview?title=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`
+	})
+}

@@ -35,5 +35,6 @@
 </script>
 
 <style>
+	@import url(/static/global.css);
 	@import url(/static/iconfont.css);
 </style>

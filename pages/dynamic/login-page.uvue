@@ -3,7 +3,7 @@
 		<view class="container">
 			<!-- Logo 区域 -->
 			<view class="logo-container">
-				<text class="logo-text">考试答题模版</text>
+				<text class="logo-text">学习考试答题模版</text>
 			</view>
 
 			<!-- 登录/注册表单 -->
@@ -33,23 +33,15 @@
 						</view>
 					</view>
 
-					<view class="form-group" v-if="needCaptcha">
-						<text class="form-label">验证码</text>
-						<view class="input-wrap">
-							<text class="input-icon iconfont icon-check-circle"></text>
-							<input v-model="captcha" class="form-input" placeholder="请输入验证码" type="text" />
-						</view>
-					</view>
-
 					<button class="login-button" @tap="handleLogin">
 						<text>{{ loading ? '登录中...' : '登录' }}</text>
 					</button>
 
-					<view class="register-link-forgot">
+					<!-- <view class="register-link-forgot">
 						<view class="forgot">
 							<text class="forgot-password" @tap="goForget">忘记密码?</text>
 						</view>
-					</view>
+					</view> -->
 				</view>
 
 				<!-- 注册表单 -->
@@ -64,7 +56,7 @@
 					</view>
 
 					<view class="form-group">
-						<text class="form-label">昵称</text>
+						<text class="form-label">昵称 <text class="required">*</text></text>
 						<view class="input-wrap">
 							<text class="input-icon iconfont icon-user"></text>
 							<input v-model="nickname" class="form-input" placeholder="请输入昵称" type="text" />
@@ -93,9 +85,8 @@
 
 					<view class="form-group">
 						<text class="form-label">验证码 <text class="required">*</text></text>
-						<view class="input-wrap">
-							<text class="input-icon iconfont icon-check-circle"></text>
-							<input v-model="regCaptcha" class="form-input" placeholder="请输入验证码" type="text" />
+						<view class="global-uni-captcha">
+							<uni-captcha ref="captcha" scene="register" v-model="regCaptcha" />
 						</view>
 					</view>
 
@@ -112,6 +103,12 @@
 				<text class="privacy-text"> 和 </text>
 				<text class="link privacy-text" @tap="goProtocol('privacy')">隐私政策</text>
 			</view>
+
+			<!-- 多次登录错误时，获取登录时专用的图形验证码 （悬浮） -->
+			<view class="global-uni-popup-captcha">
+				<uni-popup-captcha ref="popupCaptcha" scene="login-by-pwd" v-model="loginCaptcha"
+					title="请输入验证码"></uni-popup-captcha>
+			</view>
 		</view>
 	</scroll-view>
 </template>
@@ -119,13 +116,15 @@
 <script setup lang="uts">
 	import { ref } from 'vue'
 
+	const popupCaptcha = ref<UniPopupCaptchaComponentPublicInstance | null>(null)
+
 	const username = ref('')
 	const password = ref('')
 	const remember = ref(false)
 	const showPwd = ref(false)
 	const loading = ref(false)
 	const needCaptcha = ref(false)
-	const captcha = ref('')
+	const loginCaptcha = ref('')
 
 	// 注册相关变量
 	const isRegister = ref(false)
@@ -147,16 +146,21 @@
 			return
 		}
 
-		if (needCaptcha.value && captcha.value.length != 4) {
-			uni.showToast({ title: '请输入验证码', icon: 'none' })
-			return
+		if (needCaptcha.value && loginCaptcha.value.length != 4) {
+			// 登录失败，自动重新获取验证码
+			if (popupCaptcha.value !== null) {
+				popupCaptcha.value.open(() => {
+					handleLogin()
+				});
+			}
+			return uni.showToast({ title: '请输入验证码', icon: 'none' })
 		}
 
 		loading.value = true
 
 		const data = {
 			"password": password.value,
-			"captcha": captcha.value
+			"captcha": loginCaptcha.value
 		}
 
 		let keyName = 'username'
@@ -176,15 +180,15 @@
 			.finally(() => {
 				uni.hideLoading()
 				loading.value = false
-				captcha.value = ""
+				loginCaptcha.value = ""
 			})
-			.then((e) => {
+			.then((e : any) => {
 				console.log('登录成功', e)
 				uni.showToast({ title: '登录成功', icon: 'success' })
 				// 登录成功后的处理，比如跳转到首页
 				setTimeout(() => {
-					uni.switchTab({
-						url: '/pages/index/index'
+					uni.redirectTo({
+						url: '/pages/dynamic/index'
 					})
 				}, 1500)
 			})
@@ -193,11 +197,12 @@
 				console.error(error)
 				if (error.code == 'uni-id-captcha-required') {
 					needCaptcha.value = true
-					uni.showToast({
-						title: '请输入验证码',
-						icon: 'none',
-						duration: 3000
-					})
+					if (popupCaptcha.value !== null) {
+						uni.showToast({ title: '请输入验证码', icon: 'none' })
+						popupCaptcha.value.open(() => {
+							handleLogin()
+						});
+					}
 				} else {
 					uni.showToast({
 						title: error.message,
@@ -288,15 +293,15 @@
 				uni.hideLoading()
 				regLoading.value = false
 			})
-			.then(e => {
+			.then(() => {
 				uni.showToast({
 					title: '注册成功',
 					icon: 'success'
 				})
 				// 注册成功后自动登录，跳转到首页
 				setTimeout(() => {
-					uni.switchTab({
-						url: '/pages/index/index'
+					uni.redirectTo({
+						url: '/pages/dynamic/index'
 					})
 				}, 1500)
 			})
@@ -313,11 +318,11 @@
 	const socialLogin = (type : string) => {
 		uni.showToast({ title: `${type}登录开发中`, icon: 'none' })
 	}
-	const goForget = () => {
-		uni.navigateTo({
-			url: "/uni_modules/uni-id-pages-x/pages/retrieve/retrieve"
-		})
-	}
+	// const goForget = () => {
+	// 	uni.navigateTo({
+	// 		url: "/uni_modules/uni-id-pages-x/pages/retrieve/retrieve"
+	// 	})
+	// }
 	const goRegister = () => {
 		isRegister.value = true
 	}
@@ -326,7 +331,7 @@
 	}
 </script>
 
-<style>
+<style scoped>
 	.root {
 		flex: 1;
 		background: linear-gradient(to bottom right, #f8f9fc, #eef0f8);
@@ -399,6 +404,10 @@
 		font-weight: bold;
 	}
 
+	.form-label .required {
+		color: red;
+	}
+
 	.input-wrap {
 		position: relative;
 	}
@@ -449,7 +458,7 @@
 		font-size: 36rpx;
 		font-weight: bold;
 		border: 2rpx solid #2f2e62;
-		margin-bottom: 48rpx;
+		/* margin-bottom: 48rpx; */
 	}
 
 	.divider {

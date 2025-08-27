@@ -1,50 +1,60 @@
 {
-    "name" : "考试答题",
-    "appid" : "__UNI__036F3E5",
-    "description" : "考试答题",
-    "versionName" : "1.0.0",
-    "versionCode" : "100",
-    "uni-app-x" : {},
-    "quickapp" : {},
-    "mp-weixin" : {
-        "appid" : "",
-        "setting" : {
-            "urlCheck" : false
-        },
-        "usingComponents" : true
-    },
-    "mp-alipay" : {
-        "usingComponents" : true
-    },
-    "mp-baidu" : {
-        "usingComponents" : true
-    },
-    "mp-toutiao" : {
-        "usingComponents" : true
-    },
-    "uniStatistics" : {
-        "enable" : false
-    },
-    "vueVersion" : "3",
-    "app-android" : {
-        "distribute" : {
-            "abiFilters" : [ "armeabi-v7a", "arm64-v8a", "x86", "x86_64" ]
-        }
-    },
-    "app-harmony" : {
-        "distribute" : {
-            "bundleName" : "billkes.appx.template.exam",
-            "signingConfigs" : {
-                "default" : {
-                    "certpath" : "c:\\Users\\qiu\\AppData\\Roaming\\HBuilder X\\extensions\\launcher\\agc-certs\\1753583821151.cer",
-                    "keyAlias" : "debugKey",
-                    "keyPassword" : "0000001B5368740C67DCE4184B8B8FDD4B941BE091AB386797E5BC349D37AD4377F35038242115E2AD14D4",
-                    "profile" : "c:\\Users\\qiu\\AppData\\Roaming\\HBuilder X\\extensions\\launcher\\agc-certs\\1755186164416.p7b",
-                    "signAlg" : "SHA256withECDSA",
-                    "storeFile" : "c:\\Users\\qiu\\AppData\\Roaming\\HBuilder X\\extensions\\launcher\\agc-certs\\1753583821151.p12",
-                    "storePassword" : "0000001B5368740C67DCE4184B8B8FDD4B941BE091AB386797E5BC349D37AD4377F35038242115E2AD14D4"
-                }
-            }
-        }
-    }
+	"name": "学习考试答题模版",
+	"appid": "__UNI__036F3E5",
+	"description": "学习考试答题模版",
+	"versionName": "6.0.0",
+	"versionCode": "600",
+	"uni-app-x": {},
+	"quickapp": {},
+	"mp-weixin": {
+		"appid": "",
+		"setting": {
+			"urlCheck": false
+		},
+		"usingComponents": true
+	},
+	"mp-alipay": {
+		"usingComponents": true
+	},
+	"mp-baidu": {
+		"usingComponents": true
+	},
+	"mp-toutiao": {
+		"usingComponents": true
+	},
+	"uniStatistics": {
+		"enable": false
+	},
+	"vueVersion": "3",
+	"app-android": {
+		"distribute": {
+			"abiFilters": [
+				"armeabi-v7a",
+				"arm64-v8a",
+				"x86",
+				"x86_64"
+			]
+		}
+	},
+	"app-harmony": {
+		"distribute": {
+			"bundleName": "billkes.appx.template.exam",
+			"signingConfigs": {
+				"default": {
+					"certpath": "c:\\Users\\qiu\\AppData\\Roaming\\HBuilder X\\extensions\\launcher\\agc-certs\\1753583821151.cer",
+					"keyAlias": "debugKey",
+					"keyPassword": "0000001B5368740C67DCE4184B8B8FDD4B941BE091AB386797E5BC349D37AD4377F35038242115E2AD14D4",
+					"profile": "c:\\Users\\qiu\\AppData\\Roaming\\HBuilder X\\extensions\\launcher\\agc-certs\\1755186164416.p7b",
+					"signAlg": "SHA256withECDSA",
+					"storeFile": "c:\\Users\\qiu\\AppData\\Roaming\\HBuilder X\\extensions\\launcher\\agc-certs\\1753583821151.p12",
+					"storePassword": "0000001B5368740C67DCE4184B8B8FDD4B941BE091AB386797E5BC349D37AD4377F35038242115E2AD14D4"
+				}
+			}
+		}
+	},
+	"web": {
+		"router": {
+			"mode": ""
+		}
+	}
 }

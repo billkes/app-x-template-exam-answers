@@ -1,0 +1,54 @@
+/* 弹窗验证码组件 start */
+.global-uni-popup-captcha .popup-captcha .content .title {
+	color: #3a397a !important;
+	font-weight: bold !important;
+	margin-bottom: 40rpx !important;
+}
+
+.global-uni-popup-captcha .popup-captcha .button-box {
+	margin-top: 40rpx !important;
+}
+
+.global-uni-popup-captcha .popup-captcha .button-box .btn {
+	background: linear-gradient(to bottom right, #3a397a, #4f4e8c) !important;
+	color: #fff !important;
+	height: 80rpx !important;
+	line-height: 80rpx !important;
+	border-radius: 24rpx !important;
+	border: 2rpx solid #2f2e62 !important;
+}
+
+.global-uni-popup-captcha .popup-captcha .captcha-box .captcha-img-box {
+	border-radius: 24rpx !important;
+	border: 2rpx solid #e6e9f0 !important;
+	background-color: #f8f9fc !important;
+	align-items: center !important;
+	justify-content: center !important;
+}
+
+.global-uni-popup-captcha .popup-captcha .captcha-box .captcha {
+	padding: 20rpx 32rpx !important;
+	border-radius: 24rpx !important;
+	border: 2rpx solid #e6e9f0 !important;
+	background-color: #f8f9fc !important;
+	font-size: 32rpx !important;
+}
+/* 弹窗验证码组件 end */
+
+/* 验证码组件 start */
+.global-uni-captcha .captcha-box .captcha-img-box {
+	border-radius: 24rpx !important;
+	border: 2rpx solid #e6e9f0 !important;
+	background-color: #f8f9fc !important;
+	align-items: center !important;
+	justify-content: center !important;
+}
+
+.global-uni-captcha .captcha-box .captcha {
+	padding: 20rpx 32rpx !important;
+	border-radius: 24rpx !important;
+	border: 2rpx solid #e6e9f0 !important;
+	background-color: #f8f9fc !important;
+	font-size: 32rpx !important;
+}
+/* 验证码组件 end */

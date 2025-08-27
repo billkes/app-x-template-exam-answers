@@ -12,7 +12,7 @@
 				"navigationBarTitleText": "接入后台管理-登录页",
 				"navigationStyle": "custom"
 			}
-		}, {
+		},  {
 			"path": "pages/dynamic/profile-page",
 			"style": {
 				"navigationBarTitleText": "接入后台管理-我的页",
@@ -61,6 +61,62 @@
 			"path": "pages/simulate/index-v5",
 			"style": {
 				"navigationBarTitleText": "静态数据加载v5版本"
+			}
+		},
+		{
+			"path": "uni_modules/uni-id-pages-x/pages/retrieve/retrieve",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationBarTitleText": "重置密码"
+			}
+		},{
+			"path": "uni_modules/uni-id-pages-x/pages/userinfo/userinfo",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationBarTitleText": "我的资料"
+			}
+		}, {
+			"path": "uni_modules/uni-id-pages-x/pages/login/login",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationBarTitleText": "登录账号"
+			}
+		}, {
+			"path": "uni_modules/uni-id-pages-x/pages/register/register",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationBarTitleText": "注册"
+			}
+		}, {
+			"path": "uni_modules/uni-id-pages-x/pages/common/webview/webview",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationBarTitleText": ""
+			}
+		}, {
+			"path": "uni_modules/uni-id-pages-x/pages/userinfo/deactivate/deactivate",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationBarTitleText": "注销账号"
+			}
+		}, {
+			"path": "uni_modules/uni-id-pages-x/pages/userinfo/bindMobile/bindMobile",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationBarTitleText": "绑定手机号码"
+			}
+		}, {
+			"path": "uni_modules/uni-id-pages-x/pages/userinfo/setNickname/setNickname",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationBarTitleText": "设置昵称",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "uni_modules/uni-id-pages-x/pages/userinfo/realnameAuth/realnameAuth",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationBarTitleText": "实名认证"
 			}
 		}
 	],

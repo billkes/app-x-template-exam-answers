@@ -66,7 +66,7 @@
 					<view class="form-group">
 						<text class="form-label">昵称</text>
 						<view class="input-wrap">
-							<text class="input-icon iconfont icon-nickname"></text>
+							<text class="input-icon iconfont icon-user"></text>
 							<input v-model="nickname" class="form-input" placeholder="请输入昵称" type="text" />
 						</view>
 					</view>
